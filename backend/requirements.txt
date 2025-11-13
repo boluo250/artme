@@ -1,0 +1,31 @@
+# FastAPI 后端依赖
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+python-multipart==0.0.6
+pydantic==2.5.0
+pydantic-settings==2.1.0
+
+# 数据库
+sqlalchemy==2.0.23
+alembic==1.12.1
+
+# 图像处理
+Pillow==10.1.0
+
+# HTTP 客户端
+httpx==0.25.2
+aiohttp==3.9.1
+
+# 环境变量管理
+python-dotenv==1.0.0
+
+# CORS 支持
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+
+# 日志
+loguru==0.7.2
+
+# 工具库
+python-dateutil==2.8.2
+
