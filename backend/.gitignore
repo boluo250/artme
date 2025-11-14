@@ -45,11 +45,7 @@ ENV/
 # 上传文件
 uploads/
 style_images/
-*.jpg
-*.jpeg
-*.png
-*.gif
-*.webp
+
 
 # 日志
 *.log
