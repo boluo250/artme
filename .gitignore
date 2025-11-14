@@ -44,13 +44,6 @@ env.bak/
 uploads/
 style_images/
 generated_images/
-*.jpg
-*.jpeg
-*.png
-*.gif
-*.webp
-*.bmp
-*.tiff
 
 # 日志
 *.log
