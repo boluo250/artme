@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 enum APIError: Error {
     case invalidURL
@@ -126,6 +127,111 @@ class APIService {
     
     func listModels() async throws -> ModelListResponse {
         return try await self.request(endpoint: Constants.API.models)
+    }
+    
+    // MARK: - Prompt 管理
+    
+    func fetchPromptStyles() async throws -> PromptStyleListResponse {
+        let endpoint = Constants.API.prompts + "/list"
+        return try await self.request(endpoint: endpoint)
+    }
+    
+    // MARK: - 图片上传生成
+    
+    func generateImageWithUpload(request: GenerateImageWithUploadRequest) async throws -> GenerateImageWithUploadResponse {
+        guard let url = URL(string: baseURL + Constants.API.generateWithImage) else {
+            throw APIError.invalidURL
+        }
+        
+        var urlRequest = URLRequest(url: url)
+        urlRequest.httpMethod = "POST"
+        
+        // 创建 multipart/form-data 请求体
+        let boundary = UUID().uuidString
+        urlRequest.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+        
+        var body = Data()
+        
+        // 添加图片数据
+        if let imageData = request.image.jpegData(compressionQuality: 0.8) {
+            body.append("--\(boundary)\r\n".data(using: .utf8)!)
+            body.append("Content-Disposition: form-data; name=\"image\"; filename=\"image.jpg\"\r\n".data(using: .utf8)!)
+            body.append("Content-Type: image/jpeg\r\n\r\n".data(using: .utf8)!)
+            body.append(imageData)
+            body.append("\r\n".data(using: .utf8)!)
+        }
+        
+        // 添加 category
+        body.append("--\(boundary)\r\n".data(using: .utf8)!)
+        body.append("Content-Disposition: form-data; name=\"category\"\r\n\r\n".data(using: .utf8)!)
+        body.append(request.category.data(using: .utf8)!)
+        body.append("\r\n".data(using: .utf8)!)
+        
+        // 添加 subcategory
+        body.append("--\(boundary)\r\n".data(using: .utf8)!)
+        body.append("Content-Disposition: form-data; name=\"subcategory\"\r\n\r\n".data(using: .utf8)!)
+        body.append(request.subcategory.data(using: .utf8)!)
+        body.append("\r\n".data(using: .utf8)!)
+        
+        // 添加 userId（如果提供）
+        if let userId = request.userId {
+            body.append("--\(boundary)\r\n".data(using: .utf8)!)
+            body.append("Content-Disposition: form-data; name=\"user_id\"\r\n\r\n".data(using: .utf8)!)
+            body.append(userId.data(using: .utf8)!)
+            body.append("\r\n".data(using: .utf8)!)
+        }
+        
+        // 添加 size
+        if let size = request.size {
+            body.append("--\(boundary)\r\n".data(using: .utf8)!)
+            body.append("Content-Disposition: form-data; name=\"size\"\r\n\r\n".data(using: .utf8)!)
+            body.append(size.data(using: .utf8)!)
+            body.append("\r\n".data(using: .utf8)!)
+        }
+        
+        // 添加 watermark
+        if let watermark = request.watermark {
+            body.append("--\(boundary)\r\n".data(using: .utf8)!)
+            body.append("Content-Disposition: form-data; name=\"watermark\"\r\n\r\n".data(using: .utf8)!)
+            body.append((watermark ? "true" : "false").data(using: .utf8)!)
+            body.append("\r\n".data(using: .utf8)!)
+        }
+        
+        // 添加 max_images
+        if let maxImages = request.maxImages {
+            body.append("--\(boundary)\r\n".data(using: .utf8)!)
+            body.append("Content-Disposition: form-data; name=\"max_images\"\r\n\r\n".data(using: .utf8)!)
+            body.append(String(maxImages).data(using: .utf8)!)
+            body.append("\r\n".data(using: .utf8)!)
+        }
+        
+        // 结束 boundary
+        body.append("--\(boundary)--\r\n".data(using: .utf8)!)
+        
+        urlRequest.httpBody = body
+        
+        do {
+            let (data, response) = try await session.data(for: urlRequest)
+            
+            guard let httpResponse = response as? HTTPURLResponse else {
+                throw APIError.invalidResponse
+            }
+            
+            guard (200...299).contains(httpResponse.statusCode) else {
+                throw APIError.httpError(httpResponse.statusCode)
+            }
+            
+            let decoder = JSONDecoder()
+            decoder.keyDecodingStrategy = .convertFromSnakeCase
+            return try decoder.decode(GenerateImageWithUploadResponse.self, from: data)
+            
+        } catch let error as DecodingError {
+            throw APIError.decodingError(error)
+        } catch let error as APIError {
+            throw error
+        } catch {
+            throw APIError.networkError(error)
+        }
     }
 }
 

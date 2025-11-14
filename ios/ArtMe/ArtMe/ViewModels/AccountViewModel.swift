@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import Combine
 
 @MainActor
 class AccountViewModel: ObservableObject {
@@ -70,10 +71,14 @@ class AccountViewModel: ObservableObject {
         
         do {
             let request = RechargeRequest(amount: amount, paymentMethod: paymentMethod)
+            let encoder = JSONEncoder()
+            encoder.keyEncodingStrategy = .convertToSnakeCase
+            let body = try encoder.encode(request)
+            
             let response: RechargeResponse = try await apiService.request(
                 endpoint: Constants.API.account + "/recharge?user_id=\(userId)",
                 method: "POST",
-                body: request
+                body: body
             )
             
             // 处理支付

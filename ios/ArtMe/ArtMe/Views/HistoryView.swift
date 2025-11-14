@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Combine
 
 struct GeneratedImageHistory: Identifiable, Codable {
     let id: String

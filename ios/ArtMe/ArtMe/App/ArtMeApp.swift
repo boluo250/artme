@@ -9,9 +9,16 @@ import SwiftUI
 
 @main
 struct ArtMeApp: App {
+    init() {
+        print("ArtMe App 启动")
+    }
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .onAppear {
+                    print("ContentView 已显示")
+                }
         }
     }
 }

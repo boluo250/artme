@@ -20,7 +20,9 @@ struct Constants {
     // API 端点
     struct API {
         static let generate = "/api/\(apiVersion)/generate"
+        static let generateWithImage = "/api/\(apiVersion)/generate/with-image"
         static let styles = "/api/\(apiVersion)/styles"
+        static let prompts = "/api/\(apiVersion)/prompts"
         static let models = "/api/\(apiVersion)/models"
         static let account = "/api/\(apiVersion)/account"
         static let subscription = "/api/\(apiVersion)/subscription"

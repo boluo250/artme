@@ -7,6 +7,7 @@
 
 import Foundation
 import StoreKit
+import Combine
 
 @MainActor
 class PaymentService: ObservableObject {
@@ -106,7 +107,7 @@ class PaymentService: ObservableObject {
         return Task.detached {
             for await result in Transaction.updates {
                 do {
-                    let transaction = try self.checkVerified(result)
+                    let transaction = try await self.checkVerified(result)
                     await transaction.finish()
                     await self.updatePurchasedProducts()
                 } catch {

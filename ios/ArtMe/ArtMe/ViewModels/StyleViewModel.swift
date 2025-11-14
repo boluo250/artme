@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import Combine
 
 @MainActor
 class StyleViewModel: ObservableObject {
@@ -25,9 +26,7 @@ class StyleViewModel: ObservableObject {
     }
     
     init() {
-        Task {
-            await loadStyles()
-        }
+        // 不在 init 中加载数据，由视图的 .task 修饰符触发
     }
     
     func loadStyles() async {

@@ -14,7 +14,7 @@ from app.middleware import (
 )
 
 # 导入 API 路由
-from app.api import generate, styles, account, subscription, static
+from app.api import generate, styles, account, subscription, static, prompts
 
 app = FastAPI(
     title=settings.APP_NAME,
@@ -60,7 +60,8 @@ app.include_router(generate.router, prefix="/api/v1", tags=["generate"])
 app.include_router(styles.router, prefix="/api/v1", tags=["styles"])
 app.include_router(account.router, prefix="/api/v1", tags=["account"])
 app.include_router(subscription.router, prefix="/api/v1", tags=["subscription"])
-app.include_router(static.router, tags=["static"])
+app.include_router(static.router, prefix="/api/v1", tags=["static"])
+app.include_router(prompts.router, prefix="/api/v1", tags=["prompts"])
 
 
 if __name__ == "__main__":

@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import Combine
 
 @MainActor
 class GenerateViewModel: ObservableObject {
@@ -16,6 +17,11 @@ class GenerateViewModel: ObservableObject {
     @Published var isLoading = false
     @Published var errorMessage: String?
     @Published var taskId: String?
+    
+    // 图片上传相关属性
+    @Published var selectedPromptStyle: PromptStyle?
+    @Published var uploadedImage: UIImage?
+    @Published var generatedImages: [GeneratedImage] = []
     
     private let apiService = APIService.shared
     private let imageService = ImageService.shared
@@ -84,6 +90,49 @@ class GenerateViewModel: ObservableObject {
     
     func shareImage() {
         // 分享功能在视图中实现
+    }
+    
+    // MARK: - 图片上传生成
+    
+    func selectImage(_ image: UIImage) {
+        uploadedImage = image
+    }
+    
+    func generateImageWithUpload() async {
+        guard let uploadedImage = uploadedImage else {
+            errorMessage = "请先选择图片"
+            return
+        }
+        
+        guard let promptStyle = selectedPromptStyle else {
+            errorMessage = "请先选择风格"
+            return
+        }
+        
+        isLoading = true
+        errorMessage = nil
+        generatedImages = []
+        
+        do {
+            let request = GenerateImageWithUploadRequest(
+                image: uploadedImage,
+                category: promptStyle.category,
+                subcategory: promptStyle.subcategory
+            )
+            
+            let response = try await apiService.generateImageWithUpload(request: request)
+            
+            if response.success {
+                generatedImages = response.images
+                taskId = response.taskId
+            } else {
+                errorMessage = response.error ?? "生成失败"
+            }
+        } catch {
+            errorMessage = "生成失败: \(error.localizedDescription)"
+        }
+        
+        isLoading = false
     }
 }
 

@@ -125,29 +125,52 @@ class ImageService:
         size: Tuple[int, int] = (200, 200)
     ) -> str:
         """
-        创建缩略图
+        创建缩略图（带缓存机制）
         
         Args:
-            image_path: 原始图像路径
+            image_path: 原始图像路径（相对路径）
             size: 缩略图尺寸 (width, height)
         
         Returns:
-            缩略图路径
+            缩略图路径（相对路径）
         """
         try:
             full_path = self.upload_dir / image_path
             
+            # 检查原始文件是否存在
+            if not full_path.exists():
+                raise FileNotFoundError(f"图片文件不存在: {full_path}")
+            
+            # 生成缩略图文件名（包含尺寸信息，用于缓存）
+            path_obj = Path(image_path)
+            thumbnail_filename = f"{path_obj.stem}_thumb_{size[0]}x{size[1]}.jpg"
+            thumbnail_path = path_obj.parent / thumbnail_filename
+            thumbnail_full_path = self.upload_dir / thumbnail_path
+            
+            # 检查缩略图是否已存在（缓存检查）
+            if thumbnail_full_path.exists():
+                # 检查原始文件的修改时间
+                original_mtime = full_path.stat().st_mtime
+                thumbnail_mtime = thumbnail_full_path.stat().st_mtime
+                
+                # 如果缩略图比原图新，则使用缓存
+                if thumbnail_mtime >= original_mtime:
+                    logger.info(f"使用缓存的缩略图: {thumbnail_path}")
+                    return str(thumbnail_path)
+            
             # 打开图像
             with Image.open(full_path) as img:
-                # 创建缩略图
+                # 转换为 RGB 模式（如果需要）
+                if img.mode != 'RGB':
+                    img = img.convert('RGB')
+                
+                # 创建缩略图（保持宽高比）
                 img.thumbnail(size, Image.Resampling.LANCZOS)
                 
-                # 生成缩略图文件名
-                path_obj = Path(image_path)
-                thumbnail_path = path_obj.parent / f"{path_obj.stem}_thumb{path_obj.suffix}"
-                thumbnail_full_path = self.upload_dir / thumbnail_path
+                # 确保缩略图目录存在
+                thumbnail_full_path.parent.mkdir(parents=True, exist_ok=True)
                 
-                # 保存缩略图
+                # 保存缩略图（统一使用 JPEG 格式）
                 img.save(thumbnail_full_path, 'JPEG', quality=80, optimize=True)
             
             logger.info(f"缩略图已创建: {thumbnail_path}")
@@ -167,9 +190,8 @@ class ImageService:
         Returns:
             图像的完整URL
         """
-        # TODO: 根据实际部署情况配置URL
-        # 这里返回相对路径，实际应该返回完整的URL
-        return f"/uploads/{image_path}"
+        # 返回包含 /api/v1 前缀的URL，匹配静态文件路由
+        return f"/api/v1/uploads/{image_path}"
     
     async def save_style_example_image(
         self,
@@ -192,6 +214,92 @@ class ImageService:
             filename=filename,
             subfolder="style_examples"
         )
+    
+    async def resize_image(
+        self,
+        image_path: Path,
+        max_width: Optional[int] = None,
+        max_height: Optional[int] = None,
+        quality: int = 85
+    ) -> Path:
+        """
+        调整图片尺寸（带缓存机制）
+        
+        Args:
+            image_path: 原始图片路径（绝对路径）
+            max_width: 最大宽度（可选）
+            max_height: 最大高度（可选）
+            quality: JPEG质量（1-100）
+        
+        Returns:
+            调整后的图片路径（绝对路径）
+        """
+        if not image_path.exists():
+            raise FileNotFoundError(f"图片文件不存在: {image_path}")
+        
+        # 如果没有指定尺寸，直接返回原图
+        if max_width is None and max_height is None:
+            return image_path
+        
+        # 生成缓存文件名（包含尺寸信息）
+        path_obj = Path(image_path)
+        size_suffix = ""
+        if max_width and max_height:
+            size_suffix = f"_resized_{max_width}x{max_height}"
+        elif max_width:
+            size_suffix = f"_resized_w{max_width}"
+        elif max_height:
+            size_suffix = f"_resized_h{max_height}"
+        
+        resized_filename = f"{path_obj.stem}{size_suffix}.jpg"
+        resized_path = path_obj.parent / resized_filename
+        
+        # 检查缓存是否存在且有效
+        if resized_path.exists():
+            original_mtime = image_path.stat().st_mtime
+            resized_mtime = resized_path.stat().st_mtime
+            
+            # 如果调整后的图片比原图新，使用缓存
+            if resized_mtime >= original_mtime:
+                logger.info(f"使用缓存的调整后图片: {resized_path}")
+                return resized_path
+        
+        # 打开并调整图片
+        with Image.open(image_path) as img:
+            # 转换为 RGB 模式（如果需要）
+            if img.mode != 'RGB':
+                img = img.convert('RGB')
+            
+            # 计算新尺寸（保持宽高比）
+            original_width, original_height = img.size
+            new_width, new_height = original_width, original_height
+            
+            if max_width and max_height:
+                # 同时限制宽度和高度
+                ratio = min(max_width / original_width, max_height / original_height)
+                if ratio < 1.0:
+                    new_width = int(original_width * ratio)
+                    new_height = int(original_height * ratio)
+            elif max_width and original_width > max_width:
+                # 只限制宽度
+                ratio = max_width / original_width
+                new_width = max_width
+                new_height = int(original_height * ratio)
+            elif max_height and original_height > max_height:
+                # 只限制高度
+                ratio = max_height / original_height
+                new_width = int(original_width * ratio)
+                new_height = max_height
+            
+            # 如果尺寸有变化，调整图片
+            if new_width != original_width or new_height != original_height:
+                img = img.resize((new_width, new_height), Image.Resampling.LANCZOS)
+            
+            # 保存调整后的图片
+            img.save(resized_path, 'JPEG', quality=quality, optimize=True)
+            logger.info(f"图片已调整尺寸: {resized_path} ({new_width}x{new_height})")
+        
+        return resized_path
 
 
 # 全局图像服务实例

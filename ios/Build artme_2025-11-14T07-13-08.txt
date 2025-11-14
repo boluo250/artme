@@ -1,0 +1,99 @@
+
+Showing Recent Errors Only
+Prepare build
+Prepare packages
+Build target artme
+SwiftEmitModule normal arm64 Emitting\ module\ for\ artme (in target 'artme' from project 'artme')
+
+Failed frontend command:
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swift-frontend -frontend -emit-module -experimental-skip-non-inlinable-function-bodies-without-types /Users/keximing/mycode/iosapp/artme/ios/artme/ArtMe/App/ArtMeApp.swift /Users/keximing/mycode/iosapp/artme/ios/artme/ArtMe/App/ContentView.swift /Users/keximing/mycode/iosapp/artme/ios/artme/ArtMe/Models/GenerateImage.swift /Users/keximing/mycode/iosapp/artme/ios/artme/ArtMe/Models/Style.swift /Users/keximing/mycode/iosapp/artme/ios/artme/ArtMe/Services/APIService.swift /Users/keximing/mycode/iosapp/artme/ios/artme/ArtMe/Services/ImageService.swift /Users/keximing/mycode/iosapp/artme/ios/artme/ArtMe/Services/PaymentService.swift /Users/keximing/mycode/iosapp/artme/ios/artme/ArtMe/Utils/Constants.swift /Users/keximing/mycode/iosapp/artme/ios/artme/ArtMe/ViewModels/AccountViewModel.swift /Users/keximing/mycode/iosapp/artme/ios/artme/ArtMe/ViewModels/GenerateViewModel.swift /Users/keximing/mycode/iosapp/artme/ios/artme/ArtMe/ViewModels/StyleViewModel.swift /Users/keximing/mycode/iosapp/artme/ios/artme/ArtMe/Views/AccountView.swift /Users/keximing/mycode/iosapp/artme/ios/artme/ArtMe/Views/GenerateView.swift /Users/keximing/mycode/iosapp/artme/ios/artme/ArtMe/Views/HistoryView.swift /Users/keximing/mycode/iosapp/artme/ios/artme/ArtMe/Views/PaymentView.swift /Users/keximing/mycode/iosapp/artme/ios/artme/ArtMe/Views/StyleSelectionView.swift /Users/keximing/Library/Developer/Xcode/DerivedData/artme-ayqcqejrnycpnddliampwendheno/Build/Intermediates.noindex/artme.build/Debug-iphonesimulator/artme.build/DerivedSources/GeneratedAssetSymbols.swift -target arm64-apple-ios26.0-simulator -module-can-import-version DeveloperToolsSupport 23.0.4 23.0.4 -module-can-import-version SwiftUI 7.0.84.1 7.0.84 -module-can-import-version UIKit 9088.1.113 9088.1.113 -disable-cross-import-overlay-search -swift-module-cross-import StoreKit /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk/System/Library/Frameworks/StoreKit.framework/Modules/StoreKit.swiftcrossimport/SwiftUI.swiftoverlay -swift-module-cross-import StoreKit /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.0.sdk/System/Library/Frameworks/StoreKit.framework/Modules/StoreKit.swiftcrossimport/SwiftUI.swiftoverlay -load-resolved-plugin /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib/swift/host/plugins/libFoundationMacros.dylib\#/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/swift-plugin-server\#FoundationMacros -load-resolved-plugin /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib/swift/host/plugins/libObservationMacros.dylib\#/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/swift-plugin-server\#ObservationMacros -load-resolved-plugin /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib/swift/host/plugins/libPreviewsMacros.dylib\#/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/swift-plugin-server\#PreviewsMacros -load-resolved-plugin /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib/swift/host/plugins/libSwiftMacros.dylib\#/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/swift-plugin-server\#SwiftMacros -load-resolved-plugin /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib/swift/host/plugins/libSwiftUIMacros.dylib\#/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/swift-plugin-server\#SwiftUIMacros -disable-implicit-swift-modules -Xcc -fno-implicit-modules -Xcc -fno-implicit-module-maps -explicit-swift-module-map-file /Users/keximing/Library/Developer/Xcode/DerivedData/artme-ayqcqejrnycpnddliampwendheno/Build/Intermediates.noindex/artme.build/Debug-iphonesimulator/artme.build/Objects-normal/arm64/artme-dependencies-5.json -Xllvm -aarch64-use-tbi -enable-objc-interop -sdk /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.0.sdk -I /Users/keximing/Library/Developer/Xcode/DerivedData/artme-ayqcqejrnycpnddliampwendheno/Build/Products/Debug-iphonesimulator -F /Users/keximing/Library/Developer/Xcode/DerivedData/artme-ayqcqejrnycpnddliampwendheno/Build/Products/Debug-iphonesimulator -no-color-diagnostics -Xcc -fno-color-diagnostics -enable-testing -g -debug-info-format\=dwarf -dwarf-version\=5 -module-cache-path /Users/keximing/Library/Developer/Xcode/DerivedData/artme-ayqcqejrnycpnddliampwendheno/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -swift-version 5 -enforce-exclusivity\=checked -Onone -D DEBUG -serialize-debugging-options -const-gather-protocols-file /Users/keximing/Library/Developer/Xcode/DerivedData/artme-ayqcqejrnycpnddliampwendheno/Build/Intermediates.noindex/artme.build/Debug-iphonesimulator/artme.build/Objects-normal/arm64/artme_const_extract_protocols.json -enable-upcoming-feature DisableOutwardActorInference -enable-upcoming-feature InferSendableFromCaptures -enable-upcoming-feature GlobalActorIsolatedTypesUsability -enable-upcoming-feature MemberImportVisibility -enable-upcoming-feature InferIsolatedConformances -enable-upcoming-feature NonisolatedNonsendingByDefault -enable-experimental-feature DebugDescriptionMacro -enable-bare-slash-regex -default-isolation\=MainActor -empty-abi-descriptor -validate-clang-modules-once -clang-build-session-file /Users/keximing/Library/Developer/Xcode/DerivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -working-directory -Xcc /Users/keximing/mycode/iosapp/artme/ios/artme -enable-anonymous-context-mangled-names -file-compilation-dir /Users/keximing/mycode/iosapp/artme/ios/artme -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -Xcc -ivfsstatcache -Xcc /Users/keximing/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/iphonesimulator26.0-23A339-26257891a6c027eb51374368541b8346.sdkstatcache -Xcc -I/Users/keximing/Library/Developer/Xcode/DerivedData/artme-ayqcqejrnycpnddliampwendheno/Build/Intermediates.noindex/artme.build/Debug-iphonesimulator/artme.build/swift-overrides.hmap -Xcc -iquote -Xcc /Users/keximing/Library/Developer/Xcode/DerivedData/artme-ayqcqejrnycpnddliampwendheno/Build/Intermediates.noindex/artme.build/Debug-iphonesimulator/artme.build/artme-generated-files.hmap -Xcc -I/Users/keximing/Library/Developer/Xcode/DerivedData/artme-ayqcqejrnycpnddliampwendheno/Build/Intermediates.noindex/artme.build/Debug-iphonesimulator/artme.build/artme-own-target-headers.hmap -Xcc -I/Users/keximing/Library/Developer/Xcode/DerivedData/artme-ayqcqejrnycpnddliampwendheno/Build/Intermediates.noindex/artme.build/Debug-iphonesimulator/artme.build/artme-all-target-headers.hmap -Xcc -iquote -Xcc /Users/keximing/Library/Developer/Xcode/DerivedData/artme-ayqcqejrnycpnddliampwendheno/Build/Intermediates.noindex/artme.build/Debug-iphonesimulator/artme.build/artme-project-headers.hmap -Xcc -I/Users/keximing/Library/Developer/Xcode/DerivedData/artme-ayqcqejrnycpnddliampwendheno/Build/Products/Debug-iphonesimulator/include -Xcc -I/Users/keximing/Library/Developer/Xcode/DerivedData/artme-ayqcqejrnycpnddliampwendheno/Build/Intermediates.noindex/artme.build/Debug-iphonesimulator/artme.build/DerivedSources-normal/arm64 -Xcc -I/Users/keximing/Library/Developer/Xcode/DerivedData/artme-ayqcqejrnycpnddliampwendheno/Build/Intermediates.noindex/artme.build/Debug-iphonesimulator/artme.build/DerivedSources/arm64 -Xcc -I/Users/keximing/Library/Developer/Xcode/DerivedData/artme-ayqcqejrnycpnddliampwendheno/Build/Intermediates.noindex/artme.build/Debug-iphonesimulator/artme.build/DerivedSources -Xcc -DDEBUG\=1 -no-auto-bridging-header-chaining -module-name artme -frontend-parseable-output -disable-clang-spi -target-sdk-version 26.0 -target-sdk-name iphonesimulator26.0 -clang-target arm64-apple-ios26.0-simulator -in-process-plugin-server-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/libSwiftInProcPluginServer.dylib -emit-module-doc-path /Users/keximing/Library/Developer/Xcode/DerivedData/artme-ayqcqejrnycpnddliampwendheno/Build/Intermediates.noindex/artme.build/Debug-iphonesimulator/artme.build/Objects-normal/arm64/artme.swiftdoc -emit-module-source-info-path /Users/keximing/Library/Developer/Xcode/DerivedData/artme-ayqcqejrnycpnddliampwendheno/Build/Intermediates.noindex/artme.build/Debug-iphonesimulator/artme.build/Objects-normal/arm64/artme.swiftsourceinfo -emit-objc-header-path /Users/keximing/Library/Developer/Xcode/DerivedData/artme-ayqcqejrnycpnddliampwendheno/Build/Intermediates.noindex/artme.build/Debug-iphonesimulator/artme.build/Objects-normal/arm64/artme-Swift.h -serialize-diagnostics-path /Users/keximing/Library/Developer/Xcode/DerivedData/artme-ayqcqejrnycpnddliampwendheno/Build/Intermediates.noindex/artme.build/Debug-iphonesimulator/artme.build/Objects-normal/arm64/artme-primary-emit-module.dia -emit-dependencies-path /Users/keximing/Library/Developer/Xcode/DerivedData/artme-ayqcqejrnycpnddliampwendheno/Build/Intermediates.noindex/artme.build/Debug-iphonesimulator/artme.build/Objects-normal/arm64/artme-primary-emit-module.d -o /Users/keximing/Library/Developer/Xcode/DerivedData/artme-ayqcqejrnycpnddliampwendheno/Build/Intermediates.noindex/artme.build/Debug-iphonesimulator/artme.build/Objects-normal/arm64/artme.swiftmodule -emit-abi-descriptor-path /Users/keximing/Library/Developer/Xcode/DerivedData/artme-ayqcqejrnycpnddliampwendheno/Build/Intermediates.noindex/artme.build/Debug-iphonesimulator/artme.build/Objects-normal/arm64/artme.abi.json
+
+EmitSwiftModule normal arm64 (in target 'artme' from project 'artme')
+    cd /Users/keximing/mycode/iosapp/artme/ios/artme
+    
+
+/Users/keximing/mycode/iosapp/artme/ios/artme/ArtMe/ViewModels/AccountViewModel.swift:13:7: error: class 'AccountViewModel' has no initializers
+class AccountViewModel: ObservableObject {
+      ^
+/Users/keximing/mycode/iosapp/artme/ios/artme/ArtMe/ViewModels/AccountViewModel.swift:14:9: note: stored property 'objectWillChange' without initial value prevents synthesized initializers
+    var objectWillChange: ObservableObjectPublisher
+        ^
+/Users/keximing/mycode/iosapp/artme/ios/artme/ArtMe/ViewModels/GenerateViewModel.swift:13:27: error: cannot find type 'ObservableObjectPublisher' in scope
+    var objectWillChange: ObservableObjectPublisher
+                          ^~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/keximing/mycode/iosapp/artme/ios/artme/ArtMe/ViewModels/GenerateViewModel.swift:12:7: error: class 'GenerateViewModel' has no initializers
+class GenerateViewModel: ObservableObject {
+      ^
+/Users/keximing/mycode/iosapp/artme/ios/artme/ArtMe/ViewModels/GenerateViewModel.swift:15:6: error: initializer 'init(wrappedValue:)' is not available due to missing import of defining module 'Combine'
+    @Published var prompt = ""
+     ^
+/Users/keximing/mycode/iosapp/artme/ios/artme/ArtMe/ViewModels/GenerateViewModel.swift:10:1: note: add import of module 'Combine'
+
+^
+/Users/keximing/mycode/iosapp/artme/ios/artme/ArtMe/ViewModels/GenerateViewModel.swift:16:6: error: initializer 'init(wrappedValue:)' is not available due to missing import of defining module 'Combine'
+    @Published var selectedStyle: Style?
+     ^
+/Users/keximing/mycode/iosapp/artme/ios/artme/ArtMe/ViewModels/GenerateViewModel.swift:10:1: note: add import of module 'Combine'
+
+^
+/Users/keximing/mycode/iosapp/artme/ios/artme/ArtMe/ViewModels/GenerateViewModel.swift:17:6: error: initializer 'init(wrappedValue:)' is not available due to missing import of defining module 'Combine'
+    @Published var generatedImage: UIImage?
+     ^
+/Users/keximing/mycode/iosapp/artme/ios/artme/ArtMe/ViewModels/GenerateViewModel.swift:10:1: note: add import of module 'Combine'
+
+^
+/Users/keximing/mycode/iosapp/artme/ios/artme/ArtMe/ViewModels/GenerateViewModel.swift:18:6: error: initializer 'init(wrappedValue:)' is not available due to missing import of defining module 'Combine'
+    @Published var isLoading = false
+     ^
+/Users/keximing/mycode/iosapp/artme/ios/artme/ArtMe/ViewModels/GenerateViewModel.swift:10:1: note: add import of module 'Combine'
+
+^
+/Users/keximing/mycode/iosapp/artme/ios/artme/ArtMe/ViewModels/GenerateViewModel.swift:19:6: error: initializer 'init(wrappedValue:)' is not available due to missing import of defining module 'Combine'
+    @Published var errorMessage: String?
+     ^
+/Users/keximing/mycode/iosapp/artme/ios/artme/ArtMe/ViewModels/GenerateViewModel.swift:10:1: note: add import of module 'Combine'
+
+^
+/Users/keximing/mycode/iosapp/artme/ios/artme/ArtMe/ViewModels/GenerateViewModel.swift:20:6: error: initializer 'init(wrappedValue:)' is not available due to missing import of defining module 'Combine'
+    @Published var taskId: String?
+     ^
+/Users/keximing/mycode/iosapp/artme/ios/artme/ArtMe/ViewModels/GenerateViewModel.swift:10:1: note: add import of module 'Combine'
+
+^
+/Users/keximing/mycode/iosapp/artme/ios/artme/ArtMe/Views/AccountView.swift:11:42: error: 'AccountViewModel' cannot be constructed because it has no accessible initializers
+    @StateObject private var viewModel = AccountViewModel()
+                                         ^~~~~~~~~~~~~~~~
+/Users/keximing/mycode/iosapp/artme/ios/artme/ArtMe/Views/GenerateView.swift:11:42: error: 'GenerateViewModel' cannot be constructed because it has no accessible initializers
+    @StateObject private var viewModel = GenerateViewModel()
+                                         ^~~~~~~~~~~~~~~~~
+/Users/keximing/mycode/iosapp/artme/ios/artme/ArtMe/Views/PaymentView.swift:13:49: error: 'AccountViewModel' cannot be constructed because it has no accessible initializers
+    @StateObject private var accountViewModel = AccountViewModel()
+                                                ^~~~~~~~~~~~~~~~
+
+/Users/keximing/mycode/iosapp/artme/ios/artme/ArtMe/ViewModels/AccountViewModel.swift:13:7: Class 'AccountViewModel' has no initializers
+
+/Users/keximing/mycode/iosapp/artme/ios/artme/ArtMe/ViewModels/GenerateViewModel.swift:13:27: Cannot find type 'ObservableObjectPublisher' in scope
+
+/Users/keximing/mycode/iosapp/artme/ios/artme/ArtMe/ViewModels/GenerateViewModel.swift:12:7: Class 'GenerateViewModel' has no initializers
+
+/Users/keximing/mycode/iosapp/artme/ios/artme/ArtMe/ViewModels/GenerateViewModel.swift:15:6: Initializer 'init(wrappedValue:)' is not available due to missing import of defining module 'Combine'
+
+/Users/keximing/mycode/iosapp/artme/ios/artme/ArtMe/ViewModels/GenerateViewModel.swift:16:6: Initializer 'init(wrappedValue:)' is not available due to missing import of defining module 'Combine'
+
+/Users/keximing/mycode/iosapp/artme/ios/artme/ArtMe/ViewModels/GenerateViewModel.swift:17:6: Initializer 'init(wrappedValue:)' is not available due to missing import of defining module 'Combine'
+
+/Users/keximing/mycode/iosapp/artme/ios/artme/ArtMe/ViewModels/GenerateViewModel.swift:18:6: Initializer 'init(wrappedValue:)' is not available due to missing import of defining module 'Combine'
+
+/Users/keximing/mycode/iosapp/artme/ios/artme/ArtMe/ViewModels/GenerateViewModel.swift:19:6: Initializer 'init(wrappedValue:)' is not available due to missing import of defining module 'Combine'
+
+/Users/keximing/mycode/iosapp/artme/ios/artme/ArtMe/ViewModels/GenerateViewModel.swift:20:6: Initializer 'init(wrappedValue:)' is not available due to missing import of defining module 'Combine'
+
+/Users/keximing/mycode/iosapp/artme/ios/artme/ArtMe/Views/AccountView.swift:11:42: 'AccountViewModel' cannot be constructed because it has no accessible initializers
+
+/Users/keximing/mycode/iosapp/artme/ios/artme/ArtMe/Views/GenerateView.swift:11:42: 'GenerateViewModel' cannot be constructed because it has no accessible initializers
+
+/Users/keximing/mycode/iosapp/artme/ios/artme/ArtMe/Views/PaymentView.swift:13:49: 'AccountViewModel' cannot be constructed because it has no accessible initializers
+
+
+
+Activity Log Complete    2025/11/14, 07:13    6.0 seconds
