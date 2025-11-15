@@ -15,8 +15,9 @@ struct PromptStyleDetailView: View {
     @State private var isLoading = true
     @State private var showImagePicker = false
     @State private var showCamera = false
+    @State private var showImageSourceActionSheet = false
     @State private var selectedImage: UIImage?
-    @State private var showGenerateView = false
+    @State private var navigateToGeneration = false
     @State private var scale: CGFloat = 1.0
     @State private var lastScale: CGFloat = 1.0
     
@@ -25,10 +26,6 @@ struct PromptStyleDetailView: View {
             VStack(spacing: 20) {
                 // 原始大图
                 imageView
-                    .padding(.horizontal)
-                
-                // 分类信息
-                categoryInfo
                     .padding(.horizontal)
                 
                 // 操作按钮
@@ -44,19 +41,38 @@ struct PromptStyleDetailView: View {
             await loadImage()
         }
         .sheet(isPresented: $showImagePicker) {
-            ImagePicker(selectedImage: $selectedImage, sourceType: .photoLibrary)
-        }
-        .sheet(isPresented: $showCamera) {
-            ImagePicker(selectedImage: $selectedImage, sourceType: .camera)
-        }
-        .fullScreenCover(isPresented: $showGenerateView) {
-            if let selectedImage = selectedImage {
-                GenerateViewWithImage(
-                    style: style,
-                    uploadedImage: selectedImage
-                )
+            ImagePicker(selectedImage: $selectedImage, sourceType: .photoLibrary) {
+                // 选择图片后自动跳转
+                navigateToGeneration = true
             }
         }
+        .sheet(isPresented: $showCamera) {
+            ImagePicker(selectedImage: $selectedImage, sourceType: .camera) {
+                // 拍照后自动跳转
+                navigateToGeneration = true
+            }
+        }
+        .confirmationDialog("选择图片来源", isPresented: $showImageSourceActionSheet, titleVisibility: .visible) {
+            Button("从相册选择") {
+                showImagePicker = true
+            }
+            Button("拍照") {
+                showCamera = true
+            }
+            Button("取消", role: .cancel) {}
+        }
+        .background(
+            Group {
+                if let selectedImage = selectedImage {
+                    NavigationLink(
+                        destination: ImageGenerationView(style: style, uploadedImage: selectedImage),
+                        isActive: $navigateToGeneration
+                    ) {
+                        EmptyView()
+                    }
+                }
+            }
+        )
     }
     
     private var imageView: some View {
@@ -116,79 +132,22 @@ struct PromptStyleDetailView: View {
         .shadow(radius: 10)
     }
     
-    private var categoryInfo: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("分类信息")
-                .font(.headline)
-            
-            // 分类信息
-            HStack {
-                Label(style.category, systemImage: "folder")
-                    .font(.subheadline)
-                    .foregroundColor(.primary)
-                
-                Spacer()
-                
-                Label(style.subcategory, systemImage: "tag")
-                    .font(.subheadline)
-                    .foregroundColor(.primary)
-            }
-        }
-        .padding()
-        .background(Color(.systemBackground))
-        .cornerRadius(12)
-        .shadow(color: .black.opacity(0.1), radius: 5, x: 0, y: 2)
-    }
-    
     private var actionButtons: some View {
         VStack(spacing: 12) {
-            // 上传照片按钮
+            // 立即制作按钮
             Button(action: {
-                showImagePicker = true
-            }) {
-                HStack {
-                    Image(systemName: "photo.on.rectangle")
-                    Text("从相册选择")
-                }
-                .frame(maxWidth: .infinity)
-                .padding()
-                .background(Color.blue)
-                .foregroundColor(.white)
-                .cornerRadius(12)
-            }
-            
-            // 拍照按钮
-            Button(action: {
-                showCamera = true
-            }) {
-                HStack {
-                    Image(systemName: "camera")
-                    Text("拍照")
-                }
-                .frame(maxWidth: .infinity)
-                .padding()
-                .background(Color.green)
-                .foregroundColor(.white)
-                .cornerRadius(12)
-            }
-            
-            // 生成按钮
-            Button(action: {
-                if selectedImage != nil {
-                    showGenerateView = true
-                }
+                showImageSourceActionSheet = true
             }) {
                 HStack {
                     Image(systemName: "sparkles")
-                    Text("生成图片")
+                    Text("立即制作")
                 }
                 .frame(maxWidth: .infinity)
                 .padding()
-                .background(selectedImage != nil ? Color.purple : Color.gray)
+                .background(Color.purple)
                 .foregroundColor(.white)
                 .cornerRadius(12)
             }
-            .disabled(selectedImage == nil)
         }
     }
     
@@ -210,7 +169,14 @@ struct PromptStyleDetailView: View {
 struct ImagePicker: UIViewControllerRepresentable {
     @Binding var selectedImage: UIImage?
     let sourceType: UIImagePickerController.SourceType
+    let onImageSelected: (() -> Void)?
     @Environment(\.dismiss) var dismiss
+    
+    init(selectedImage: Binding<UIImage?>, sourceType: UIImagePickerController.SourceType, onImageSelected: (() -> Void)? = nil) {
+        self._selectedImage = selectedImage
+        self.sourceType = sourceType
+        self.onImageSelected = onImageSelected
+    }
     
     func makeUIViewController(context: Context) -> UIImagePickerController {
         let picker = UIImagePickerController()
@@ -235,8 +201,14 @@ struct ImagePicker: UIViewControllerRepresentable {
         func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
             if let image = info[.originalImage] as? UIImage {
                 parent.selectedImage = image
+                parent.dismiss()
+                // 延迟调用回调，确保 dismiss 完成
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                    self.parent.onImageSelected?()
+                }
+            } else {
+                parent.dismiss()
             }
-            parent.dismiss()
         }
         
         func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
@@ -245,112 +217,151 @@ struct ImagePicker: UIViewControllerRepresentable {
     }
 }
 
-// MARK: - 生成视图（带图片）
+// MARK: - 图片生成视图（独立页面）
 
-struct GenerateViewWithImage: View {
+struct ImageGenerationView: View {
     let style: PromptStyle
     let uploadedImage: UIImage
     
-    @Environment(\.dismiss) var dismiss
     @StateObject private var viewModel = GenerateViewModel()
-    @State private var downloadedImages: [UIImage] = []
+    @State private var hasStartedGeneration = false
+    @State private var savingImageId: String?
+    @State private var showSaveSuccess = false
     
     var body: some View {
-        NavigationView {
-            ScrollView {
-                VStack(spacing: 20) {
-                    // 上传的图片预览
-                    Image(uiImage: uploadedImage)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(maxHeight: 300)
-                        .cornerRadius(12)
-                        .padding()
-                    
-                    
-                    // 生成按钮
-                    Button(action: {
-                        Task {
-                            await generateImage()
-                        }
-                    }) {
-                        HStack {
-                            if viewModel.isLoading {
-                                ProgressView()
-                                    .progressViewStyle(CircularProgressViewStyle(tint: .white))
-                            } else {
-                                Image(systemName: "sparkles")
-                                Text("生成图片")
-                            }
-                        }
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(viewModel.isLoading ? Color.gray : Color.purple)
-                        .foregroundColor(.white)
-                        .cornerRadius(12)
+        ScrollView {
+            VStack(spacing: 20) {
+                // 生成状态提示
+                if viewModel.isLoading {
+                    VStack(spacing: 12) {
+                        ProgressView()
+                            .progressViewStyle(CircularProgressViewStyle())
+                            .scaleEffect(1.5)
+                        Text("正在生成图片，请稍候...")
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
                     }
-                    .disabled(viewModel.isLoading)
-                    .padding(.horizontal)
-                    
-                    // 错误提示
-                    if let errorMessage = viewModel.errorMessage {
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                }
+                
+                // 错误提示
+                if let errorMessage = viewModel.errorMessage {
+                    VStack(spacing: 8) {
+                        Image(systemName: "exclamationmark.triangle")
+                            .font(.system(size: 40))
+                            .foregroundColor(.red)
                         Text(errorMessage)
                             .foregroundColor(.red)
-                            .padding()
+                            .multilineTextAlignment(.center)
                     }
-                    
-                    // 生成的图片
-                    if !viewModel.generatedImages.isEmpty {
-                        VStack(alignment: .leading, spacing: 12) {
-                            Text("生成的图片")
-                                .font(.headline)
-                                .padding(.horizontal)
-                            
-                            ForEach(viewModel.generatedImages) { generatedImage in
+                    .padding()
+                }
+                
+                // 生成的图片
+                if !viewModel.generatedImages.isEmpty {
+                    VStack(alignment: .leading, spacing: 16) {
+                        Text("生成结果")
+                            .font(.headline)
+                            .padding(.horizontal)
+                        
+                        ForEach(viewModel.generatedImages) { generatedImage in
+                            VStack(spacing: 12) {
                                 AsyncImage(url: URL(string: Constants.apiBaseURL + generatedImage.url)) { phase in
                                     switch phase {
                                     case .empty:
                                         ProgressView()
+                                            .frame(maxHeight: 400)
                                     case .success(let image):
                                         image
                                             .resizable()
                                             .aspectRatio(contentMode: .fit)
                                     case .failure:
-                                        Image(systemName: "photo")
-                                            .foregroundColor(.gray)
+                                        VStack {
+                                            Image(systemName: "photo")
+                                                .font(.system(size: 50))
+                                                .foregroundColor(.gray)
+                                            Text("加载失败")
+                                                .foregroundColor(.gray)
+                                        }
+                                        .frame(maxHeight: 400)
                                     @unknown default:
                                         EmptyView()
                                     }
                                 }
                                 .frame(maxHeight: 400)
                                 .cornerRadius(12)
-                                .padding(.horizontal)
+                                .shadow(radius: 10)
+                                
+                                // 保存按钮
+                                Button(action: {
+                                    Task {
+                                        await saveImage(generatedImage: generatedImage)
+                                    }
+                                }) {
+                                    HStack {
+                                        if savingImageId == generatedImage.id {
+                                            ProgressView()
+                                                .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                                        } else {
+                                            Image(systemName: "square.and.arrow.down")
+                                            Text("保存")
+                                        }
+                                    }
+                                    .frame(maxWidth: .infinity)
+                                    .padding()
+                                    .background(Color.purple)
+                                    .foregroundColor(.white)
+                                    .cornerRadius(12)
+                                }
+                                .disabled(savingImageId == generatedImage.id)
                             }
+                            .padding(.horizontal)
                         }
                     }
                 }
-                .padding(.vertical)
             }
-            .navigationTitle("生成图片")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("完成") {
-                        dismiss()
-                    }
+            .padding(.vertical)
+        }
+        .navigationTitle("生成图片")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar(.hidden, for: .tabBar)
+        .alert("保存成功", isPresented: $showSaveSuccess) {
+            Button("确定", role: .cancel) {}
+        } message: {
+            Text("图片已保存到相册")
+        }
+        .onAppear {
+            // 页面出现时自动开始生成
+            if !hasStartedGeneration {
+                hasStartedGeneration = true
+                viewModel.selectedPromptStyle = style
+                viewModel.uploadedImage = uploadedImage
+                Task {
+                    await viewModel.generateImageWithUpload()
                 }
             }
         }
-        .onAppear {
-            viewModel.selectedPromptStyle = style
-            viewModel.uploadedImage = uploadedImage
-        }
     }
     
-    private func generateImage() async {
-        viewModel.selectedPromptStyle = style
-        viewModel.uploadedImage = uploadedImage
-        await viewModel.generateImageWithUpload()
+    private func saveImage(generatedImage: GeneratedImage) async {
+        savingImageId = generatedImage.id
+        
+        do {
+            let fullURL = Constants.apiBaseURL + generatedImage.url
+            let image = try await ImageService.shared.downloadImage(from: fullURL)
+            try await ImageService.shared.saveToPhotoLibrary(image)
+            
+            await MainActor.run {
+                savingImageId = nil
+                showSaveSuccess = true
+            }
+        } catch {
+            await MainActor.run {
+                savingImageId = nil
+                viewModel.errorMessage = "保存失败: \(error.localizedDescription)"
+            }
+        }
     }
 }
 
@@ -366,4 +377,5 @@ struct GenerateViewWithImage: View {
         )
     )
 }
+
 
