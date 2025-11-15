@@ -1,0 +1,84 @@
+✅ Figma Style Guide — 香港90年代（HK 90s Poster）
+🎨 Color Styles
+
+Primary Colors
+
+HK90s/Primary/DarkBlue — #0D3B66
+
+HK90s/Primary/NeonPink — #FF3B6B
+
+Secondary Colors
+
+HK90s/Secondary/NeonYellow — #FFD166
+
+HK90s/Secondary/CyanGlow — #6BE7FF
+
+Background
+
+HK90s/Background/NightBlack — #0B0F1A
+
+🔤 Text Styles
+
+HK90s/H1 Poster
+
+44 pt / ExtraBold / All caps
+
+Effects → Drop Shadow (4px / 60%)
+
+HK90s/H2
+
+28 pt / Bold
+
+HK90s/Body
+
+16 pt / Regular
+
+HK90s/Caption
+
+12 pt / Regular
+
+标题可加 Outer Glow（霓虹效果）：
+CyanGlow 0px 0px 12px 40%
+
+🟦 Component Tokens
+Buttons
+
+HK90s/Button/Primary
+
+Fill: NeonPink
+
+Radius: 8
+
+Shadow: Hard Shadow 0 4 0 rgba(0,0,0,0.8)
+
+Outer Glow: CyanGlow 0 0 8px
+
+HK90s/Button/Secondary
+
+Border: 2px NeonYellow
+
+Fill: Transparent
+
+Shadow: None
+
+Cards
+
+HK90s/Card/Poster
+
+Fill: DarkBlue
+
+Overlay: VHS Scanline Texture ( Soft Light 12% )
+
+Radius: 6
+
+📐 Layout Grid & Effects
+
+Grid: 8 px base
+
+Radius: 4 / 8
+
+VHS Effects:
+
+Horizontal Scanlines（Multiply 20%）
+
+RGB Channel Shift（Offset 1–2px）

@@ -14,7 +14,7 @@ backend_dir = Path(__file__).parent.parent
 sys.path.insert(0, str(backend_dir))
 
 from app.services.ai_service import ai_service
-from app.api.prompts import get_prompt_from_csv
+from app.api.prompts import get_prompt_from_json
 import logging
 
 # 配置日志
@@ -63,9 +63,9 @@ async def test_ai_service_direct(
         print(f"✓ 输入图片检查通过: {image_path}")
         print()
         
-        # 步骤2: 从 CSV 获取 prompt（模拟前端请求中的 prompt 获取）
-        print("正在从 CSV 获取 prompt...")
-        final_prompt = get_prompt_from_csv(category, subcategory)
+        # 步骤2: 从 JSON 配置文件获取 prompt（模拟前端请求中的 prompt 获取）
+        print("正在从 JSON 配置文件获取 prompt...")
+        final_prompt = get_prompt_from_json(category, subcategory)
         if not final_prompt:
             raise ValueError(f"未找到对应的 prompt: {category}/{subcategory}")
         print(f"✓ 获取到 prompt:")

@@ -15,7 +15,7 @@ from app.services.image_service import image_service
 from app.database import get_db
 from app.models.user import User, Transaction
 from app.api.account import GENERATE_IMAGE_COST
-from app.api.prompts import get_prompt_from_csv
+from app.api.prompts import get_prompt_from_json
 import logging
 
 router = APIRouter()
@@ -210,14 +210,14 @@ async def generate_image_with_upload(
         
         logger.info(f"上传的图片已保存到临时文件: {temp_file_path}")
         
-        # 从 CSV 中获取 prompt
-        final_prompt = get_prompt_from_csv(category, subcategory)
+        # 从 JSON 配置文件中获取 prompt
+        final_prompt = get_prompt_from_json(category, subcategory)
         if not final_prompt:
             raise HTTPException(
                 status_code=404,
                 detail=f"未找到对应的 prompt: {category}/{subcategory}"
             )
-        logger.info(f"从 CSV 中获取 prompt: {final_prompt[:50]}...")
+        logger.info(f"从 JSON 配置文件中获取 prompt: {final_prompt[:50]}...")
         
         # 调用 OpenRouter API 生成图片
         result = await ai_service.generate_image_with_doubao(

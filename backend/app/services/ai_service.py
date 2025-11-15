@@ -222,6 +222,17 @@ class AIService:
             }
         """
         try:
+            # 检查 API Key 是否配置
+            if not self.openrouter_api_key or self.openrouter_api_key.strip() == "":
+                error_msg = "OpenRouter API Key 未配置，请在环境变量或配置文件中设置 OPENROUTER_API_KEY"
+                logger.error(error_msg)
+                return {
+                    "success": False,
+                    "error": error_msg,
+                    "images": [],
+                    "output_dir": output_dir if output_dir else None
+                }
+            
             # 检查输入图片
             if not image_path_or_url:
                 raise ValueError("必须提供输入图片路径或URL")
@@ -292,6 +303,17 @@ class AIService:
                 except httpx.HTTPStatusError as e:
                     error_text = response.text[:500] if hasattr(response, 'text') else str(e)
                     logger.error(f"OpenRouter API 返回错误: {response.status_code}, 响应: {error_text}")
+                    
+                    # 针对 401 错误提供更详细的错误信息
+                    if e.response.status_code == 401:
+                        error_detail = "OpenRouter API 认证失败。请检查：\n"
+                        error_detail += "1. API Key 是否正确（在环境变量 OPENROUTER_API_KEY 或配置文件中设置）\n"
+                        error_detail += "2. API Key 是否已过期或被撤销\n"
+                        error_detail += "3. API Key 是否有访问该模型的权限\n"
+                        error_detail += f"原始错误: {error_text}"
+                        logger.error(error_detail)
+                        raise ValueError(error_detail) from e
+                    
                     raise
                 
                 result = response.json()
@@ -346,9 +368,24 @@ class AIService:
                 "output_dir": output_dir
             }
             
+        except ValueError as e:
+            # 处理 API Key 验证错误或认证错误
+            error_msg = str(e)
+            logger.error(f"OpenRouter API 调用失败: {error_msg}", exc_info=True)
+            return {
+                "success": False,
+                "error": error_msg,
+                "images": [],
+                "output_dir": output_dir if 'output_dir' in locals() else None
+            }
         except httpx.HTTPStatusError as e:
             error_msg = f"HTTP 错误 {e.response.status_code}: {e.response.text[:200] if e.response else str(e)}"
             logger.error(f"OpenRouter API 调用失败: {error_msg}", exc_info=True)
+            
+            # 针对 401 错误提供更友好的错误信息
+            if e.response.status_code == 401:
+                error_msg = "OpenRouter API 认证失败。请检查 API Key 是否正确配置且有效。"
+            
             return {
                 "success": False,
                 "error": error_msg,

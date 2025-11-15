@@ -12,7 +12,7 @@ class Settings(BaseSettings):
     APP_NAME: str = "ArtMe API"
     APP_VERSION: str = "1.0.0"
     DEBUG: bool = True
-    SECRET_KEY: str = "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"
+    SECRET_KEY: str = "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"
     
     # 数据库配置
     DATABASE_URL: str = "sqlite:///./artme.db"
@@ -29,7 +29,7 @@ class Settings(BaseSettings):
     CLAUDE_API_KEY: str = ""
     
     # OpenRouter API 配置（用于图像生成）
-    OPENROUTER_API_KEY: str = "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"
+    OPENROUTER_API_KEY: str = "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"
     OPENROUTER_ENDPOINT: str = "https://openrouter.ai/api/v1/chat/completions"
     OPENROUTER_MODEL: str = "google/gemini-2.5-flash-image-preview"
     

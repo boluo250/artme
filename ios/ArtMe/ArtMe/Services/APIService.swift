@@ -8,18 +8,60 @@
 import Foundation
 import UIKit
 
-enum APIError: Error {
+enum APIError: Error, LocalizedError {
     case invalidURL
     case invalidResponse
     case httpError(Int)
     case decodingError(Error)
     case networkError(Error)
+    
+    var errorDescription: String? {
+        switch self {
+        case .invalidURL:
+            return "无效的 URL 地址，请检查 API 配置"
+        case .invalidResponse:
+            return "服务器响应格式无效"
+        case .httpError(let statusCode):
+            return "服务器错误 (HTTP \(statusCode))"
+        case .decodingError(let error):
+            return "数据解析失败: \(error.localizedDescription)"
+        case .networkError(let error):
+            if let urlError = error as? URLError {
+                switch urlError.code {
+                case .notConnectedToInternet:
+                    return "网络连接失败，请检查网络设置"
+                case .cannotConnectToHost:
+                    var message = "无法连接到服务器，请检查 API 地址配置"
+                    // 检查是否是 localhost 连接问题
+                    #if targetEnvironment(simulator)
+                    message += "\n\n当前 API 地址: \(APIService.shared.baseURL)"
+                    #else
+                    // 真机运行时，如果使用 localhost，给出提示
+                    if APIService.shared.baseURL.contains("localhost") || APIService.shared.baseURL.contains("127.0.0.1") {
+                        message += "\n\n检测到使用 localhost 地址，真机无法连接到 Mac。\n请在 Constants.swift 中将 localhost 改为 Mac 的局域网 IP 地址（如 192.168.x.x:8000）"
+                    } else {
+                        message += "\n\n当前 API 地址: \(APIService.shared.baseURL)"
+                        message += "\n请确保后端服务正在运行且地址正确"
+                    }
+                    #endif
+                    return message
+                case .timedOut:
+                    return "请求超时，请稍后重试"
+                case .cannotFindHost:
+                    return "找不到服务器，请检查 API 地址配置"
+                default:
+                    return "网络错误: \(urlError.localizedDescription)"
+                }
+            }
+            return "网络错误: \(error.localizedDescription)"
+        }
+    }
 }
 
 class APIService {
     static let shared = APIService()
     
-    private let baseURL: String
+    let baseURL: String  // 改为公开属性，以便错误处理中访问
     private let session: URLSession
     
     private init() {
@@ -57,25 +99,49 @@ class APIService {
         }
         
         do {
+            // 打印请求 URL 用于调试
+            print("🌐 API Request: \(request.httpMethod ?? "GET") \(url.absoluteString)")
+            
             let (data, response) = try await session.data(for: request)
             
             guard let httpResponse = response as? HTTPURLResponse else {
+                print("❌ Invalid response type")
                 throw APIError.invalidResponse
             }
             
+            print("📥 Response: HTTP \(httpResponse.statusCode)")
+            
             guard (200...299).contains(httpResponse.statusCode) else {
+                print("❌ HTTP Error: \(httpResponse.statusCode)")
+                if let responseString = String(data: data, encoding: .utf8) {
+                    print("Response body: \(responseString)")
+                }
                 throw APIError.httpError(httpResponse.statusCode)
             }
             
             let decoder = JSONDecoder()
             decoder.keyDecodingStrategy = .convertFromSnakeCase
-            return try decoder.decode(T.self, from: data)
+            
+            do {
+                let result = try decoder.decode(T.self, from: data)
+                print("✅ Decode success")
+                return result
+            } catch {
+                print("❌ Decode error: \(error)")
+                if let responseString = String(data: data, encoding: .utf8) {
+                    print("Response body: \(responseString.prefix(500))")
+                }
+                throw APIError.decodingError(error)
+            }
             
         } catch let error as DecodingError {
+            print("❌ DecodingError: \(error)")
             throw APIError.decodingError(error)
         } catch let error as APIError {
+            print("❌ APIError: \(error)")
             throw error
         } catch {
+            print("❌ Network error: \(error)")
             throw APIError.networkError(error)
         }
     }
@@ -133,6 +199,12 @@ class APIService {
     
     func fetchPromptStyles() async throws -> PromptStyleListResponse {
         let endpoint = Constants.API.prompts + "/list"
+        return try await self.request(endpoint: endpoint)
+    }
+    
+    // 获取数据版本号（用于检查是否有更新）
+    func fetchPromptStylesVersion() async throws -> PromptStyleVersionResponse {
+        let endpoint = Constants.API.prompts + "/version"
         return try await self.request(endpoint: endpoint)
     }
     

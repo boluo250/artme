@@ -29,10 +29,10 @@ struct PromptStyleGridView: View {
             .task {
                 await viewModel.loadPromptStyles()
             }
-            .refreshable {
-                await viewModel.refresh()
-            }
-            .alert("错误", isPresented: .constant(viewModel.errorMessage != nil)) {
+            .alert("错误", isPresented: Binding(
+                get: { viewModel.errorMessage != nil },
+                set: { if !$0 { viewModel.errorMessage = nil } }
+            )) {
                 Button("确定", role: .cancel) {
                     viewModel.errorMessage = nil
                 }

@@ -20,6 +20,11 @@ struct PromptStyle: Codable, Identifiable {
 struct PromptStyleListResponse: Codable {
     let prompts: [PromptStyle]
     let total: Int
+    let version: String?  // 数据版本号
+}
+
+struct PromptStyleVersionResponse: Codable {
+    let version: String
 }
 
 // MARK: - 图片上传生成请求

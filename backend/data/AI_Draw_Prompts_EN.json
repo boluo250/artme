@@ -1,0 +1,33 @@
+[
+  {
+    "category": "cartoon",
+    "subcategory": "3D_figurine",
+    "prompt": "A hyper-realistic 1/7 scale figure of the character, on a computer desk, computer screen shows ZBrush modeling software, next to it a Bandai-style box with original art, all on a clear acrylic base, professional product photography, sharp focus"
+  },
+  {
+    "category": "cartoon",
+    "subcategory": "capsuleapsule_shaped_cartoon",
+    "prompt": "Create a stylized cartoon illustration of [CHARACTER] with a smooth, vertical pill-shaped body (rounded on top and bottom, symmetrical left to right). The body should be a single, unified capsule shape with no limbs. Do not alter the character's core design or personality, but simplify them into this playful capsule form. Use bold black outlines, flat vector-style coloring, and simple geometric features. Give the character large, expressive eyes and a fun, exaggerated facial expression that reflects their original personality. If the character wears clothes, include a minimal, iconic version of their outfit. If they do not, keep the body clean and unclothed. Use a solid bright yellow background. Center the character in a square frame. Use only flat colors. No gradients. No shadows. No texture. No smudging. The final result should be clean, modern, vector-friendly, and clearly pill-shaped."
+  },
+  {
+    "category": "cartoon",
+    "subcategory": "capsulehibi_ooden_figurine",
+    "prompt": "Hyper-realistic carved wooden figurine of [CHARACTER], chibi proportions (big head, short body), standing on a plain wood block. Keep key face traits and iconic [OUTFIT/PROP]. Visible wood grain and chisel marks, matte finish. Warm studio light, soft shadow, seamless beige background. Centered full-body, slight 3/4 angle, shallow depth of field (85mm look). Ultra-detailed, photoreal, warm sepia grading."
+  },
+  {
+    "category": "cartoon",
+    "subcategory": "3D_cartoon_keychain",
+    "prompt": "Create a cute 3D cartoon keychain version of the person in the uploaded photo. Transform the face and pose into a soft, simplified toy-like figure with a silicone-like smooth texture and pastel colors. Add a name tag that says '[NAME]' attached to the keychain in a playful rounded font. No background, minimal shadows. Toy product design for keychain format."
+  },
+  {
+    "category": "anime",
+    "subcategory": "comic_book_illustration",
+    "prompt": "A dynamic, action-oriented comic book illustration featuring bold black medium-thick outlines with emphasized contours and shading lines. Use vibrant, highly saturated colors, cel-shading, and halftone dot shadows. The surface should appear flat with visible ink strokes, combined with a subtle printed comic paper texture.Composition is centered, with a simple background such as a radial burst or energetic comic-style speed lines, all contained within a comic panel border. Lighting is dramatic, coming from the top-left, creating bold highlights and deep shadows.Apply post-processing effects including halftone dots, strong ink outlines, and light grain, with high saturation and high contrast overall. Format should be vertical or square, matching the original image."
+  },
+  {
+    "category": "gorillaz",
+    "subcategory": "streeturchin",
+    "prompt": "Restyle this image into a gritty Gorillaz-style illustration, bold thick black outlines, sharp angular edges, flat expressive lighting, stylized high-contrast shadows, dirty distressed surface textures, muted color palette: washed-out teals, olive greens, rusty reds, mustard yellows, dusty browns, raw grungy urban atmosphere, comic book flatness mixed with painterly grit, hand-drawn finish with faded gradients, graphic novel aesthetic with a rebellious, animated tone, dark stylish tone, full of attitude."
+  }
+]
+
