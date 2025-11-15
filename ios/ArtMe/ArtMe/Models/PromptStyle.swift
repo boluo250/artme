@@ -11,7 +11,9 @@ import UIKit
 struct PromptStyle: Codable, Identifiable {
     let id: String
     let category: String
+    let categoryId: Int
     let subcategory: String
+    let subcategoryId: Int
     let prompt: String
     let thumbnailUrl: String
     let originalUrl: String

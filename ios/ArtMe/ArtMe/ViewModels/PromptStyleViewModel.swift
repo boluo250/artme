@@ -21,14 +21,20 @@ class PromptStyleViewModel: ObservableObject {
     private let cacheKey = "PromptStylesCache"
     private let versionKey = "PromptStylesVersion"
     
-    // 按 Category 分组的样式
+    // 按 Category 分组的样式（按 categoryId 排序）
     var groupedStyles: [String: [PromptStyle]] {
         Dictionary(grouping: promptStyles) { $0.category }
     }
     
-    // 所有 Category 列表
+    // 所有 Category 列表（按 categoryId 排序）
     var categories: [String] {
-        Array(Set(promptStyles.map { $0.category })).sorted()
+        var categoryMap: [String: Int] = [:]
+        for style in promptStyles {
+            if categoryMap[style.category] == nil {
+                categoryMap[style.category] = style.categoryId
+            }
+        }
+        return categoryMap.sorted { $0.value < $1.value }.map { $0.key }
     }
     
     init() {
@@ -148,9 +154,11 @@ class PromptStyleViewModel: ObservableObject {
         return groupedStyles
     }
     
-    // 获取指定 Category 的样式列表
+    // 获取指定 Category 的样式列表（按 subcategoryId 排序）
     func getStyles(forCategory category: String) -> [PromptStyle] {
-        return promptStyles.filter { $0.category == category }
+        return promptStyles
+            .filter { $0.category == category }
+            .sorted { $0.subcategoryId < $1.subcategoryId }
     }
     
     // 根据 ID 查找样式

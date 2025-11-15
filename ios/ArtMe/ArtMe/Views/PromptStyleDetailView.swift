@@ -370,7 +370,9 @@ struct ImageGenerationView: View {
         style: PromptStyle(
             id: "test",
             category: "cartoon",
+            categoryId: 1,
             subcategory: "3D_figurine",
+            subcategoryId: 1,
             prompt: "Test prompt",
             thumbnailUrl: "/api/v1/data/cartoon/3D_figurine.jpg",
             originalUrl: "/api/v1/data/cartoon/3D_figurine.jpg"

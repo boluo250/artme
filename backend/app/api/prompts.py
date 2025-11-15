@@ -21,7 +21,9 @@ class PromptStyle(BaseModel):
     """Prompt 风格模型"""
     id: str
     category: str
+    category_id: int
     subcategory: str
+    subcategory_id: int
     prompt: str
     thumbnail_url: str
     original_url: str
@@ -122,12 +124,15 @@ def get_prompt_from_json(category: str, subcategory: str) -> Optional[str]:
     
     try:
         with open(PROMPTS_FILE_PATH, 'r', encoding='utf-8') as f:
-            prompts_data = json.load(f)
-            for item in prompts_data:
-                # 比较 category 和 subcategory（不区分大小写）
-                if (item.get("category", "").lower() == category.lower() and 
-                    item.get("subcategory", "").lower() == subcategory.lower()):
-                    return item.get("prompt", "")
+            data = json.load(f)
+            categories = data.get("categories", [])
+            
+            for cat in categories:
+                if cat.get("name", "").lower() == category.lower():
+                    subcategories = cat.get("subcategories", [])
+                    for subcat in subcategories:
+                        if subcat.get("name", "").lower() == subcategory.lower():
+                            return subcat.get("prompt", "")
     except Exception as e:
         logger.error(f"读取 JSON 配置文件失败: {str(e)}")
         return None
@@ -140,7 +145,7 @@ def load_prompts_from_json() -> List[PromptStyle]:
     从 JSON 配置文件加载 prompt 列表
     
     Returns:
-        Prompt 风格列表
+        Prompt 风格列表（按 category_id 和 subcategory_id 排序）
     """
     prompts = []
     
@@ -152,35 +157,52 @@ def load_prompts_from_json() -> List[PromptStyle]:
     
     try:
         with open(PROMPTS_FILE_PATH, 'r', encoding='utf-8') as f:
-            prompts_data = json.load(f)
+            data = json.load(f)
+            categories = data.get("categories", [])
             
-            for item in prompts_data:
-                category = item.get("category", "").strip()
-                subcategory = item.get("subcategory", "").strip()
-                prompt = item.get("prompt", "").strip()
+            # 按 category_id 排序
+            categories.sort(key=lambda x: x.get("id", 0))
+            
+            for cat in categories:
+                category_id = cat.get("id", 0)
+                category_name = cat.get("name", "").strip()
+                subcategories = cat.get("subcategories", [])
                 
-                if not category or not subcategory or not prompt:
+                if not category_name:
                     continue
                 
-                # 生成唯一 ID
-                prompt_id = f"{category}_{subcategory}".lower().replace(" ", "_")
+                # 按 subcategory_id 排序
+                subcategories.sort(key=lambda x: x.get("id", 0))
                 
-                # 查找图片文件
-                image_url = find_image_file(category, subcategory)
-                
-                # 如果没有找到图片，使用默认路径（可能文件不存在）
-                if not image_url:
-                    # 尝试最常见的扩展名
-                    image_url = f"/api/v1/data/{category}/{subcategory}.jpg"
-                
-                prompts.append(PromptStyle(
-                    id=prompt_id,
-                    category=category,
-                    subcategory=subcategory,
-                    prompt=prompt,
-                    thumbnail_url=image_url,
-                    original_url=image_url
-                ))
+                for subcat in subcategories:
+                    subcategory_id = subcat.get("id", 0)
+                    subcategory_name = subcat.get("name", "").strip()
+                    prompt = subcat.get("prompt", "").strip()
+                    
+                    if not subcategory_name or not prompt:
+                        continue
+                    
+                    # 生成唯一 ID
+                    prompt_id = f"{category_name}_{subcategory_name}".lower().replace(" ", "_")
+                    
+                    # 查找图片文件
+                    image_url = find_image_file(category_name, subcategory_name)
+                    
+                    # 如果没有找到图片，使用默认路径（可能文件不存在）
+                    if not image_url:
+                        # 尝试最常见的扩展名
+                        image_url = f"/api/v1/data/{category_name}/{subcategory_name}.jpg"
+                    
+                    prompts.append(PromptStyle(
+                        id=prompt_id,
+                        category=category_name,
+                        category_id=category_id,
+                        subcategory=subcategory_name,
+                        subcategory_id=subcategory_id,
+                        prompt=prompt,
+                        thumbnail_url=image_url,
+                        original_url=image_url
+                    ))
     except json.JSONDecodeError as e:
         raise HTTPException(
             status_code=500,
