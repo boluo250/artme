@@ -18,10 +18,13 @@ class Settings(BaseSettings):
     DATABASE_URL: str = "sqlite:///./artme.db"
     
     # CORS 配置
+    # 开发环境：允许所有来源（包括真机访问）
+    # 生产环境：应该限制为特定域名
     CORS_ORIGINS: List[str] = [
         "http://localhost:3000",
         "http://localhost:8080",
         "http://127.0.0.1:3000",
+        "http://192.168.31.147:8000",  # Mac IP 地址（用于真机测试）
     ]
     
     # 大模型 API 配置

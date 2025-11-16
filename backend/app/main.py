@@ -23,9 +23,12 @@ app = FastAPI(
 )
 
 # 配置 CORS
+# 开发环境：允许所有来源（方便真机测试）
+# 生产环境：应该限制为特定域名
+cors_origins = ["*"] if settings.DEBUG else settings.CORS_ORIGINS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.CORS_ORIGINS,
+    allow_origins=cors_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

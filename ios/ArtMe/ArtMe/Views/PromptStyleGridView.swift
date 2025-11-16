@@ -61,7 +61,8 @@ struct PromptStyleGridView: View {
                             HStack(spacing: 12) {
                                 ForEach(viewModel.getStyles(forCategory: category)) { style in
                                     NavigationLink(destination: PromptStyleDetailView(style: style)) {
-                                        PromptStyleCard(style: style)
+                                        // 将数据版本传入，版本变化时触发缩略图刷新
+                                        PromptStyleCard(style: style, cacheBuster: viewModel.dataVersion)
                                     }
                                     .buttonStyle(PlainButtonStyle())
                                 }
@@ -72,6 +73,10 @@ struct PromptStyleGridView: View {
                 }
             }
             .padding(.vertical)
+        }
+        .refreshable {
+            // 下拉刷新：先检查版本，有更新才重新拉取
+            await viewModel.refreshIfNeeded()
         }
     }
     
@@ -101,7 +106,7 @@ struct PromptStyleGridView: View {
             }
             Button("重试") {
                 Task {
-                    await viewModel.loadPromptStyles()
+                    await viewModel.forceRefresh()
                 }
             }
             .padding(.top, 8)
@@ -112,6 +117,8 @@ struct PromptStyleGridView: View {
 
 struct PromptStyleCard: View {
     let style: PromptStyle
+    // 用于控制图片缓存失效（服务端版本变更时刷新缩略图）
+    let cacheBuster: String?
     
     @State private var image: UIImage?
     @State private var isLoading = true
@@ -143,6 +150,12 @@ struct PromptStyleCard: View {
         .task {
             await loadImage()
         }
+        .onChange(of: cacheBuster) { _ in
+            // 先清空旧图并显示加载占位，再拉取新缩略图
+            image = nil
+            isLoading = true
+            Task { await loadImage() }
+        }
     }
     
     private func loadImage() async {
@@ -160,4 +173,3 @@ struct PromptStyleCard: View {
 #Preview {
     PromptStyleGridView()
 }
-

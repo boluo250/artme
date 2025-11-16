@@ -140,6 +140,14 @@ class APIService {
         } catch let error as APIError {
             print("❌ APIError: \(error)")
             throw error
+        } catch let urlError as URLError {
+            if urlError.code == .cancelled {
+                // 用户触发刷新/页面切换导致的取消，避免误导性错误日志
+                print("↩️ Request cancelled")
+            } else {
+                print("❌ Network error: \(urlError)")
+            }
+            throw APIError.networkError(urlError)
         } catch {
             print("❌ Network error: \(error)")
             throw APIError.networkError(error)
@@ -306,4 +314,3 @@ class APIService {
         }
     }
 }
-
