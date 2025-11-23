@@ -10,6 +10,11 @@ import SwiftUI
 struct ContentView: View {
     @State private var selectedTab = 0
     
+    init() {
+        // 初始化主题
+        ThemeManager.shared.initialize()
+    }
+    
     var body: some View {
         TabView(selection: $selectedTab) {
             PromptStyleGridView()
@@ -36,6 +41,7 @@ struct ContentView: View {
                 }
                 .tag(3)
         }
+        .withTheme()
     }
 }
 

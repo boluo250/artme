@@ -22,10 +22,11 @@ struct PaymentView: View {
                 Section("账户余额") {
                     HStack {
                         Text("当前余额")
+                            .textStyleBody()
                         Spacer()
                         Text("¥\(String(format: "%.2f", accountViewModel.balance))")
-                            .font(.headline)
-                            .foregroundColor(.blue)
+                            .font(.themeHeadline)
+                            .foregroundColor(.purple600)
                     }
                 }
                 
@@ -55,7 +56,7 @@ struct PaymentView: View {
                 Section("交易记录") {
                     if accountViewModel.transactions.isEmpty {
                         Text("暂无交易记录")
-                            .foregroundColor(.secondary)
+                            .textColorSecondary()
                     } else {
                         ForEach(accountViewModel.transactions) { transaction in
                             TransactionRow(transaction: transaction)
@@ -136,13 +137,13 @@ struct ProductRow: View {
             Spacer()
             
             Text(product.displayPrice)
-                .font(.headline)
-                .foregroundColor(.blue)
+                .font(.themeHeadline)
+                .foregroundColor(.purple600)
             
             Button("购买") {
                 onPurchase()
             }
-            .buttonStyle(.borderedProminent)
+            .secondaryButtonStyle()
         }
     }
 }
@@ -155,24 +156,22 @@ struct SubscriptionRow: View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
                 Text(product.displayName)
-                    .font(.headline)
+                    .textStyleHeadline()
                 Spacer()
                 Text(product.displayPrice)
-                    .font(.headline)
-                    .foregroundColor(.blue)
+                    .font(.themeHeadline)
+                    .foregroundColor(.purple600)
             }
             
             if let subscription = product.subscription {
                 Text("每\(subscription.subscriptionPeriod.unit.localizedDescription)自动续费")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
+                    .textStyleCaption()
             }
             
             Button("订阅") {
                 onPurchase()
             }
-            .frame(maxWidth: .infinity)
-            .buttonStyle(.borderedProminent)
+            .primaryButtonStyle()
         }
         .padding(.vertical, 4)
     }

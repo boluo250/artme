@@ -17,6 +17,7 @@ struct PromptStyleGridView: View {
             Group {
                 if viewModel.isLoading && viewModel.promptStyles.isEmpty {
                     ProgressView()
+                        .purpleProgressIndicator()
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                 } else if viewModel.promptStyles.isEmpty {
                     emptyStateView
@@ -26,6 +27,7 @@ struct PromptStyleGridView: View {
             }
             .navigationTitle("图片风格")
             .navigationBarTitleDisplayMode(.large)
+            .toolbar(.visible, for: .tabBar)
             .task {
                 await viewModel.loadPromptStyles()
             }
@@ -51,10 +53,8 @@ struct PromptStyleGridView: View {
                     VStack(alignment: .leading, spacing: 12) {
                         // 分类标题
                         Text(formatCategoryName(category))
-                            .font(.headline)
-                            .fontWeight(.semibold)
-                            .foregroundColor(.primary)
-                            .padding(.horizontal)
+                            .textStyleHeadline()
+                            .padding(.horizontal, Spacing.lg)
                         
                         // 该分类下的所有图片，横向滚动
                         ScrollView(.horizontal, showsIndicators: false) {
@@ -86,30 +86,15 @@ struct PromptStyleGridView: View {
     }
     
     private var emptyStateView: some View {
-        VStack(spacing: 16) {
-            Image(systemName: "photo.on.rectangle.angled")
-                .font(.system(size: 50))
-                .foregroundColor(.gray)
-            Text("暂无图片")
-                .font(.headline)
-                .foregroundColor(.gray)
-            if let errorMessage = viewModel.errorMessage {
-                Text(errorMessage)
-                    .font(.subheadline)
-                    .foregroundColor(.red)
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal)
-            } else {
-                Text("请稍后重试")
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
+        EmptyStateView(
+            icon: "photo.on.rectangle.angled",
+            title: "暂无图片",
+            message: viewModel.errorMessage ?? "请稍后重试",
+            actionTitle: "重试"
+        ) {
+            Task {
+                await viewModel.forceRefresh()
             }
-            Button("重试") {
-                Task {
-                    await viewModel.forceRefresh()
-                }
-            }
-            .padding(.top, 8)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
@@ -132,21 +117,22 @@ struct PromptStyleCard: View {
                     .aspectRatio(contentMode: .fill)
             } else {
                 Rectangle()
-                    .fill(Color.gray.opacity(0.3))
+                    .fill(Color.gray300.opacity(0.3))
                     .overlay {
                         if isLoading {
                             ProgressView()
+                                .purpleProgressIndicator()
                         } else {
                             Image(systemName: "photo")
-                                .foregroundColor(.gray)
+                                .foregroundColor(.gray400)
                         }
                     }
             }
         }
         .frame(width: 150, height: 150)
         .clipped()
-        .cornerRadius(12)
-        .shadow(color: .black.opacity(0.1), radius: 5, x: 0, y: 2)
+        .cornerRadiusMD()
+        .cardShadow()
         .task {
             await loadImage()
         }
@@ -160,13 +146,35 @@ struct PromptStyleCard: View {
     
     private func loadImage() async {
         isLoading = true
-        let fullURL = Constants.apiBaseURL + style.thumbnailUrl
+        // 将 thumbnailUrl 转换为缩略图URL（添加 _abbreviated 后缀）
+        let thumbnailURL = convertToThumbnailURL(style.thumbnailUrl)
+        let fullURL = Constants.apiBaseURL + thumbnailURL
         do {
             image = try await ImageService.shared.downloadImage(from: fullURL)
         } catch {
             print("加载图片失败: \(error)")
         }
         isLoading = false
+    }
+    
+    /// 将原始URL转换为缩略图URL
+    /// 例如：/api/v1/prompts/cartoon/3D_figurine/image -> /api/v1/prompts/cartoon/3D_figurine_abbreviated/image
+    private func convertToThumbnailURL(_ url: String) -> String {
+        // URL格式：/api/v1/prompts/{category}/{subcategory}/image
+        // 目标格式：/api/v1/prompts/{category}/{subcategory}_abbreviated/image
+        
+        // 检查是否已经是缩略图URL（避免重复添加）
+        if url.contains("_abbreviated") {
+            return url
+        }
+        
+        // 将 /image 替换为 _abbreviated/image
+        if url.hasSuffix("/image") {
+            return url.replacingOccurrences(of: "/image", with: "_abbreviated/image")
+        }
+        
+        // 如果格式不符合预期，返回原URL
+        return url
     }
 }
 

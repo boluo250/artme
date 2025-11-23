@@ -14,17 +14,14 @@ struct GenerateView: View {
     var body: some View {
         NavigationView {
             ScrollView {
-                VStack(spacing: 24) {
+                VStack(spacing: Spacing.xl) {
                     // 输入区域
-                    VStack(alignment: .leading, spacing: 16) {
+                    VStack(alignment: .leading, spacing: Spacing.lg) {
                         Text("描述你的头像")
-                            .font(.headline)
+                            .textStyleHeadline()
                         
                         TextEditor(text: $viewModel.prompt)
-                            .frame(height: 100)
-                            .padding(8)
-                            .background(Color(.systemGray6))
-                            .cornerRadius(8)
+                            .themeTextEditor(minHeight: 100)
                         
                         // 风格选择
                         Button(action: {
@@ -33,21 +30,22 @@ struct GenerateView: View {
                             HStack {
                                 if let style = viewModel.selectedStyle {
                                     Text(style.name)
-                                        .foregroundColor(.primary)
+                                        .textColorPrimary()
                                 } else {
                                     Text("选择风格（可选）")
-                                        .foregroundColor(.secondary)
+                                        .textColorSecondary()
                                 }
                                 Spacer()
                                 Image(systemName: "chevron.right")
-                                    .foregroundColor(.gray)
+                                    .foregroundColor(.gray400)
                             }
-                            .padding()
-                            .background(Color(.systemGray6))
-                            .cornerRadius(8)
+                            .padding(Spacing.md)
+                            .background(Color.adaptive(light: .gray100, dark: .gray700))
+                            .cornerRadiusSM()
                         }
+                        .buttonStyle(PlainButtonStyle())
                     }
-                    .padding()
+                    .pagePadding()
                     
                     // 生成按钮
                     Button(action: {
@@ -55,67 +53,47 @@ struct GenerateView: View {
                             await viewModel.generateImage()
                         }
                     }) {
-                        HStack {
-                            if viewModel.isLoading {
-                                ProgressView()
-                                    .progressViewStyle(CircularProgressViewStyle(tint: .white))
-                            } else {
-                                Text("生成头像")
-                                    .fontWeight(.semibold)
-                            }
-                        }
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(viewModel.prompt.isEmpty || viewModel.isLoading ? Color.gray : Color.blue)
-                        .foregroundColor(.white)
-                        .cornerRadius(12)
+                        Text("生成头像")
+                            .loading(viewModel.isLoading)
                     }
+                    .primaryButtonStyle()
                     .disabled(viewModel.prompt.isEmpty || viewModel.isLoading)
-                    .padding(.horizontal)
+                    .padding(.horizontal, Spacing.lg)
                     
                     // 错误提示
                     if let errorMessage = viewModel.errorMessage {
-                        Text(errorMessage)
-                            .foregroundColor(.red)
-                            .padding()
+                        AlertBanner(type: .error, message: errorMessage)
+                            .padding(.horizontal, Spacing.lg)
                     }
                     
                     // 生成的图像
                     if let image = viewModel.generatedImage {
-                        VStack(spacing: 16) {
+                        VStack(spacing: Spacing.lg) {
                             Image(uiImage: image)
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
-                                .cornerRadius(12)
-                                .shadow(radius: 10)
+                                .cornerRadiusMD()
+                                .cardShadow()
                             
                             // 操作按钮
-                            HStack(spacing: 16) {
+                            HStack(spacing: Spacing.lg) {
                                 Button(action: {
                                     Task {
                                         await viewModel.saveImage()
                                     }
                                 }) {
                                     Label("保存", systemImage: "square.and.arrow.down")
-                                        .frame(maxWidth: .infinity)
-                                        .padding()
-                                        .background(Color.blue)
-                                        .foregroundColor(.white)
-                                        .cornerRadius(8)
                                 }
+                                .secondaryButtonStyle()
                                 
                                 ShareLink(item: Image(uiImage: image), preview: SharePreview("生成的头像", image: Image(uiImage: image))) {
                                     Label("分享", systemImage: "square.and.arrow.up")
-                                        .frame(maxWidth: .infinity)
-                                        .padding()
-                                        .background(Color.green)
-                                        .foregroundColor(.white)
-                                        .cornerRadius(8)
                                 }
+                                .secondaryButtonStyle()
                             }
-                            .padding(.horizontal)
+                            .padding(.horizontal, Spacing.lg)
                         }
-                        .padding()
+                        .pagePadding()
                     }
                 }
             }

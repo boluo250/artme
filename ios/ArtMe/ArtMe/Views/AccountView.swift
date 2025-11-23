@@ -17,13 +17,15 @@ struct AccountView: View {
                 Section("账户信息") {
                     HStack {
                         Text("余额")
+                            .textStyleBody()
                         Spacer()
                         if viewModel.isLoading {
                             ProgressView()
+                                .purpleProgressIndicator()
                         } else {
                             Text("¥\(String(format: "%.2f", viewModel.balance))")
-                                .foregroundColor(.blue)
-                                .font(.headline)
+                                .foregroundColor(.purple600)
+                                .font(.themeHeadline)
                         }
                     }
                 }
@@ -33,17 +35,17 @@ struct AccountView: View {
                         showPaymentView = true
                     }) {
                         Label("充值与订阅", systemImage: "creditcard")
+                            .foregroundColor(.purple600)
                     }
                 }
                 
                 if let subscription = viewModel.subscription {
                     Section("当前订阅") {
-                        VStack(alignment: .leading, spacing: 8) {
+                        VStack(alignment: .leading, spacing: Spacing.sm) {
                             Text(subscription.subscriptionType)
-                                .font(.headline)
+                                .textStyleHeadline()
                             Text("到期时间: \(subscription.expiresAt, style: .date)")
-                                .font(.caption)
-                                .foregroundColor(.secondary)
+                                .textStyleCaption()
                         }
                     }
                 }
@@ -51,7 +53,7 @@ struct AccountView: View {
                 Section("交易记录") {
                     if viewModel.transactions.isEmpty {
                         Text("暂无交易记录")
-                            .foregroundColor(.secondary)
+                            .textColorSecondary()
                     } else {
                         ForEach(viewModel.transactions.prefix(5)) { transaction in
                             TransactionRow(transaction: transaction)

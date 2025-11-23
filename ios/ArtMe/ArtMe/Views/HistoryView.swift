@@ -64,14 +64,11 @@ struct HistoryView: View {
         NavigationView {
             Group {
                 if historyManager.history.isEmpty {
-                    VStack {
-                        Image(systemName: "photo.on.rectangle.angled")
-                            .font(.system(size: 50))
-                            .foregroundColor(.gray)
-                        Text("暂无历史记录")
-                            .foregroundColor(.gray)
-                            .padding()
-                    }
+                    EmptyStateView(
+                        icon: "photo.on.rectangle.angled",
+                        title: "暂无历史记录",
+                        message: "生成的图片会显示在这里"
+                    )
                 } else {
                     List {
                         ForEach(historyManager.history) { item in
@@ -92,6 +89,7 @@ struct HistoryView: View {
                         Button("清空") {
                             historyManager.clearHistory()
                         }
+                        .foregroundColor(.purple600)
                     }
                 }
             }
@@ -124,32 +122,31 @@ struct HistoryRow: View {
                     .aspectRatio(contentMode: .fill)
                     .frame(width: 80, height: 80)
                     .clipped()
-                    .cornerRadius(8)
+                    .cornerRadiusSM()
             } else {
                 Rectangle()
-                    .fill(Color.gray.opacity(0.3))
+                    .fill(Color.gray300.opacity(0.3))
                     .frame(width: 80, height: 80)
-                    .cornerRadius(8)
+                    .cornerRadiusSM()
                     .overlay {
                         ProgressView()
+                            .purpleProgressIndicator()
                     }
             }
             
             // 信息
-            VStack(alignment: .leading, spacing: 4) {
+            VStack(alignment: .leading, spacing: Spacing.xs) {
                 Text(item.prompt)
-                    .font(.headline)
+                    .textStyleHeadline()
                     .lineLimit(2)
                 
                 if let styleName = item.styleName {
                     Text(styleName)
-                        .font(.caption)
-                        .foregroundColor(.secondary)
+                        .textStyleCaption()
                 }
                 
                 Text(item.createdAt, style: .relative)
-                    .font(.caption)
-                    .foregroundColor(.secondary)
+                    .textStyleCaption()
             }
             
             Spacer()

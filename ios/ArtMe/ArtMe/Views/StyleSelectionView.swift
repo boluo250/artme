@@ -57,15 +57,14 @@ struct StyleSelectionView: View {
                 // 风格网格
                 if viewModel.isLoading {
                     ProgressView()
+                        .purpleProgressIndicator()
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                 } else if viewModel.filteredStyles.isEmpty {
-                    VStack {
-                        Image(systemName: "photo.on.rectangle.angled")
-                            .font(.system(size: 50))
-                            .foregroundColor(.gray)
-                        Text("暂无风格")
-                            .foregroundColor(.gray)
-                    }
+                    EmptyStateView(
+                        icon: "photo.on.rectangle.angled",
+                        title: "暂无风格",
+                        message: "尝试搜索其他关键词"
+                    )
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                 } else {
                     ScrollView {
@@ -104,7 +103,7 @@ struct StyleCard: View {
     
     var body: some View {
         Button(action: onTap) {
-            VStack(alignment: .leading, spacing: 8) {
+            VStack(alignment: .leading, spacing: Spacing.sm) {
                 // 示例图片
                 ZStack {
                     if let image = image {
@@ -113,38 +112,29 @@ struct StyleCard: View {
                             .aspectRatio(contentMode: .fill)
                     } else {
                         Rectangle()
-                            .fill(Color.gray.opacity(0.3))
+                            .fill(Color.gray300.opacity(0.3))
                             .overlay {
                                 ProgressView()
+                                    .purpleProgressIndicator()
                             }
                     }
                 }
                 .frame(height: 150)
                 .clipped()
-                .cornerRadius(12)
+                .cornerRadiusMD()
                 
                 // 风格信息
-                VStack(alignment: .leading, spacing: 4) {
+                VStack(alignment: .leading, spacing: Spacing.xs) {
                     Text(style.name)
-                        .font(.headline)
-                        .foregroundColor(.primary)
+                        .textStyleHeadline()
                     
                     Text(style.description)
-                        .font(.caption)
-                        .foregroundColor(.secondary)
+                        .textStyleCaption()
                         .lineLimit(2)
                 }
             }
-            .padding(8)
-            .background(Color(.systemBackground))
-            .cornerRadius(12)
-            .shadow(color: .black.opacity(0.1), radius: 5, x: 0, y: 2)
-            .overlay {
-                if isSelected {
-                    RoundedRectangle(cornerRadius: 12)
-                        .stroke(Color.blue, lineWidth: 3)
-                }
-            }
+            .cardPaddingCompact()
+            .selectedCard(isSelected: isSelected)
         }
         .buttonStyle(PlainButtonStyle())
         .task {
@@ -166,27 +156,44 @@ struct CategoryChip: View {
     let title: String
     let isSelected: Bool
     let action: () -> Void
+    @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
         Button(action: action) {
             Text(title)
-                .font(.subheadline)
-                .padding(.horizontal, 16)
-                .padding(.vertical, 8)
-                .background(isSelected ? Color.blue : Color(.systemGray5))
-                .foregroundColor(isSelected ? .white : .primary)
-                .cornerRadius(20)
+                .font(.themeSubheadline)
+                .padding(.horizontal, Spacing.lg)
+                .padding(.vertical, Spacing.sm)
+                .background(backgroundColor)
+                .foregroundColor(foregroundColor)
+                .cornerRadius(CornerRadius.xl)
         }
+    }
+    
+    private var backgroundColor: Color {
+        if isSelected {
+            return .purple600
+        }
+        return colorScheme == .dark ? .gray700 : .gray100
+    }
+    
+    private var foregroundColor: Color {
+        if isSelected {
+            return .white
+        }
+        return colorScheme == .dark ? .gray100 : .gray900
     }
 }
 
 struct SearchBar: View {
     @Binding var text: String
+    @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
-        HStack {
+        HStack(spacing: Spacing.sm) {
             Image(systemName: "magnifyingglass")
-                .foregroundColor(.gray)
+                .foregroundColor(.gray500)
+                .font(.system(size: 16))
             
             TextField("搜索风格...", text: $text)
                 .textFieldStyle(PlainTextFieldStyle())
@@ -194,13 +201,19 @@ struct SearchBar: View {
             if !text.isEmpty {
                 Button(action: { text = "" }) {
                     Image(systemName: "xmark.circle.fill")
-                        .foregroundColor(.gray)
+                        .foregroundColor(.gray400)
+                        .font(.system(size: 16))
                 }
+                .buttonStyle(PlainButtonStyle())
             }
         }
-        .padding(12)
-        .background(Color(.systemGray6))
-        .cornerRadius(10)
+        .padding(Spacing.md)
+        .background(backgroundColor)
+        .cornerRadiusMD()
+    }
+    
+    private var backgroundColor: Color {
+        colorScheme == .dark ? .gray700 : .gray100
     }
 }
 
