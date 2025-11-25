@@ -279,7 +279,7 @@ class AIService:
                 "messages": messages,
                 "modalities": ["image", "text"],
                 "image_config": {
-                    "aspect_ratio": "1:1"
+                    "aspect_ratio": "3:4"
                 }
             }
             

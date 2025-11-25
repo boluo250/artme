@@ -29,3 +29,5 @@ loguru==0.7.2
 # 工具库
 python-dateutil==2.8.2
 
+# model api
+google-genai==0.10.0

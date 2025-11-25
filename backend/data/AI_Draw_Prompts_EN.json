@@ -2,7 +2,7 @@
   "categories": [
     {
       "id": 1,
-      "name": "cartoon",
+      "name": "figure",
       "subcategories": [
         {
           "id": 1,
@@ -11,18 +11,29 @@
         },
         {
           "id": 2,
+          "name": "chibi_style",
+          "prompt": "ased on the input selfie of the girl, generate a super-sized chibi-style figurine that exactly matches the character's outfit in the photo. The figurine should feature a cute cartoon style with a round face, large eyes, and exaggerated proportions. Composite the real person and this oversized figurine into the same frame, positioning the person slightly in front and to the right of the figurine. Replace the background with a minimalist art gallery setting. The overall composition should create a creative effect of the real person interacting with their giant figurine, presenting a cute, fun, and realistically textured style"
+        }
+      ]
+    }
+    {
+      "id": 2,
+      "name": "cartoon",
+      "subcategories": [
+        {
+          "id": 1,
           "name": "dreamy_watercolor",
           "prompt": "Restyle this image into a Dreamy watercolor style, wet-on-wet blending technique, transparent layered colors, low-saturation pastel palette, cold-pressed paper texture, soft-edge diffusion, gentle natural lighting, fluffy brown-black curly hair, warm brown eyes, soft pink blush, blue sky with white clouds background, anime illustration aesthetic, delicate brush strokes."
         },
         {
-          "id": 3,
+          "id": 2,
           "name": "3D_cartoon_keychain",
           "prompt": "Create a cute 3D cartoon keychain version of the person in the uploaded photo. Transform the face and pose into a soft, simplified toy-like figure with a silicone-like smooth texture and pastel colors.Toy product design for keychain format."
         }
       ]
     },
     {
-      "id": 2,
+      "id": 3,
       "name": "anime",
       "subcategories": [
         {
@@ -33,7 +44,7 @@
       ]
     },
     {
-      "id": 3,
+      "id": 4,
       "name": "gorillaz",
       "subcategories": [
         {
@@ -44,7 +55,7 @@
       ]
     },
     {
-      "id": 4,
+      "id": 5,
       "name": "illustration",
       "subcategories": [
         {

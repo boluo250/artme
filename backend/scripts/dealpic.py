@@ -48,8 +48,8 @@ if __name__ == "__main__":
     abbreviated_path = args.abbreviated
     
     # 前景图缩放后的尺寸
-    fg_width = 250
-    fg_height = 250
+    fg_width = 210
+    fg_height = 280
     
     # 前景图圆角半径 & 白边粗细
     corner_radius = 10

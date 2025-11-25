@@ -13,7 +13,7 @@ ENDPOINT = "https://openrouter.ai/api/v1/chat/completions"
 # 定义多个支持图像生成的模型
 # 注意：目前主要支持图像生成的是 Google Gemini 系列模型
 MODELS = [
-    "google/gemini-2.5-flash-image-preview"
+    "google/gemini-3-pro-image-preview"
 ]
 
 def encode_image_to_base64(image_path: str) -> str:
@@ -69,7 +69,7 @@ def generate_image_with_model(image_path: str, model: str, prompt: str = "吉卜
             "modalities": ["image", "text"],
             # 你也可以加入 image_config 例如 aspect_ratio、输出数量等
             "image_config": {
-                "aspect_ratio": "1:1"
+                "aspect_ratio": "3:4"
             }
         }
 

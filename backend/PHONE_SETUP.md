@@ -163,3 +163,5 @@ curl http://localhost:8000/api/v1/prompts/list
 3. 测试应用是否能正常加载数据
 
 
+
+
