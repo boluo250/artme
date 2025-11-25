@@ -17,7 +17,7 @@ upload_dir.mkdir(parents=True, exist_ok=True)
 data_dir = Path(__file__).parent.parent.parent / "data"
 
 # 允许的图片扩展名
-ALLOWED_IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".JPG", ".JPEG", ".PNG"}
+ALLOWED_IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".JPG", ".JPEG", ".PNG", ".gif", ".GIF"}
 
 
 def is_safe_path(base_path: Path, target_path: Path) -> bool:

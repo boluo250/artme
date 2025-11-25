@@ -153,7 +153,7 @@ struct PromptStyleDetailView: View {
     
     private func loadImage() async {
         isLoading = true
-        // 直接使用后端返回的调整后图片URL（已由离线脚本处理）
+        // 详情页加载原始静态大图（不显示GIF）
         let fullURL = Constants.apiBaseURL + style.originalUrl
         do {
             image = try await ImageService.shared.downloadImage(from: fullURL)
@@ -379,5 +379,3 @@ struct ImageGenerationView: View {
         )
     )
 }
-
-

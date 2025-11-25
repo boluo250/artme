@@ -7,6 +7,7 @@ import logging
 import hashlib
 from pathlib import Path
 from fastapi import APIRouter, HTTPException
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from typing import List, Optional
 
@@ -65,6 +66,115 @@ def get_data_version() -> str:
     return "0"
 
 
+def find_thumbnail_file(category: str, subcategory: str, explicit_thumbnail: Optional[str] = None) -> Optional[str]:
+    """
+    查找缩略图文件
+    如果 JSON 中明确指定了 thumbnail，则直接使用；
+    否则使用默认规则查找（查找 _abbreviated 后缀的文件）
+    
+    Args:
+        category: 类别名称
+        subcategory: 子类别名称
+        explicit_thumbnail: JSON 中明确指定的缩略图文件名
+        
+    Returns:
+        缩略图文件的相对路径，如果未找到则返回 None
+    """
+    category_dir = DATA_DIR / category
+    if not category_dir.exists():
+        logger.warning("类别目录不存在: %s", category_dir)
+        return None
+
+    # 1. 优先使用 JSON 中明确指定的缩略图
+    if explicit_thumbnail:
+        image_path = category_dir / explicit_thumbnail
+        if image_path.exists():
+            return f"/api/v1/data/{category}/{explicit_thumbnail}"
+        else:
+            logger.warning("JSON 指定的缩略图不存在: %s", image_path)
+    
+    # 2. 默认查找规则：查找 subcategory_abbreviated.*
+    # 尝试不同的类别名称映射（处理拼写错误）
+    category_mappings = {
+        "cartoon": ["cartoon", "katoon", "katoon"],
+    }
+    
+    # 尝试映射后的类别
+    possible_categories = category_mappings.get(category.lower(), [category])
+    possible_categories.append(category)  # 也尝试原始类别
+    
+    # 支持的图片扩展名（优先返回 GIF 动画）
+    extensions = [ 
+        ".gif", ".GIF",      
+        ".png", ".PNG",      
+        ".jpg", ".jpeg", ".JPG", ".JPEG",  
+    ]
+    
+    # 尝试不同的组合
+    for cat in set(possible_categories):  # 使用 set 去重
+        cat_dir = DATA_DIR / cat
+        if not cat_dir.exists():
+            continue
+            
+        # 生成候选名称（只包含带 _abbreviated 后缀的）
+        candidate_names: list[str] = []
+
+        def add_variants(base: str):
+            bases = set([base])
+            # 分隔符互换
+            bases.update({
+                base.replace(" ", "_"),
+                base.replace(" ", "-"),
+                base.replace("_", " "),
+                base.replace("-", " "),
+                base.replace("_", "-"),
+                base.replace("-", "_")
+            })
+            for b in list(bases):
+                # 只添加带 _abbreviated 后缀的
+                candidate_names.append(b + "_abbreviated")
+                if b:
+                    candidate_names.append(b[0].upper() + b[1:] + "_abbreviated")
+                candidate_names.append(b.lower() + "_abbreviated")
+                candidate_names.append(b.title() + "_abbreviated")
+
+        add_variants(subcategory)
+        
+        # 去重并保持顺序
+        seen = set()
+        unique_candidates = []
+        for name in candidate_names:
+            if name not in seen:
+                unique_candidates.append(name)
+                seen.add(name)
+        
+        # 优化搜索策略：
+        # 1. 先遍历所有候选名称，专门找 .gif
+        # 2. 如果没找到 gif，再遍历一遍找其他格式 (.jpg, .png)
+        
+        # 第一轮：只找 GIF
+        for name in unique_candidates:
+            for ext in [".gif", ".GIF"]:
+                image_path = cat_dir / f"{name}{ext}"
+                if image_path.exists():
+                    return f"/api/v1/data/{cat}/{name}{ext}"
+        
+        # 第二轮：找其他格式
+        other_extensions = [e for e in extensions if e.lower() != ".gif"]
+        for name in unique_candidates:
+            for ext in other_extensions:
+                image_path = cat_dir / f"{name}{ext}"
+                if image_path.exists():
+                    return f"/api/v1/data/{cat}/{name}{ext}"
+    
+    # 记录诊断信息，便于排查 404
+    logger.warning(
+        "未找到缩略图文件: category=%s, subcategory=%s_abbreviated, 搜索目录=%s",
+        category, subcategory, str(DATA_DIR / category)
+    )
+    return None
+
+
 def find_image_file(category: str, subcategory: str) -> Optional[str]:
     """
     查找图片文件，支持多种扩展名和大小写变体
@@ -86,9 +196,11 @@ def find_image_file(category: str, subcategory: str) -> Optional[str]:
     possible_categories.append(category)  # 也尝试原始类别
     
     # 支持的图片扩展名（常见优先）
+    # 用于详情页原图，通常是 JPG 格式
     extensions = [
-        ".jpg", ".jpeg", ".png",
-        ".JPG", ".JPEG", ".PNG",
+        ".jpg", ".jpeg", ".JPG", ".JPEG",  # 优先 JPG（原图常用格式）
+        ".png", ".PNG",      # 其次是 PNG
+        ".gif", ".GIF",      # 最后才是 GIF
     ]
     
     # 尝试不同的组合
@@ -127,8 +239,14 @@ def find_image_file(category: str, subcategory: str) -> Optional[str]:
                     candidate_names.append(no_space)
 
         add_variants(subcategory)
-        # 带常见缩略后缀
-        candidate_names += [name + "_abbreviated" for name in list(candidate_names)]
+        
+        # 详情页优先使用原始文件（不带 _abbreviated 后缀）
+        # 如果找不到原始文件，作为后备才尝试 _abbreviated 版本
+        base_candidates = list(candidate_names)
+        abbreviated_candidates = [name + "_abbreviated" for name in base_candidates]
+        
+        # 先查找原始文件，找不到再查找 _abbreviated 版本
+        candidate_names = base_candidates + abbreviated_candidates
         
         # 去重并保持顺序
         seen = set()
@@ -153,16 +271,16 @@ def find_image_file(category: str, subcategory: str) -> Optional[str]:
     return None
 
 
-def get_prompt_from_json(category: str, subcategory: str) -> Optional[str]:
+def get_prompt_from_json(category: str, subcategory: str) -> Optional[dict]:
     """
-    从 JSON 配置文件中获取指定 category 和 subcategory 的 prompt
+    从 JSON 配置文件中获取指定 category 和 subcategory 的详细信息
     
     Args:
         category: 类别名称
         subcategory: 子类别名称
         
     Returns:
-        prompt 字符串，如果未找到则返回 None
+        subcategory 对象字典，如果未找到则返回 None
     """
     if not PROMPTS_FILE_PATH.exists():
         return None
@@ -177,7 +295,7 @@ def get_prompt_from_json(category: str, subcategory: str) -> Optional[str]:
                     subcategories = cat.get("subcategories", [])
                     for subcat in subcategories:
                         if subcat.get("name", "").lower() == subcategory.lower():
-                            return subcat.get("prompt", "")
+                            return subcat
     except Exception as e:
         logger.error(f"读取 JSON 配置文件失败: {str(e)}")
         return None
@@ -223,6 +341,7 @@ def load_prompts_from_json() -> List[PromptStyle]:
                     subcategory_id = subcat.get("id", 0)
                     subcategory_name = subcat.get("name", "").strip()
                     prompt = subcat.get("prompt", "").strip()
+                    thumbnail_name = subcat.get("thumbnail", "").strip()
                     
                     if not subcategory_name or not prompt:
                         continue
@@ -230,8 +349,10 @@ def load_prompts_from_json() -> List[PromptStyle]:
                     # 生成唯一 ID
                     prompt_id = f"{category_name}_{subcategory_name}".lower().replace(" ", "_")
                     
-                    # 列表返回统一使用动态图片路由，后端在路由内做文件名匹配与纠正
-                    image_route = f"/api/v1/prompts/{category_name}/{subcategory_name}/image"
+                    # 缩略图路由：专门查找 _abbreviated 后缀的文件
+                    thumbnail_route = f"/api/v1/prompts/{category_name}/{subcategory_name}/thumbnail"
+                    # 原图路由：查找原始大图
+                    original_route = f"/api/v1/prompts/{category_name}/{subcategory_name}/image"
 
                     prompts.append(PromptStyle(
                         id=prompt_id,
@@ -240,8 +361,8 @@ def load_prompts_from_json() -> List[PromptStyle]:
                         subcategory=subcategory_name,
                         subcategory_id=subcategory_id,
                         prompt=prompt,
-                        thumbnail_url=image_route,
-                        original_url=image_route
+                        thumbnail_url=thumbnail_route,
+                        original_url=original_route
                     ))
     except json.JSONDecodeError as e:
         raise HTTPException(
@@ -287,10 +408,45 @@ async def get_prompts_version():
     }
 
 
+@router.get("/prompts/{category}/{subcategory}/thumbnail")
+async def get_prompt_thumbnail(category: str, subcategory: str):
+    """
+    获取缩略图
+    
+    - **category**: 类别名称
+    - **subcategory**: 子类别名称
+    """
+    # 先尝试从 JSON 获取明确指定的缩略图配置
+    explicit_thumbnail = None
+    subcat_data = get_prompt_from_json(category, subcategory)
+    if subcat_data:
+        explicit_thumbnail = subcat_data.get("thumbnail")
+        
+    image_url = find_thumbnail_file(category, subcategory, explicit_thumbnail)
+    
+    if not image_url:
+        raise HTTPException(
+            status_code=404,
+            detail=f"缩略图文件不存在: {category}/{subcategory}"
+        )
+    
+    # 从 URL 路径构建实际文件路径
+    url_path = image_url.replace("/api/v1/data/", "")
+    image_path = DATA_DIR / url_path
+    
+    if not image_path.exists():
+        raise HTTPException(
+            status_code=404,
+            detail=f"缩略图文件不存在: {image_path}"
+        )
+    
+    return FileResponse(image_path)
+
+
 @router.get("/prompts/{category}/{subcategory}/image")
 async def get_prompt_image(category: str, subcategory: str):
     """
-    获取原始图片
+    获取原始大图
     
     - **category**: 类别名称
     - **subcategory**: 子类别名称
@@ -313,5 +469,4 @@ async def get_prompt_image(category: str, subcategory: str):
             detail=f"图片文件不存在: {image_path}"
         )
     
-    from fastapi.responses import FileResponse
     return FileResponse(image_path)

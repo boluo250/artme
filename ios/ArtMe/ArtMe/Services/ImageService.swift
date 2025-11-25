@@ -36,20 +36,25 @@ class ImageService {
         // 如果版本变化，清空内存缓存，避免旧图占用内存
         if cacheBuster != version {
             cache.removeAllObjects()
+            // 强制清理旧的磁盘缓存（简单策略：直接清空目录，或者根据版本号迁移）
+            // 这里为了解决 GIF 切换问题，我们暂时在版本变化时清理所有缓存文件
+            try? fileManager.removeItem(at: documentsDirectory)
+            try? fileManager.createDirectory(at: documentsDirectory, withIntermediateDirectories: true)
         }
         cacheBuster = version
     }
     
     // MARK: - 下载图像
     
+    private func getCacheKey(_ urlString: String) -> String {
+        guard let v = cacheBuster, !v.isEmpty else { return urlString }
+        let encoded = v.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? v
+        let sep = urlString.contains("?") ? "&" : "?"
+        return urlString + "\(sep)v=\(encoded)"
+    }
+    
     func downloadImage(from urlString: String) async throws -> UIImage {
-        // 仅用于本地缓存键（内存/磁盘）；实际网络请求仍使用原始 URL，避免后端 404
-        let cacheKey: String = {
-            guard let v = cacheBuster, !v.isEmpty else { return urlString }
-            let encoded = v.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? v
-            let sep = urlString.contains("?") ? "&" : "?"
-            return urlString + "\(sep)v=\(encoded)"
-        }()
+        let cacheKey = getCacheKey(urlString)
         let requestURLString = urlString
         
         // 检查缓存（内存）
@@ -58,13 +63,44 @@ class ImageService {
         }
         
         // 检查本地文件
-        if let localImage = loadLocalImage(urlString: cacheKey) {
+        if let localData = loadLocalData(urlString: cacheKey), let localImage = UIImage(data: localData) {
             cache.setObject(localImage, forKey: cacheKey as NSString)
             return localImage
         }
         
         // 下载图像（忽略 URLCache，避免拿到旧图）
-        guard let url = URL(string: requestURLString) else {
+        let data = try await downloadData(url: requestURLString)
+        
+        guard let image = UIImage(data: data) else {
+            throw NSError(domain: "ImageService", code: -2, userInfo: [NSLocalizedDescriptionKey: "无法解析图像数据"])
+        }
+        
+        // 保存到缓存和本地（保存原始数据）
+        cache.setObject(image, forKey: cacheKey as NSString)
+        saveLocalData(data: data, urlString: cacheKey)
+        
+        return image
+    }
+    
+    func downloadImageData(from urlString: String) async throws -> Data {
+        let cacheKey = getCacheKey(urlString)
+        
+        // 检查本地文件
+        if let localData = loadLocalData(urlString: cacheKey) {
+            return localData
+        }
+        
+        // 下载
+        let data = try await downloadData(url: urlString)
+        
+        // 保存
+        saveLocalData(data: data, urlString: cacheKey)
+        
+        return data
+    }
+    
+    private func downloadData(url urlString: String) async throws -> Data {
+        guard let url = URL(string: urlString) else {
             throw NSError(domain: "ImageService", code: -1, userInfo: [NSLocalizedDescriptionKey: "无效的URL"])
         }
         var req = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: Constants.requestTimeout)
@@ -73,49 +109,42 @@ class ImageService {
         if let http = response as? HTTPURLResponse, !(200...299).contains(http.statusCode) {
             throw NSError(domain: "ImageService", code: http.statusCode, userInfo: [NSLocalizedDescriptionKey: "HTTP \(http.statusCode)"])
         }
-        
-        guard let image = UIImage(data: data) else {
-            throw NSError(domain: "ImageService", code: -2, userInfo: [NSLocalizedDescriptionKey: "无法解析图像数据"])
-        }
-        
-        // 保存到缓存和本地
-        cache.setObject(image, forKey: cacheKey as NSString)
-        saveLocalImage(image: image, urlString: cacheKey)
-        
-        return image
+        return data
     }
     
     // MARK: - 本地存储
     
-    private func saveLocalImage(image: UIImage, urlString: String) {
-        guard let data = image.jpegData(compressionQuality: 0.8) else { return }
-        
-        let fileName = urlString
+    private func getFileName(_ urlString: String) -> String {
+        return urlString
             .replacingOccurrences(of: "/", with: "_")
             .replacingOccurrences(of: ":", with: "_")
             .replacingOccurrences(of: "?", with: "_")
             .replacingOccurrences(of: "&", with: "_")
             .replacingOccurrences(of: "=", with: "_")
+    }
+    
+    private func saveLocalData(data: Data, urlString: String) {
+        let fileName = getFileName(urlString)
         let fileURL = documentsDirectory.appendingPathComponent(fileName)
-        
         try? data.write(to: fileURL)
     }
     
-    private func loadLocalImage(urlString: String) -> UIImage? {
-        let fileName = urlString
-            .replacingOccurrences(of: "/", with: "_")
-            .replacingOccurrences(of: ":", with: "_")
-            .replacingOccurrences(of: "?", with: "_")
-            .replacingOccurrences(of: "&", with: "_")
-            .replacingOccurrences(of: "=", with: "_")
+    private func loadLocalData(urlString: String) -> Data? {
+        let fileName = getFileName(urlString)
         let fileURL = documentsDirectory.appendingPathComponent(fileName)
-        
-        guard let data = try? Data(contentsOf: fileURL),
-              let image = UIImage(data: data) else {
-            return nil
+        return try? Data(contentsOf: fileURL)
+    }
+    
+    private func saveLocalImage(image: UIImage, urlString: String) {
+        // 保留此方法以兼容旧代码（虽然不再建议使用）
+        if let data = image.jpegData(compressionQuality: 0.8) {
+            saveLocalData(data: data, urlString: urlString)
         }
-        
-        return image
+    }
+    
+    private func loadLocalImage(urlString: String) -> UIImage? {
+        guard let data = loadLocalData(urlString: urlString) else { return nil }
+        return UIImage(data: data)
     }
     
     // MARK: - 保存到相册
