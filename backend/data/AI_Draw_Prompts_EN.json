@@ -14,7 +14,7 @@
           "id": 2,
           "name": "chibi_style",
           "thumbnail": "chibi_style_abbreviated.png",
-          "prompt": "ased on the input selfie of the girl, generate a super-sized chibi-style figurine that exactly matches the character's outfit in the photo. The figurine should feature a cute cartoon style with a round face, large eyes, and exaggerated proportions. Composite the real person and this oversized figurine into the same frame, positioning the person slightly in front and to the right of the figurine. Replace the background with a minimalist art gallery setting. The overall composition should create a creative effect of the real person interacting with their giant figurine, presenting a cute, fun, and realistically textured style"
+          "prompt": "Based on the input selfie of the girl, generate a super-sized chibi-style figurine that exactly matches the character's outfit in the photo. The figurine should feature a cute cartoon style with a round face, large eyes, and exaggerated proportions. Composite the real person and this oversized figurine into the same frame, positioning the person slightly in front and to the right of the figurine. Replace the background with a minimalist art gallery setting. The overall composition should create a creative effect of the real person interacting with their giant figurine, presenting a cute, fun, and realistically textured style"
         }
       ]
     },
@@ -32,7 +32,7 @@
           "id": 2,
           "name": "3D_cartoon_keychain",
           "thumbnail": "3D_cartoon_keychain_abbreviated.jpg",
-          "prompt": "Create a cute 3D cartoon keychain version of the person in the uploaded photo. Transform the face and pose into a soft, simplified toy-like figure with a silicone-like smooth texture and pastel colors.Toy product design for keychain format."
+          "prompt": "Create a cute 3D cartoon keychain version of the person in the uploaded photo. Transform the face and pose into a soft, simplified toy-like figure with a silicone-like smooth texture and pastel colors. Toy product design for keychain format."
         }
       ]
     },
@@ -66,15 +66,63 @@
       "subcategories": [
         {
           "id": 1,
-          "name": "lying_with_cat",
-          "thumbnail": "lying_with_cat_abbreviated.png",
-          "prompt": "Use the uploaded photo as the character prototype, generate a warm healing bedroom scene: The woman wears a cream knit set, lying on a soft bed with milk-white sheets + caramel blanket, surrounded by fluffy long-haired cats (orange, white, tortoiseshell, etc.). Background: sheer white curtains, wooden nightstand (with candle + mug + books). Fixed style: soft natural light + low-saturation warm tones, realistic film style (gentle lighting, slight grain), 细腻 texture, lazy cozy atmosphere"
+          "name": "sit_with_panda",
+          "thumbnail": "sit_with_panda_abbreviated.png",
+          "prompt": "A portrait size image depicts the person attached in the uploaded reference image (Keep the face of the person 100% accurate from the reference image) sitting cross-legged on a grassy area, wearing a light khaki t-shirt, khaki shorts, black socks, and green sneakers with white laces. They are smiling gently while looking at the camera. Beside them sits a panda, with its black-and-white fur prominently displayed, including black ears, eye patches, and limbs, and a white face and torso. The panda appears calm, with one paw resting on the person's leg and the other on the ground, its claws slightly visible. The background features a lush, green outdoor setting with blurred trees and foliage, suggesting a natural or zoo-like environment. The overall mood of the image is serene and friendly."
         },
         {
           "id": 2,
-          "name": "sit_with_panda",
-          "thumbnail": "sit_with_panda_abbreviated.png",
-          "prompt": "Using the uploaded photo as the character prototype, retain their facial features and sitting posture, create a vivid scene: The character sits on soft grass, next to a cute giant panda (relaxed sitting posture, paws resting on legs), with natural interaction (e.g., the character gently touches the panda's ear); the background is blue sky, The picture is real"
+          "name": "lying_with_cat",
+          "thumbnail": "lying_with_cat_abbreviated.png",
+          "prompt": "A dreamy, luxurious fashion editorial shot , Use the uploaded photo(s) as base. Keep the same person(s) — same face(s), body(ies), and identity(ies). with subtle highlights, and a gentle, serene expression. She is dressed in an elegant luxurious cream dress paired with a light pink blazer, adding a sophisticated and feminine touch. The model is lying among a multitude of fluffy cream, pale peach, and soft pink cats, their long fur creating a plush, cloud-like environment around her. One tiny sleeping kitten rests curled on her chest. Her eyes are gently closed, her face calm and relaxed, capturing a moment of serene comfort and quiet elegance. The setting is filled with soft, airy lighting that enhances the detailed textures of the cats' fur, the fabrics, and her smooth glowing skin. The entire scene feels dreamy, whimsical, high-fashion, and ethereal, reminiscent of a luxury magazine editorial with hyper-realistic detail and a pastel color palette."
+        },
+        {
+          "id": 3,
+          "name": "lying_with_cat_male",
+          "thumbnail": "lying_with_cat_male_abbreviated.png",
+          "prompt": "A dreamy, luxurious fashion editorial shot , Use the uploaded photo(s) as base. Keep the same person(s) — same face(s), body(ies), and identity(ies). with subtle highlights, and a gentle, serene expression.He is dressed in a sophisticated off-white or cream-colored suit with a vest and a light pink tie.The model is lying among a multitude of fluffy cream, pale peach, and soft pink cats, their long fur creating a plush, cloud-like environment around her. One tiny sleeping kitten rests curled on his chest.His eyes are gently closed, his face calm and relaxed, capturing a moment of serene comfort and quiet elegance.The setting is filled with soft, airy lighting that enhances the detailed textures of the cats' fur, the fabrics, and her smooth glowing skin.The entire scene feels dreamy, whimsical, high-fashion, and ethereal, reminiscent of a luxury magazine editorial with hyper-realistic detail and a pastel color palette."
+        },
+        {
+          "id": 4,
+          "name": "lying_with_dog",
+          "thumbnail": "lying_with_dog_abbreviated.png",
+          "prompt": "A highly detailed, photorealistic composition featuring a person attached in the uploaded reference image (Keep face of person 100% accurate from the reference image) reclining and almost completely surrounded by a dense pile of fluffy puppies. The puppies are a mix of soft cream white and light golden beige colors, with plush, curly fur and round, expressive dark eyes and tiny noses, carefully distributed in a natural, balanced manner around the figure. The puppies’ exact sizes and proportions are realistic and uniform, creating a harmonious, evenly filled foreground and background. She is dressed in an elegant luxurious cream dress paired with a light pink blazer, adding a sophisticated and feminine touch. The lighting is soft and even, creating gentle, natural shadows among the folds of the fabric, the curls of hair, and the plush fur, highlighting texture and three-dimensionality. Color correction preserves warm, pastel tones and creamy highlights – beige, ivory, soft caramel, blush pink – with slight golden undertones for a cozy, inviting atmosphere. Microdetails include visible individual hairs and whiskers on the puppies, intricate textures in the suit fabric, precise, high-resolution shadows and subtle reflections, and natural overlapping forms that enhance overall depth. The mood is playful, luxurious, and tender, blending editorial fashion style with whimsical cuteness. The entire scene is composed tightly with no empty spaces, creating a dreamy, almost surreal pile of puppies and soft textiles with perfect balance and high aesthetic value. 4k resolution, vertical 9:16 aspect ratio, soft natural style, high realism. Atmosphere & Style:Cinematic photography, ultra-realisticAdventurer, luxury travel, exotic experience vibe 8K resolution, studio-quality photo"
+        },
+        {
+          "id": 5,
+          "name": "ultra_realistic_wildlife",
+          "thumbnail": "ultra_realistic_wildlife_abbreviated.png",
+          "prompt": "Ultra-realistic wildlife photography scene, (use reference face from uploaded photo). A man wearing proper wildlife-safari clothing — light brown outdoor shirt, rugged cargo pants, and sturdy field boots. He is lying flat on the grassy ground, holding a professional DSLR camera with a large telephoto lens, focusing on wildlife. On his shoulder sits a playful lion cub looking into the distance. Golden hour natural light, African savannah background, cinematic depth of field, 8K detail, vibrant colors. Keep my face 100% accurate. HD quality DSLR."
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "name": "3_Grid_Photobooth",
+      "subcategories": [
+        {
+          "id": 1,
+          "name": "couple_3_pic_winter_night",
+          "thumbnail": "couple_3_pic_winter_night_abbreviated.png",
+          "prompt": "Use each person in the uploaded photo exactly as they appear — keep every individual’s face, hair, race, pose, and proportions unchanged. Do not add or remove anyone. Keep the exact number of people from the original image. Create a vertical 4K (2160×3840) triptych with three equal horizontal frames showing all original subjects together. Overall Look & Mood: A quiet snowy daytime scene with soft sunlight filtering through a misty forest, falling snow glowing in the light, shot on 35mm film with direct flash (visible grain, light haze, crisp analog winter feel), colors of daylight whites, pale blues, and soft skin warmth. Frame 1 – Over-the-Shoulder: View from slightly behind showing backs and partial side profiles, winter coats (dark gray, brown, navy, plaid), bright scarves (red, burgundy, cobalt), flash freezing snowflakes with sunlight adding rim light, background of sunlit misty trees with drifting snow. Frame 2 – Full Body: Slightly elevated angle on a snow-covered forest path, all facing top-left, optional small winter bouquets (white, lilac, neutral), coat textures, scarves, and footprints glowing under sunlight + flash, sunbeams through snowy trees adding analog softness. Frame 3 – Close-Up: Tight portraits focusing on eyes and calm expressions (warmth, nostalgia, gentle sorrow), shallow depth with sharp eyes and diffused snowy forest behind. Technical & Style: 35mm film, ISO 400, f/2.8, 1/180s, flash ON, daylight + flash lighting, fine film grain, no smoothing, cold daylight shadows, clean whites, natural skin. Output: realistic analog snowy daytime triptych with all original people unchanged."
+        },
+        {
+          "id": 2,
+          "name": "couple_3_pic_snow_forest",
+          "thumbnail": "couple_3_pic_snow_forest_abbreviated.png",
+          "prompt": "Use each person in the uploaded photo exactly as they appear — keep every individual’s face, hair, race, pose, and proportions unchanged. Do not add or remove anyone. Keep the exact number of people from the original image. Create a vertical 4K (2160×3840) triptych with three equal horizontal frames showing all original subjects together. Overall Look & Mood: A quiet snowy daytime scene with soft sunlight filtering through a misty forest, falling snow glowing in the light, shot on 35mm film with direct flash (visible grain, light haze, crisp analog winter feel), colors of daylight whites, pale blues, soft skin warmth. Frame 1 – Over-the-Shoulder: View from slightly behind, showing backs and side profiles, winter coats (dark gray, brown, navy, plaid) with bright scarves (red, burgundy, cobalt), flash freezing snowflakes, sunlight adding soft rim light, background of sunlit misty trees with drifting snow. Frame 2 – Full Body: Slightly elevated angle on a snow-covered forest path, all standing facing top-left, optional small winter bouquets (white, lilac, neutral), coat texture, scarves, and footprints glowing under sunlight + flash, sunbeams through snowy trees adding depth and analog softness. Frame 3 – Close-Up: Tight portraits focusing on eyes and calm expressions (warmth, nostalgia, gentle sorrow), shallow depth with sharp eyes and diffused snowy forest behind. Technical & Style: 35mm film, ISO 400, f/2.8, 1/180s, flash ON, daylight + flash lighting, fine film grain, no smoothing, color tone of cold daylight shadows, clean whites, natural skin. Output: realistic analog snowy daytime triptych with all original people unchanged."
+        },
+        {
+          "id": 3,
+          "name": "female_3_pic_snow_umbrella",
+          "thumbnail": "female_3_pic_snow_umbrella_abbreviated.png",
+          "prompt": "Create a vertical frame (4K quality) divided into three equally sized horizontal images placed together. Do not change facial features of the person from the uploaded photo; keep the face 100% accurate from the reference image. The main character is based on the reference face, hairstyle, and body: a figure with an expression of sadness and nostalgia, deep eyes radiating loneliness. The outfit is a loose winter puffer set with wide-leg pants and a black scarf. The overall atmosphere is covered in white snow, with a cold color palette that evokes melancholy and solitude. Image 1 (portrait): The character holds a transparent umbrella, turning their head slightly back while looking directly at the frame, with a sorrowful expression and soulful eyes. The background is blurred snowy whiteness. Image 2 (full body): The character, with the umbrella, stands alone in a vast snowy field, walking while gazing at the sky; the camera angle looks downward from above, as if the character is raising a hand to catch falling snowflakes. In the distance, a few bare leafless trees stand, conveying smallness and isolation against the vastness of nature. Image 3 (close-up): A zoomed-in shot of the character's eyes, with a distant, sorrowful gaze that evokes feelings of loneliness and yearning."
+        },
+        {
+          "id": 4,
+          "name": "Wong_Kar-wai_Films",
+          "thumbnail": "Wong_Kar-wai_Films_abbreviated.png",
+          "prompt": "Wong Kar-wai's inspired cinematic triptych of a young man attached in the photo in the city at night, bathed in moody neon green, amber, and red lights, with film grain, dreamy haze, and soft blur with saturated colors, keeping the original face. He has messy comma hair parted to the side with strands falling across his forehead, giving a slightly disheveled romantic look. Top Panel: The man sits outside a late-night 7-Eleven with neon signs glowing behind him with the text \"RNGOCT\", holding a lit cigarette near his lips, expression contemplative and distant. Middle Panel: He takes a slow sip from a canned beer bottle, gaze unfocused as if lost in thought, neon reflections dancing across his face. Bottom Panel: He stands alone on a pedestrian overpass bridge at night, exhaling smoke from a cigarette, head tilted back toward the sky, expression weary and melancholic, with blurred crowded people’s headlights in the distance; shallow depth of field, intimate close-up framing, nostalgic atmosphere."
         }
       ]
     }
