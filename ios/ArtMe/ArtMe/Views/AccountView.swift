@@ -63,6 +63,7 @@ struct AccountView: View {
             }
             .navigationTitle("账户")
             .navigationBarTitleDisplayMode(.large)
+            .toolbar(.visible, for: .tabBar)
             .task {
                 await viewModel.loadAccountInfo()
             }

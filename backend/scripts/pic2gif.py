@@ -5,12 +5,12 @@ from moviepy.video.io.ImageSequenceClip import ImageSequenceClip
 from PIL import Image
 
 # 读取图片
-image2 = cv2.imread('/Users/keximing/mycode/iosapp/test/input/亚洲美女1.png')  # 第一张图片
-image1 = cv2.imread('/Users/keximing/mycode/iosapp/artme/backend/scripts/亚洲美女1.png')  # 第二张图片
+image1 = cv2.imread('/Users/keximing/mycode/iosapp/artme/backend/data/figure/3D_figurine_abbreviated.png')  # 第一张图片
+image2 = cv2.imread('/Users/keximing/mycode/iosapp/test/input/亚洲美女7.png')  # 第二张图片
 
 # 调整图片尺寸为 300x400
-target_width = 150
-target_height = 200
+target_width = 300
+target_height = 400
 image1 = cv2.resize(image1, (target_width, target_height))
 image2 = cv2.resize(image2, (target_width, target_height))
 
@@ -26,7 +26,7 @@ def create_mask(position, width, height):
 def create_zip_animation(image1, image2, output_video_path, output_gif_path):
     frames = []
     fps = 30
-    duration = 2  # 动画时长（秒）
+    duration = 1.5  # 动画时长（秒）
     total_frames = int(fps * duration)
     
     # 生成每一帧图像
@@ -55,7 +55,7 @@ def create_zip_animation(image1, image2, output_video_path, output_gif_path):
         combined_frame = combined.astype(np.uint8)
 
         # 添加白色线条
-        line_width = int(width * 0.01) # 线条宽度变细
+        line_width = int(width * 0.015) # 线条宽度变细
         if line_width < 1: line_width = 1
         
         # 直接在 combined_frame 上绘制白色实线

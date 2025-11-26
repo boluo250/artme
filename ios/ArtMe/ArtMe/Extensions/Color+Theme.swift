@@ -170,31 +170,31 @@ struct ThemeColors {
     
     // Computed Contextual Colors
     var primary: Color {
-        .adaptive(light: .purple600, dark: .purple400)
+        .purple400
     }
     
     var secondary: Color {
-        .adaptive(light: .purple400, dark: .purple300)
+        .purple300
     }
     
     var background: Color {
-        .adaptive(light: .white, dark: .gray900)
+        Color(hex: "#121212")
     }
     
     var surface: Color {
-        .adaptive(light: .white, dark: .gray800)
+        .gray800
     }
     
     var textPrimary: Color {
-        .adaptive(light: .gray900, dark: .gray100)
+        .white
     }
     
     var textSecondary: Color {
-        .adaptive(light: .gray600, dark: .gray400)
+        .gray400
     }
     
     var textDisabled: Color {
-        .adaptive(light: .gray400, dark: .gray500)
+        .gray500
     }
     
     /// 单例实例

@@ -7,13 +7,13 @@
         {
           "id": 1,
           "name": "3D_figurine",
-          "thumbnail": "3D_figurine_abbreviated.jpg",
+          "thumbnail": "3D_figurine_abbreviated.gif",
           "prompt": "A hyper-realistic 1/7 scale figure of the character, on a computer desk, computer screen shows ZBrush modeling software, next to it a Bandai-style box with original art, all on a clear acrylic base, professional product photography, sharp focus"
         },
         {
           "id": 2,
           "name": "chibi_style",
-          "thumbnail": "chibi_style_abbreviated.gif",
+          "thumbnail": "chibi_style_abbreviated.png",
           "prompt": "ased on the input selfie of the girl, generate a super-sized chibi-style figurine that exactly matches the character's outfit in the photo. The figurine should feature a cute cartoon style with a round face, large eyes, and exaggerated proportions. Composite the real person and this oversized figurine into the same frame, positioning the person slightly in front and to the right of the figurine. Replace the background with a minimalist art gallery setting. The overall composition should create a creative effect of the real person interacting with their giant figurine, presenting a cute, fun, and realistically textured style"
         }
       ]
@@ -38,13 +38,13 @@
     },
     {
       "id": 3,
-      "name": "gorillaz",
+      "name": "art",
       "subcategories": [
         {
           "id": 1,
-          "name": "streeturchin",
-          "thumbnail": "streeturchin_abbreviated.jpg",
-          "prompt": "Restyle this image into a gritty Gorillaz-style illustration, bold thick black outlines, sharp angular edges, flat expressive lighting, stylized high-contrast shadows, dirty distressed surface textures, muted color palette: washed-out teals, olive greens, rusty reds, mustard yellows, dusty browns, raw grungy urban atmosphere, comic book flatness mixed with painterly grit, hand-drawn finish with faded gradients, graphic novel aesthetic with a rebellious, animated tone, dark stylish tone, full of attitude."
+          "name": "realistic_oil_painting_portrait",
+          "thumbnail": "realistic_oil_painting_portrait_abbreviated.jpg",
+          "prompt": "Using the uploaded photo as the character prototype, generate a scene: A long-haired Asian woman (wearing a gray knit beanie and a light brown plush coat) stands with her back to the camera in a modern minimalist white art gallery exhibition hall, looking up at a realistic oil painting portrait of herself hanging on the wall — the oil painting takes up half of the frame. The oil painting has delicate brushstrokes and a soft color palette (dominated by light beige and warm brown), with blurred artistic textures in the background. The exhibition hall is lit by soft spotlights that illuminate the artwork, creating an overall artistic and quiet atmosphere. The image should be high-definition and rich in detail."
         }
       ]
     },
@@ -54,9 +54,27 @@
       "subcategories": [
         {
           "id": 1,
-          "name": "1920s_fairy_tale_illustration_Arthur_Rackham",
-          "thumbnail": "1920s_fairy_tale_illustration_Arthur_Rackham_abbreviated.jpg",
-          "prompt": "Transform this image into a 1920s fairy tale illustration in the style of Arthur Rackham. Use muted watercolor tones and intricate ink linework. Fill the scene with whimsical forest creatures, twisted tree branches, and hidden magical objects. The overall tone should be mysterious, enchanting, and slightly eerie. Add handwritten calligraphy-style captions and riddles."
+          "name": "marker_illustration",
+          "thumbnail": "marker_illustration_abbreviated_abbreviated.png",
+          "prompt": "Using the uploaded photo as the prototype, strictly retain the character's original pose and facial features, create a marker illustration: A long-haired Asian woman with a light blue-white lace headband, a pale yellow daisy-printed dress, holding a daisy bouquet; soft blurred green natural background, fresh bright style, high color saturation, soft lines, Japanese illustration's round texture, rich details"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "name": "Animal_Companions",
+      "subcategories": [
+        {
+          "id": 1,
+          "name": "lying_with_cat",
+          "thumbnail": "lying_with_cat_abbreviated.png",
+          "prompt": "Use the uploaded photo as the character prototype, generate a warm healing bedroom scene: The woman wears a cream knit set, lying on a soft bed with milk-white sheets + caramel blanket, surrounded by fluffy long-haired cats (orange, white, tortoiseshell, etc.). Background: sheer white curtains, wooden nightstand (with candle + mug + books). Fixed style: soft natural light + low-saturation warm tones, realistic film style (gentle lighting, slight grain), 细腻 texture, lazy cozy atmosphere"
+        },
+        {
+          "id": 2,
+          "name": "sit_with_panda",
+          "thumbnail": "sit_with_panda_abbreviated.png",
+          "prompt": "Using the uploaded photo as the character prototype, retain their facial features and sitting posture, create a vivid scene: The character sits on soft grass, next to a cute giant panda (relaxed sitting posture, paws resting on legs), with natural interaction (e.g., the character gently touches the panda's ear); the background is blue sky, The picture is real"
         }
       ]
     }

@@ -211,12 +211,20 @@ async def generate_image_with_upload(
         logger.info(f"上传的图片已保存到临时文件: {temp_file_path}")
         
         # 从 JSON 配置文件中获取 prompt
-        final_prompt = get_prompt_from_json(category, subcategory)
-        if not final_prompt:
+        prompt_data = get_prompt_from_json(category, subcategory)
+        if not prompt_data:
             raise HTTPException(
                 status_code=404,
                 detail=f"未找到对应的 prompt: {category}/{subcategory}"
             )
+        
+        final_prompt = prompt_data.get("prompt", "")
+        if not final_prompt:
+             raise HTTPException(
+                status_code=404,
+                detail=f"Category {category}/{subcategory} 中未配置 prompt"
+            )
+            
         logger.info(f"从 JSON 配置文件中获取 prompt: {final_prompt[:50]}...")
         
         # 调用 OpenRouter API 生成图片
@@ -291,4 +299,5 @@ async def list_models():
     """获取可用的大模型列表"""
     models = await ai_service.list_models()
     return {"models": models}
+
 

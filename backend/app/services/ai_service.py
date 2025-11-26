@@ -327,6 +327,13 @@ class AIService:
             message = choices[0].get("message", {})
             images = message.get("images", [])
             if not images:
+                # 检查模型是否返回了文本消息（通常是拒绝生成或请求澄清）
+                content = message.get("content")
+                if content:
+                    logger.warning(f"模型未生成图片，返回消息: {content}")
+                    # 抛出 ValueError，会被外层捕获并返回错误信息
+                    raise ValueError(f"模型无法生成图片: {content}")
+                
                 raise RuntimeError(f"No images returned: {result}")
             
             # 获取第一张图片（OpenRouter API 目前只返回一张）

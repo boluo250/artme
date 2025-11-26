@@ -6,7 +6,6 @@
 2. output_dir: modelapi.py 的输出目录，生成的图片将作为 dealpic.py 的背景图
 3. prompt: modelapi.py 的生成提示词
 4. output: dealpic.py 的最终输出图片路径
-5. abbreviated: dealpic.py 的调整后背景图保存路径（450x450像素）
 """
 import os
 import sys
@@ -17,7 +16,7 @@ from modelapi import generate_with_multiple_models, MODELS
 from dealpic import add_round_corners, add_white_border_with_round_corners
 from PIL import Image
 
-def process_pipeline(input_path, output_dir, prompt, final_output, abbreviated_path):
+def process_pipeline(input_path, output_dir, prompt, final_output):
     """
     执行完整的处理流程：
     1. 使用 modelapi.py 生成图片
@@ -30,18 +29,24 @@ def process_pipeline(input_path, output_dir, prompt, final_output, abbreviated_p
     print(f"输出目录: {output_dir}")
     print(f"提示词: {prompt}")
     print(f"最终输出: {final_output}")
-    print(f"缩略图输出: {abbreviated_path}")
     print("=" * 60)
     print()
     
     # 步骤1: 使用 modelapi.py 生成图片
     print("步骤1: 使用 AI 模型生成图片...")
     print("-" * 60)
+    
+    # 根据参数4（final_output）生成中间图片的文件名
+    final_basename = os.path.basename(final_output)
+    final_name_no_ext = os.path.splitext(final_basename)[0]
+    abbreviated_name = f"{final_name_no_ext}_abbreviated.png"
+    
     results = generate_with_multiple_models(
         image_path=input_path,
         models=MODELS,
         prompt=prompt,
-        output_dir=output_dir
+        output_dir=".", # 放在当前目录下
+        custom_output_name=abbreviated_name
     )
     
     # 检查生成结果
@@ -65,18 +70,11 @@ def process_pipeline(input_path, output_dir, prompt, final_output, abbreviated_p
     # 读取背景图（生成的图片）
     bg = Image.open(background_path).convert("RGBA")
     
-    # 复制背景图并调整为 450x450 像素后保存
-    bg_copy = bg.copy()
-    bg_resized = bg_copy.resize((450, 450), Image.LANCZOS)
-    bg_resized_rgb = bg_resized.convert("RGB")
-    bg_resized_rgb.save(abbreviated_path)
-    print(f"背景图已调整为 450x450 并保存为: {abbreviated_path}")
-    
     # 读取前景图（原图）
     fg = Image.open(foreground_path).convert("RGBA")
     
     # 前景图缩放后的尺寸
-    fg_width = 200
+    fg_width = 150
     fg_height = 200
     
     # 前景图圆角半径 & 白边粗细
@@ -114,7 +112,6 @@ def process_pipeline(input_path, output_dir, prompt, final_output, abbreviated_p
     print("处理完成！")
     print("=" * 60)
     print(f"最终输出: {final_output}")
-    print(f"缩略图: {abbreviated_path}")
     print("=" * 60)
 
 if __name__ == "__main__":
@@ -127,10 +124,9 @@ if __name__ == "__main__":
   参数2: 输出目录（modelapi.py 的输出目录，生成的图片作为 dealpic.py 的背景）
   参数3: 生成提示词（modelapi.py 的提示词）
   参数4: 最终输出路径（dealpic.py 的输出）
-  参数5: 缩略图输出路径（dealpic.py 的 abbreviated 输出，450x450像素）
 
 示例：
-  python pipeline.py input.jpg ./output "吉卜力风格" result.png thumbnail.jpg
+  python pipeline.py input.jpg ./output "吉卜力风格" result.png
         """
     )
     
@@ -138,7 +134,6 @@ if __name__ == "__main__":
     parser.add_argument("output_dir", help="输出目录（modelapi.py 的输出目录，生成的图片作为 dealpic.py 的背景）")
     parser.add_argument("prompt", help="生成提示词（modelapi.py 的提示词）")
     parser.add_argument("output", help="最终输出路径（dealpic.py 的输出）")
-    parser.add_argument("abbreviated", help="缩略图输出路径（dealpic.py 的 abbreviated 输出，450x450像素）")
     
     args = parser.parse_args()
     
@@ -155,17 +150,11 @@ if __name__ == "__main__":
     if final_output_dir:
         os.makedirs(final_output_dir, exist_ok=True)
     
-    # 确保缩略图输出目录存在
-    abbreviated_dir = os.path.dirname(args.abbreviated)
-    if abbreviated_dir:
-        os.makedirs(abbreviated_dir, exist_ok=True)
-    
     # 执行流水线
     process_pipeline(
         input_path=args.input_path,
         output_dir=args.output_dir,
         prompt=args.prompt,
-        final_output=args.output,
-        abbreviated_path=args.abbreviated
+        final_output=args.output
     )
 

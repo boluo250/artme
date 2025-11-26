@@ -17,17 +17,17 @@ struct NavigationBarConfiguration {
         appearance.configureWithOpaqueBackground()
         
         // 背景色
-        appearance.backgroundColor = UIColor.systemBackground
+        appearance.backgroundColor = UIColor(ThemeColors.shared.background)
         
         // 标题颜色
         appearance.titleTextAttributes = [
-            .foregroundColor: UIColor.label,
+            .foregroundColor: UIColor(ThemeColors.shared.textPrimary),
             .font: UIFont.systemFont(ofSize: 17, weight: .semibold)
         ]
         
         // 大标题颜色
         appearance.largeTitleTextAttributes = [
-            .foregroundColor: UIColor.label,
+            .foregroundColor: UIColor(ThemeColors.shared.textPrimary),
             .font: UIFont.systemFont(ofSize: 34, weight: .bold)
         ]
         
@@ -54,7 +54,7 @@ struct TabBarConfiguration {
         appearance.configureWithOpaqueBackground()
         
         // 背景色
-        appearance.backgroundColor = UIColor.systemBackground
+        appearance.backgroundColor = UIColor(ThemeColors.shared.background)
         
         // 阴影
         appearance.shadowColor = UIColor.black.withAlphaComponent(0.1)
@@ -146,7 +146,7 @@ struct CustomNavigationBar<Leading: View, Trailing: View>: View {
     }
     
     private var backgroundColor: Color {
-        colorScheme == .dark ? .gray900 : .white
+        ThemeColors.shared.background
     }
 }
 
@@ -222,7 +222,7 @@ struct CustomTabBar: View {
     }
     
     private var backgroundColor: Color {
-        colorScheme == .dark ? .gray900 : .white
+        ThemeColors.shared.background
     }
 }
 

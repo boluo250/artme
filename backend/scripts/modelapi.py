@@ -13,7 +13,7 @@ ENDPOINT = "https://openrouter.ai/api/v1/chat/completions"
 # 定义多个支持图像生成的模型
 # 注意：目前主要支持图像生成的是 Google Gemini 系列模型
 MODELS = [
-    "google/gemini-3-pro-image-preview"
+    "google/gemini-2.5-flash-image-preview"
 ]
 
 def encode_image_to_base64(image_path: str) -> str:
@@ -106,7 +106,7 @@ def generate_image_with_model(image_path: str, model: str, prompt: str = "吉卜
             "output_path": output_path
         }
 
-def generate_with_multiple_models(image_path: str, models: List[str], prompt: str = "吉卜力风格动画场景", output_dir: str = None) -> List[Dict[str, any]]:
+def generate_with_multiple_models(image_path: str, models: List[str], prompt: str = "吉卜力风格动画场景", output_dir: str = None, custom_output_name: str = None) -> List[Dict[str, any]]:
     """
     使用多个模型并发生成图片
     返回所有模型的结果列表
@@ -117,18 +117,28 @@ def generate_with_multiple_models(image_path: str, models: List[str], prompt: st
     # 确保输出目录存在
     os.makedirs(output_dir, exist_ok=True)
     
-    # 为每个模型生成输出路径，使用原始文件名
+    # 为每个模型生成输出路径
     original_filename = os.path.basename(image_path)
     original_name, original_ext = os.path.splitext(original_filename)
     model_tasks = []
     for i, model in enumerate(models):
-        # 如果只有一个模型，使用原始文件名；如果有多个模型，添加模型标识
-        if len(models) == 1:
-            output_path = os.path.join(output_dir, original_filename)
+        if custom_output_name:
+            # 如果指定了自定义输出文件名
+            if len(models) == 1:
+                output_path = os.path.join(output_dir, custom_output_name)
+            else:
+                # 多模型时，在自定义文件名后追加模型名
+                custom_name, custom_ext = os.path.splitext(custom_output_name)
+                safe_model_name = model.replace("/", "_").replace(":", "_")
+                output_path = os.path.join(output_dir, f"{custom_name}_{safe_model_name}{custom_ext}")
         else:
-            # 清理模型名称作为文件名
-            safe_model_name = model.replace("/", "_").replace(":", "_")
-            output_path = os.path.join(output_dir, f"{original_name}_{safe_model_name}{original_ext}")
+            # 使用原始文件名
+            if len(models) == 1:
+                output_path = os.path.join(output_dir, original_filename)
+            else:
+                # 清理模型名称作为文件名
+                safe_model_name = model.replace("/", "_").replace(":", "_")
+                output_path = os.path.join(output_dir, f"{original_name}_{safe_model_name}{original_ext}")
         model_tasks.append((model, output_path))
     
     results = []

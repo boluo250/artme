@@ -53,6 +53,7 @@ struct PromptStyleGridView: View {
             }
             .navigationTitle("艺术风格")
             .navigationBarTitleDisplayMode(.large)
+            .toolbar(.visible, for: .tabBar)
         }
         .task {
             await viewModel.loadPromptStyles()
@@ -124,6 +125,7 @@ struct PromptStyleCard: View {
                 } else if let imageData = imageData, isGif {
                     // 显示 GIF 动画
                     GifImage(data: imageData)
+                        .allowsHitTesting(false) // 防止 GIF 视图拦截点击事件
                 } else if let image = staticImage {
                     // 显示静态图片
                     Image(uiImage: image)
@@ -150,6 +152,7 @@ struct PromptStyleCard: View {
                 .lineLimit(1)
                 .frame(width: 160, alignment: .leading)
         }
+        .contentShape(Rectangle()) // 确保整个卡片区域都可以点击
         .task {
             await loadThumbnail()
         }

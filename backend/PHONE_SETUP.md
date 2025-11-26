@@ -21,7 +21,7 @@ ifconfig | grep "inet " | grep -v 127.0.0.1
 ipconfig getifaddr en0
 ```
 
-当前 Mac IP: `172.18.20.225`
+当前 Mac IP: `192.168.31.128`
 
 ### 2. 确认后端服务配置
 
@@ -121,7 +121,7 @@ curl http://localhost:8000/api/v1/prompts/list
 
 ### 8. 快速验证清单
 
-- [ ] Mac IP 地址已获取：`172.18.20.225`
+- [ ] Mac IP 地址已获取：`192.168.31.128`
 - [ ] Constants.swift 中真机配置使用 Mac IP
 - [ ] Info.plist 中包含 Mac IP 的 ATS 例外
 - [ ] 后端服务正在运行（端口 8000）

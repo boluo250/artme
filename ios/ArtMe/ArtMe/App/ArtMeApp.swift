@@ -16,6 +16,7 @@ struct ArtMeApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .preferredColorScheme(.dark)
                 .onAppear {
                     print("ContentView 已显示")
                 }

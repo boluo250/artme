@@ -99,6 +99,7 @@ struct GenerateView: View {
             }
             .navigationTitle("生成头像")
             .navigationBarTitleDisplayMode(.large)
+            .toolbar(.visible, for: .tabBar)
             .sheet(isPresented: $showStyleSelection) {
                 StyleSelectionView(selectedStyle: $viewModel.selectedStyle)
             }

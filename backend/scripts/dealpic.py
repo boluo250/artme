@@ -38,22 +38,21 @@ if __name__ == "__main__":
     parser.add_argument("--foreground", "-f", required=True, help="前景图片路径")
     parser.add_argument("--background", "-b", required=True, help="背景图片路径")
     parser.add_argument("--output", "-o", required=True, help="输出图片路径")
-    parser.add_argument("--abbreviated", "-a", required=True, help="调整后的背景图保存路径（450x450像素）")
     
     args = parser.parse_args()
     
     foreground_path = args.foreground
     background_path = args.background
     output_path = args.output
-    abbreviated_path = args.abbreviated
+
     
     # 前景图缩放后的尺寸
-    fg_width = 210
-    fg_height = 280
+    fg_width = 150
+    fg_height = 200
     
     # 前景图圆角半径 & 白边粗细
-    corner_radius = 10
-    border_size = 10
+    corner_radius = 6
+    border_size = 6
     
     # 左下角距离
     offset_x = 40   # 距左
@@ -61,22 +60,13 @@ if __name__ == "__main__":
     
     # ------------------------------
     # 开始处理
-    # ------------------------------
-    
-    # 读取背景图（原功能使用原始背景图）
-    bg = Image.open(background_path).convert("RGBA")
-    
-    # 新功能：复制背景图并调整为 450x450 像素后保存
-    bg_copy = bg.copy()
-    bg_resized = bg_copy.resize((450, 450), Image.LANCZOS)
-    
-    # 保存调整后的背景图
-    bg_resized_rgb = bg_resized.convert("RGB")  # 转换为RGB以保存为JPG
-    bg_resized_rgb.save(abbreviated_path)
-    print("背景图已调整为 450x450 并保存为:", abbreviated_path)
+    # ------------------------------3
     
     # 读取前景图并统一处理
     fg = Image.open(foreground_path).convert("RGBA")
+    
+    # 读取背景图
+    bg = Image.open(background_path).convert("RGBA")
     
     # 缩放前景图
     fg = fg.resize((fg_width, fg_height), Image.LANCZOS)

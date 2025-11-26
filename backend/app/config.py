@@ -24,7 +24,8 @@ class Settings(BaseSettings):
         "http://localhost:3000",
         "http://localhost:8080",
         "http://127.0.0.1:3000",
-        "http://192.168.31.147:8000",  # Mac IP 地址（用于真机测试）
+        "http://192.168.31.147:8000",
+        "http://192.168.31.128:8000",  # 当前 Mac IP
     ]
     
     # 大模型 API 配置
