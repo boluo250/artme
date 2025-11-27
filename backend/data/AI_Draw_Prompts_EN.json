@@ -2,12 +2,24 @@
   "categories": [
     {
       "id": 1,
+      "name": "hot",
+      "subcategories": [
+        {
+          "id": 1,
+          "name": "Decomposition_Clothes",
+          "thumbnail": "Decomposition_Clothes_abbreviated.gif",
+          "prompt": "1. Character Setting You are a top-tier game and anime concept art master, specializing in creating detailed character design sheets. Equipped with \"pixel-level decomposition\" capabilities, you can analyze the layered structure of characters' outfits, capture subtle facial expression changes, and visually recreate items related to them with precision. You excel at enriching a character's personality and backstory indirectly through their belongings, personal items, and daily life details. 2. Task Objective Based on the character image uploaded or described by the user, generate a \"panoramic character in-depth concept breakdown chart.\" This chart must include a full-body standing illustration of the central character, surrounded by displays of the character's outfit layers, different facial expressions, core props, material close-ups, and lifelike personal items that reflect their daily life. 3. Visual Specifications 3.1 Composition Layout Central Position: Place the character's full-body standing illustration or main dynamic pose as the visual anchor. Surrounding Positions: Arrange the decomposed elements in an orderly manner in the blank spaces around the central character. Visual Guidance: Use hand-drawn arrows or guide lines to connect the surrounding decomposed items to their corresponding parts or relevant areas on the central character. 3.2 Decomposition Content — Core Iteration Areas Outfit Layers: Display the character's clothing as separate individual pieces. Expression Set: Draw 3-4 different head close-ups in a corner to show various emotions (e.g., shyness, distraction, excitement). Material Close-Ups: Select 1-2 key areas for enlarged close-ups (e.g., fabric wrinkles, skin texture, hand details). Associated Items: Beyond large props, include \"slices of life\" that reflect the character's daily routine. Daily Bag & Contents: Illustrate the character's daily commute bag or clutch, \"open it up,\" and display the scattered items inside. Beauty & Skincare: Showcase their frequently used makeup and skincare products (e.g., close-up of a specific shade of lipstick/lip gloss, a pressed powder case with a mirror, perfume bottle design, hand cream). Hidden Lifestyle Items: Visualize items that reflect the character's hidden side. Depending on the character's personality, these may include: a diary, a box of commonly used medications/supplements, an e-cigarette, or personal mementos. 3.3 Style & Annotations Art Style: Maintain a high-quality 2D illustration style or concept design sketch style with clean, crisp lines. Background: Use a beige, parchment, or light gray textured background to create the atmosphere of a design manuscript."
+        }
+      ]
+    },
+    {
+      "id": 2,
       "name": "figure",
       "subcategories": [
         {
           "id": 1,
-          "name": "3D_figurine",
-          "thumbnail": "3D_figurine_abbreviated.gif",
+          "name": "3D_Figurine",
+          "thumbnail": "3D_Figurine_abbreviated.gif",
           "prompt": "A hyper-realistic 1/7 scale figure of the character, on a computer desk, computer screen shows ZBrush modeling software, next to it a Bandai-style box with original art, all on a clear acrylic base, professional product photography, sharp focus"
         },
         {
@@ -15,48 +27,90 @@
           "name": "chibi_style",
           "thumbnail": "chibi_style_abbreviated.png",
           "prompt": "Based on the input selfie of the girl, generate a super-sized chibi-style figurine that exactly matches the character's outfit in the photo. The figurine should feature a cute cartoon style with a round face, large eyes, and exaggerated proportions. Composite the real person and this oversized figurine into the same frame, positioning the person slightly in front and to the right of the figurine. Replace the background with a minimalist art gallery setting. The overall composition should create a creative effect of the real person interacting with their giant figurine, presenting a cute, fun, and realistically textured style"
-        }
-      ]
-    },
-    {
-      "id": 2,
-      "name": "cartoon",
-      "subcategories": [
-        {
-          "id": 1,
-          "name": "dreamy_watercolor",
-          "thumbnail": "dreamy_watercolor_abbreviated.jpg",
-          "prompt": "Restyle this image into a Dreamy watercolor style, wet-on-wet blending technique, transparent layered colors, low-saturation pastel palette, cold-pressed paper texture, soft-edge diffusion, gentle natural lighting, fluffy brown-black curly hair, warm brown eyes, soft pink blush, blue sky with white clouds background, anime illustration aesthetic, delicate brush strokes."
         },
         {
-          "id": 2,
-          "name": "3D_cartoon_keychain",
-          "thumbnail": "3D_cartoon_keychain_abbreviated.jpg",
-          "prompt": "Create a cute 3D cartoon keychain version of the person in the uploaded photo. Transform the face and pose into a soft, simplified toy-like figure with a silicone-like smooth texture and pastel colors. Toy product design for keychain format."
+          "id": 3,
+          "name": "Giant_Fluffy_Cute_Cartoon_Monster",
+          "thumbnail": "Giant_Fluffy_Cute_Cartoon_Monster_abbreviated.png",
+          "prompt": "Turn me into a real human sitting next to a giant fluffy cute cartoon monster. I am real but monster is 3d cartoon. It’s hugging me and cute. Big eyes"
         }
       ]
     },
     {
       "id": 3,
-      "name": "art",
+      "name": "cartoon",
       "subcategories": [
         {
           "id": 1,
-          "name": "realistic_oil_painting_portrait",
-          "thumbnail": "realistic_oil_painting_portrait_abbreviated.jpg",
-          "prompt": "Using the uploaded photo as the character prototype, generate a scene: A long-haired Asian woman (wearing a gray knit beanie and a light brown plush coat) stands with her back to the camera in a modern minimalist white art gallery exhibition hall, looking up at a realistic oil painting portrait of herself hanging on the wall — the oil painting takes up half of the frame. The oil painting has delicate brushstrokes and a soft color palette (dominated by light beige and warm brown), with blurred artistic textures in the background. The exhibition hall is lit by soft spotlights that illuminate the artwork, creating an overall artistic and quiet atmosphere. The image should be high-definition and rich in detail."
+          "name": "Ghibli_Animated_Style",
+          "thumbnail": "Ghibli_Animated_Style_abbreviated.jpg",
+          "prompt": "Convert this portrait photo into a Studio Ghibli animated character style, adopting the character design aesthetics from Spirited Away or Kiki's Delivery Service. Preserve the facial expression and pose from the original photo while reimagining it with Ghibli's iconic character proportions and facial features."
+        },
+        {
+          "id": 2,
+          "name": "3D_Anime_Inspired_Portrait",
+          "thumbnail": "3D_Anime_Inspired_Portrait_abbreviated.jpg",
+          "prompt": "Portrait of the uploaded girl, preserving 100% original facial features, with large expressive eyes, delicate soft facial structure, styled into Chun-Li’s signature twin buns hairstyle, wearing a blue silk qipao with gold embroidery in a martial arts energy pose. Style: 3D stylized, realistic yet slightly cartoonish, inspired by video game character design. Lighting: Soft, even lighting with subtle backlight to highlight contours and natural skin glow. Material: Smooth skin, shiny hair strands, silk qipao with realistic texture, light-reflecting ornaments. Rendering: High-quality, hyper-detailed 3D rendering emphasizing facial and hair texture. Color: Dominant blues and golds, natural pinkish skin tone, vibrant and harmonious overall palette. Composition: Half-body portrait focusing on face and upper body, dynamic yet stable. Angle: Slightly top-down view, eyes aligned with frame center, dynamic martial arts posture."
+        },
+        {
+          "id": 3,
+          "name": "3D_Disney_Animation_Style",
+          "thumbnail": "3D_Disney_Animation_Style_abbreviated.jpg",
+          "prompt": "Use the uploaded photo(s) as base.Disney-style solo portrait re-creation (100% original appearance preserved) – close-up shot focusing on facial features, hands, and upper body details. Portrait of a vibrant, cute young woman. Hairstyle: Deep brown straight long hair with natural luster, length past shoulders, no obvious hair accessories, falling naturally in front of the shoulders for a casual yet gentle vibe. Outfit: Judy Hopps (Zootopia) cosplay costume – Top: Light blue long-sleeve inner shirt with black cropped police vest (yellow \"POLICE\" badge printed on chest), cuffs paired with black wrist guards with silver stripes; Bottom: Dark blue high-waisted cargo pants with black waist belt and leather utility pouch with metal buckle decorations; Accessories: Grayish-brown plush Judy Hopps ear headband with pink inner ears and blue decorative details. Makeup: Lightweight translucent base makeup, soft pink blush on cheeks, water-red lip gloss, curled eyelashes, light pink eyeshadow, creating innocent and charming eyes. Background: Pathway in front of Disney Castle, pink and white color scheme with blue roof decorations, featuring tourists and decorative street lamps, lively and dreamy atmosphere. Poses: Pose 1 – hands on hips, body slightly turned sideways, head tilted up to look at camera, confident yet playfully sweet posture; Pose 2 – standing sideways, right hand gently touching rabbit ear headband, eyes looking directly at camera, agile and interactive posture. Shooting Style + Filter: Outdoor natural light photography, medium close-up, eye-level angle, fully showcasing outfit details while highlighting integration with castle background; filter: eye-level close-up, sunny natural light, soft sweet bokeh filter, bright and fresh color tone."
+        },
+        {
+          "id": 4,
+          "name": "Zootopia_2_Theme",
+          "thumbnail": "Zootopia_2_Theme_abbreviated.jpg",
+          "prompt": "Generate 1 photos of cinema group portraits with the Zootopia 2 theme, keeping the original facial features and face shape unchanged: Pose: Selfie posture with the body slightly sideways, standing between the mascots, standing side by side close to Judy Hopps and Nick Wilde mascots, head gently leaning against the mascots, face directly facing the camera; Expression: Lively and sweet smile with the mouth corners turned up, cheerful and excited facial expression; Eyes: Bright and vivid with smiling eye corners and gaze focused on the camera; Outfit: Judy Hopps' signature police uniform paired with a same-color beret made of plush fabric, decorated with a golden badge and gray plush rabbit ears with pink lining; Accessories: Thin gold necklace; Hairstyle: Dark brown long curly hair with natural waves and air bangs; Makeup: Fresh and sweet girl makeup with light fair base, light pink apricot blush on cheeks, bright pink glossy lip glaze, light brown eyeshadow, and curled eyelashes; Scene: Cinema auditorium with black seats filled with audiences, and the big screen displaying the Zootopia 2 poster featuring Judy Hopps, Nick Wilde, and Flash Slothmore with the text \"FUR DX\"; Style: Movie-themed immersive group photo style combining cuteness and lively atmosphere; Lighting: Cinema ambient light plus screen light, with soft ambient light brightening the characters and screen light supplementing the background brightness for natural realistic lighting; Color Tone: Dominated by dark blue, black, and the screen's blue/red bright colors, overall tone resembling a real cinema environment with slight film grain; Composition: Vertical selfie close-up where characters and mascots occupy 60% of the frame and the auditorium background 40%, with characters centered; Filter: Low-saturation cinema atmosphere filter enhancing scene realism while keeping character makeup vivid; Additional Elements: Zootopia 2 Judy Hopps and Nick Wilde mascots faithful to the animation design—Judy in a blue police uniform, Nick in a green short-sleeve shirt with a black and purple diagonal striped tie, plush texture preserved; Text Information: At the bottom of the frame is the text \"Disney ZOOTOPIA 2 ONLY IN THEATERS NOVEMBER 26\" in movie poster style, occupying 50% of the frame width; Quality: 32K high resolution with master-level movie picture quality, retaining real human skin texture without excessive smoothing."
+        },
+        {
+          "id": 5,
+          "name": "Background_To_An_Anime_Style",
+          "thumbnail": "Background_To_An_Anime_Style_abbreviated.jpg",
+          "prompt": "Preserve the character from the reference photo in full with realistic photographic texture (facial features, hairstyle, and clothing unchanged) as the foreground of a black-and-white manga panel layout. Background: Japanese manga page with a 3×4 or 4×5 panel grid, thin hand-drawn line art + halftone screentone, speed lines, exaggerated expressions, onomatopoeia, and rounded speech bubbles (filled with illegible dummy text). Scene: everyday urban park/street setting (park benches, railings, tree shadows, pavement puddles) with natural perspective and hand-drawn grainy lines. Overall monochromatic black-and-white, with clear hierarchical separation between foreground and background, Preserve the original colors of the character."
         }
       ]
     },
     {
       "id": 4,
-      "name": "illustration",
+      "name": "art",
       "subcategories": [
         {
           "id": 1,
-          "name": "marker_illustration",
-          "thumbnail": "marker_illustration_abbreviated_abbreviated.png",
-          "prompt": "Using the uploaded photo as the prototype, strictly retain the character's original pose and facial features, create a marker illustration: A long-haired Asian woman with a light blue-white lace headband, a pale yellow daisy-printed dress, holding a daisy bouquet; soft blurred green natural background, fresh bright style, high color saturation, soft lines, Japanese illustration's round texture, rich details"
+          "name": "Nine_Grid_Emoticons",
+          "thumbnail": "Nine_Grid_Emoticons_abbreviated.png",
+          "prompt": "Keep the main character unchanged and create a set of realistic style emoticons, including nine-grid emoticons with different expressions and poses. The expressions vary greatly and the poses are exaggerated"
+        },
+        {
+          "id": 2,
+          "name": "Male_Harry-Potter-style_oil_painting",
+          "thumbnail": "Male_Harry-Potter-style_oil_painting_abbreviated.png",
+          "prompt": "Use the person from the uploaded reference photo exactly as they appear, keeping the face, hair, and proportions unchanged. Place the person naturally within a warm, cozy home interior, not stiff or mannequin-like, with posture blending authentically into the environment, natural body tension, realistic weight distribution, and lighting that matches the room’s ambient glow. Wooden furniture, magazines, and potted plants fill the softly lit space, with natural light entering from a right-side window. In the lower-left area, a hand holds a square wooden-framed Harry-Potter-style oil painting, and the hand and frame must integrate seamlessly into the scene with correct perspective, matching shadows, and consistent lighting, with no cutout or overlay feeling. The framed artwork contains a vibrant fantasy-style oil painting portrait of the same person from the reference photo, rendered in colorful Harry-Potter magic aesthetics while keeping facial accuracy. Overall: realistic photography, coherent depth, unified lighting, and natural blending of all elements into a single believable scene."
+        },
+        {
+          "id": 3,
+          "name": "Dramatic_Photorealistic",
+          "thumbnail": "Dramatic_Photorealistic_abbreviated.png",
+          "prompt": "A dramatic, photorealistic medium close-up profile shot of the person in the uploaded reference image, keeping the face 100% accurate. They are wearing a dark tailored blazer or similar formal attire, with their head tilted sharply backward and the chin pointed upward, conveying intensity and vulnerability. Lighting: a single intense warm golden spotlight shines directly from above, creating a harsh chiaroscuro effect that illuminates the face, neck, and throat while the rest of the figure falls into deep shadow. The image must be high-contrast and cinematic. Background: a solid, clean deep studio cobalt blue. Aesthetic: ultra-detailed professional studio portrait, high-resolution, sharp focus, preserving all key elements—profile angle, head tilt, formal attire, single golden light, deep blue background, and dramatic contrast."
+        },
+        {
+          "id": 4,
+          "name": "Hugging_A_Panda",
+          "thumbnail": "Hugging_A_Panda_abbreviated.png",
+          "prompt": "Generate an image of an instant camera photo on a black surface. In the photo: gentle motion blur, warm, nostalgic, candid film-style effect, * this exact person * hugging a panda"
+        },
+        {
+          "id": 5,
+          "name": "Grid_4x4_1880s",
+          "thumbnail": "Grid_4x4_1880s_abbreviated.png",
+          "prompt": "Generate an image of an instant camera photo on a black surface. In the photo: gentle motion blur, warm, nostalgic, candid film-style effect, * this exact person * hugging a panda"
+        },
+        {
+          "id": 6,
+          "name": "Angel_Theme",
+          "thumbnail": "Angel_Theme_abbreviated.png",
+          "prompt": "Create angel-themed portrait photos while preserving the person’s original facial structure and features. The character should appear in varied, elegant poses and compositions, with diverse camera angles. Character: A person with long, flowing, naturally wavy hair. Wearing a headpiece woven from vines and white flowers. Dressed in a white Grecian-style long gown with soft, layered fabrics, with light, airy ribbons draped over the arms. A pair of large, ethereal angel wings extends from the back, with soft, flowing feathers. Barefoot. Scene: The character stands in a quiet, green, mystical forest, surrounded by vines, plants, and white flowers. They hold a bow crafted from vines and blossoms. Pose & Mood: The character performs graceful, elegant movements, with storytelling expression in their eyes. Atmosphere is hazy, divine, and serene, lit with side light or back-side light, showing cool and dreamy tones filled with fairy-tale aesthetics. Composition: Close-up framing. Include sitting poses with eye-level camera angles. Each shot should reflect master-level composition and artistic quality."
         }
       ]
     },
@@ -123,6 +177,18 @@
           "name": "Wong_Kar-wai_Films",
           "thumbnail": "Wong_Kar-wai_Films_abbreviated.png",
           "prompt": "Wong Kar-wai's inspired cinematic triptych of a young man attached in the photo in the city at night, bathed in moody neon green, amber, and red lights, with film grain, dreamy haze, and soft blur with saturated colors, keeping the original face. He has messy comma hair parted to the side with strands falling across his forehead, giving a slightly disheveled romantic look. Top Panel: The man sits outside a late-night 7-Eleven with neon signs glowing behind him with the text \"RNGOCT\", holding a lit cigarette near his lips, expression contemplative and distant. Middle Panel: He takes a slow sip from a canned beer bottle, gaze unfocused as if lost in thought, neon reflections dancing across his face. Bottom Panel: He stands alone on a pedestrian overpass bridge at night, exhaling smoke from a cigarette, head tilted back toward the sky, expression weary and melancholic, with blurred crowded people’s headlights in the distance; shallow depth of field, intimate close-up framing, nostalgic atmosphere."
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "name": "Photo_Retouching",
+      "subcategories": [
+        {
+          "id": 1,
+          "name": "Colorize_Old_Photo",
+          "thumbnail": "Colorize_Old_Photo_abbreviated.png",
+          "prompt": "Restore and colorize this old photo: remove all scratches, blemishes, fading, and mold spots, recover clear facial features and additional details. Avoid over-sharpening; keep the image clean and natural."
         }
       ]
     }
