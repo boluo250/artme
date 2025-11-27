@@ -142,7 +142,7 @@ struct PromptStyleCard: View {
                         }
                 }
             }
-            .frame(width: 160, height: 200)
+            .frame(width: 105, height: 132)
             .clipped()
             .cornerRadiusMD()
             
@@ -150,7 +150,7 @@ struct PromptStyleCard: View {
             Text(subcategoryDisplayName)
                 .textStyleSubheadline()
                 .lineLimit(1)
-                .frame(width: 160, alignment: .leading)
+                .frame(width: 105, alignment: .leading)
         }
         .contentShape(Rectangle()) // 确保整个卡片区域都可以点击
         .task {
