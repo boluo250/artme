@@ -17,11 +17,14 @@ struct ContentView: View {
     
     var body: some View {
         TabView(selection: $selectedTab) {
-            PromptStyleGridView()
-                .tabItem {
-                    Label("风格", systemImage: "photo.on.rectangle.angled")
-                }
-                .tag(0)
+            NavigationStack {
+                PromptStyleGridView()
+                    .toolbar(.hidden, for: .navigationBar)
+            }
+            .tabItem {
+                Label("风格", systemImage: "photo.on.rectangle.angled")
+            }
+            .tag(0)
             
             GenerateView()
                 .tabItem {

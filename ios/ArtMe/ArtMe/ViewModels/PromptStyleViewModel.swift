@@ -14,6 +14,7 @@ class PromptStyleViewModel: ObservableObject {
     @Published var promptStyles: [PromptStyle] = []
     @Published var isLoading = false
     @Published var errorMessage: String?
+    @Published var appConfig: AppConfig?
     // 当前数据版本（用于触发视图刷新与图片缓存失效）
     @Published var dataVersion: String?
     
@@ -54,6 +55,7 @@ class PromptStyleViewModel: ObservableObject {
             print("📦 从缓存加载数据，共 \(cachedResponse.prompts.count) 个样式")
             promptStyles = cachedResponse.prompts
             dataVersion = cachedResponse.version
+            appConfig = cachedResponse.appConfig
             ImageService.shared.setCacheBuster(cachedResponse.version)
         }
     }
@@ -67,6 +69,7 @@ class PromptStyleViewModel: ObservableObject {
             }
             print("💾 数据已缓存，版本: \(response.version ?? "未知")")
             dataVersion = response.version
+            appConfig = response.appConfig
             ImageService.shared.setCacheBuster(response.version)
         }
     }
@@ -137,6 +140,7 @@ class PromptStyleViewModel: ObservableObject {
             print("💾 缓存版本: \(getCachedVersion() ?? "无")")
             
             promptStyles = response.prompts
+            appConfig = response.appConfig
             
             // 保存到缓存
             saveToCache(response)
@@ -197,6 +201,7 @@ class PromptStyleViewModel: ObservableObject {
         UserDefaults.standard.removeObject(forKey: cacheKey)
         UserDefaults.standard.removeObject(forKey: versionKey)
         dataVersion = nil
+        appConfig = nil
         ImageService.shared.setCacheBuster(nil)
         
         // 强制重新加载

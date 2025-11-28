@@ -11,9 +11,10 @@ import SwiftUI
 struct PromptStyleGridView: View {
     @StateObject private var viewModel = PromptStyleViewModel()
     @State private var isRefreshing = false
+    @State private var targetCategory: String?
     
     var body: some View {
-        NavigationView {
+        ScrollViewReader { proxy in
             Group {
                 if viewModel.isLoading && viewModel.promptStyles.isEmpty {
                     // 首次加载时显示加载指示器
@@ -37,26 +38,56 @@ struct PromptStyleGridView: View {
                     // 显示内容
                     ScrollView {
                         VStack(spacing: Spacing.xl) {
+                            if let banner = viewModel.appConfig?.homeBanner,
+                               (banner.enable ?? true) {
+                                HomeBannerView(banner: banner) {
+                                    handleBannerAction(banner)
+                                }
+                                .padding(.horizontal, Spacing.lg)
+                            }
+                            
                             ForEach(viewModel.categories, id: \.self) { category in
                                 CategorySection(
                                     category: category,
                                     styles: viewModel.getStyles(forCategory: category)
                                 )
+                                .id(category)
                             }
                         }
-                        .padding(.vertical, Spacing.lg)
+                        .padding(.bottom, Spacing.lg)
                     }
                     .refreshable {
                         await viewModel.refreshIfNeeded()
                     }
+                    .onChange(of: targetCategory) { category in
+                        guard let category = category else { return }
+                        withAnimation {
+                            proxy.scrollTo(category, anchor: .top)
+                        }
+                        // 滚动完成后清空，避免重复触发
+                        DispatchQueue.main.async {
+                            targetCategory = nil
+                        }
+                    }
                 }
             }
-            .navigationTitle("艺术风格")
-            .navigationBarTitleDisplayMode(.large)
-            .toolbar(.visible, for: .tabBar)
         }
+        .toolbar(.visible, for: .tabBar)
         .task {
             await viewModel.loadPromptStyles()
+        }
+    }
+    
+    private func handleBannerAction(_ banner: BannerConfig) {
+        guard let action = banner.action else { return }
+        let prefix = "open_category_"
+        let lowercasedAction = action.lowercased()
+        
+        guard lowercasedAction.hasPrefix(prefix) else { return }
+        let categoryKey = String(lowercasedAction.dropFirst(prefix.count))
+        
+        if let matched = viewModel.categories.first(where: { $0.lowercased() == categoryKey }) {
+            targetCategory = matched
         }
     }
 }
@@ -223,6 +254,71 @@ struct PromptStyleCard: View {
         // print("Card: 文件头: \(headerString)")
         
         return header == gif89a || header == gif87a
+    }
+}
+
+// MARK: - 首页 Banner
+
+struct HomeBannerView: View {
+    let banner: BannerConfig
+    var onTap: (() -> Void)?
+    
+    @State private var bannerImage: UIImage?
+    @State private var isLoading = false
+    
+    var body: some View {
+        Button(action: {
+            onTap?()
+        }) {
+            ZStack(alignment: .bottomLeading) {
+                Group {
+                    if let image = bannerImage {
+                        Image(uiImage: image)
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                    } else if isLoading {
+                        Rectangle()
+                            .fill(Color.gray.opacity(0.1))
+                            .overlay {
+                                ProgressView()
+                                    .purpleProgressIndicator()
+                            }
+                    } else {
+                        Rectangle()
+                            .fill(Color.gray.opacity(0.15))
+                            .overlay {
+                                Image(systemName: "photo")
+                                    .foregroundColor(.gray400)
+                            }
+                    }
+                }
+                .frame(height: 160)
+                .frame(maxWidth: .infinity)
+                .clipShapeLG()
+                .cardShadow()
+                
+            }
+        }
+        .buttonStyle(PlainButtonStyle())
+        .task {
+            await loadImageIfNeeded()
+        }
+    }
+    
+    private func loadImageIfNeeded() async {
+        guard bannerImage == nil else { return }
+        isLoading = true
+        let imagePath = banner.image
+        let fullURL = imagePath.hasPrefix("http") ? imagePath : Constants.apiBaseURL + imagePath
+        
+        do {
+            let image = try await ImageService.shared.downloadImage(from: fullURL)
+            bannerImage = image
+        } catch {
+            print("Banner: 图片加载失败 \(error.localizedDescription)")
+        }
+        
+        isLoading = false
     }
 }
 

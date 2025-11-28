@@ -19,10 +19,21 @@ struct PromptStyle: Codable, Identifiable {
     let originalUrl: String
 }
 
+struct BannerConfig: Codable {
+    let image: String
+    let action: String?
+    let enable: Bool?
+}
+
+struct AppConfig: Codable {
+    let homeBanner: BannerConfig?
+}
+
 struct PromptStyleListResponse: Codable {
     let prompts: [PromptStyle]
     let total: Int
     let version: String?  // 数据版本号
+    let appConfig: AppConfig?
 }
 
 struct PromptStyleVersionResponse: Codable {

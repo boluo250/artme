@@ -5,8 +5,8 @@ from moviepy.video.io.ImageSequenceClip import ImageSequenceClip
 from PIL import Image
 
 # 读取图片
-image1 = cv2.imread('/Users/keximing/mycode/iosapp/artme/backend/data/hot/Decomposition_Clothes_abbreviated.png')  # 第一张图片
-image2 = cv2.imread('/Users/keximing/mycode/iosapp/test/input/亚洲女生17.png')  # 第二张图片
+image1 = cv2.imread('/Users/keximing/mycode/iosapp/artme/backend/data/3_Grid_Photobooth/couple_3_pic_winter_night_abbreviated.png')  # 第一张图片
+image2 = cv2.imread('/Users/keximing/mycode/iosapp/test/input/亚洲情侣1.png')  # 第二张图片
 
 # 调整图片尺寸为 300x400
 target_width = 300

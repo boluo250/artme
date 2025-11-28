@@ -9,7 +9,7 @@ from pathlib import Path
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
@@ -31,11 +31,24 @@ class PromptStyle(BaseModel):
     original_url: str
 
 
+class BannerConfig(BaseModel):
+    """Banner 配置"""
+    image: str
+    action: Optional[str] = None
+    enable: bool = True
+
+
+class AppConfig(BaseModel):
+    """App 全局配置"""
+    home_banner: Optional[BannerConfig] = None
+
+
 class PromptStyleListResponse(BaseModel):
     """Prompt 列表响应"""
     prompts: List[PromptStyle]
     total: int
     version: Optional[str] = None  # 数据版本号（JSON配置文件最后修改时间）
+    app_config: Optional[AppConfig] = None  # App 全局配置
 
 
 def get_data_version() -> str:
@@ -303,14 +316,15 @@ def get_prompt_from_json(category: str, subcategory: str) -> Optional[dict]:
     return None
 
 
-def load_prompts_from_json() -> List[PromptStyle]:
+def load_prompts_from_json() -> tuple[List[PromptStyle], Optional[AppConfig]]:
     """
-    从 JSON 配置文件加载 prompt 列表
+    从 JSON 配置文件加载 prompt 列表和 app 配置
     
     Returns:
-        Prompt 风格列表（按 category_id 和 subcategory_id 排序）
+        (Prompt 风格列表, AppConfig)
     """
     prompts = []
+    app_config = None
     
     if not PROMPTS_FILE_PATH.exists():
         raise HTTPException(
@@ -321,6 +335,18 @@ def load_prompts_from_json() -> List[PromptStyle]:
     try:
         with open(PROMPTS_FILE_PATH, 'r', encoding='utf-8') as f:
             data = json.load(f)
+            
+            # 读取 App 配置
+            if "app_config" in data:
+                try:
+                    app_config = AppConfig(**data["app_config"])
+                    # 处理 banner 图片路径
+                    if app_config.home_banner and app_config.home_banner.image:
+                        # 假设 banner 图片在 data/banner/ 目录下
+                        app_config.home_banner.image = f"/api/v1/data/banner/{app_config.home_banner.image}"
+                except Exception as e:
+                    logger.error(f"解析 app_config 失败: {str(e)}")
+            
             categories = data.get("categories", [])
             
             # 按 category_id 排序
@@ -341,7 +367,6 @@ def load_prompts_from_json() -> List[PromptStyle]:
                     subcategory_id = subcat.get("id", 0)
                     subcategory_name = subcat.get("name", "").strip()
                     prompt = subcat.get("prompt", "").strip()
-                    thumbnail_name = subcat.get("thumbnail", "").strip()
                     
                     if not subcategory_name or not prompt:
                         continue
@@ -375,7 +400,7 @@ def load_prompts_from_json() -> List[PromptStyle]:
             detail=f"读取 JSON 配置文件失败: {str(e)}"
         )
     
-    return prompts
+    return prompts, app_config
 
 
 @router.get("/prompts/list", response_model=PromptStyleListResponse)
@@ -386,13 +411,14 @@ async def list_prompts():
     从 JSON 配置文件中读取 Category、Subcategory、AI Drawing Prompt 信息
     并返回对应的图片 URL
     """
-    prompts = load_prompts_from_json()
+    prompts, app_config = load_prompts_from_json()
     version = get_data_version()
     
     return PromptStyleListResponse(
         prompts=prompts,
         total=len(prompts),
-        version=version
+        version=version,
+        app_config=app_config
     )
 
 
