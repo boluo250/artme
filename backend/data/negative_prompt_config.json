@@ -1,0 +1,5 @@
+{
+    "negative_prompt_config": {
+      "default_negative_prompt": "low quality, bad anatomy, deformed, blurry, ugly, watermark, logo, text, cropped, oversaturated, worst quality, jpeg artifacts, monochrome, out of frame, extra limbs, bad eyes, missing fingers, two heads, mutation, signature, multiple people"
+    }
+  }

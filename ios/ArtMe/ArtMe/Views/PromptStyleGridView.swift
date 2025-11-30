@@ -121,7 +121,10 @@ struct CategorySection: View {
     }
     
     private var categoryDisplayName: String {
-        // 可以根据需要添加中文映射
+        if let localized = styles.first?.categoryCn, !localized.isEmpty {
+            return localized
+        }
+        // 兼容旧数据：保持已有映射
         let categoryMap: [String: String] = [
             "cartoon": "卡通动漫",
             "figure": "手办模型",
@@ -190,7 +193,10 @@ struct PromptStyleCard: View {
     }
     
     private var subcategoryDisplayName: String {
-        // 可以根据需要添加中文映射
+        if let localized = style.subcategoryCn, !localized.isEmpty {
+            return localized
+        }
+        // 兼容旧数据：保持已有映射
         let subcategoryMap: [String: String] = [
             "3D_figurine": "3D手办",
             "chibi_style": "Q版风格",
@@ -265,6 +271,7 @@ struct HomeBannerView: View {
     
     @State private var bannerImage: UIImage?
     @State private var isLoading = false
+    private let bannerAspectRatio: CGFloat = 4.0 / 3.0
     
     var body: some View {
         Button(action: {
@@ -292,7 +299,7 @@ struct HomeBannerView: View {
                             }
                     }
                 }
-                .frame(height: 160)
+                .aspectRatio(bannerAspectRatio, contentMode: .fit)
                 .frame(maxWidth: .infinity)
                 .clipShapeLG()
                 .cardShadow()

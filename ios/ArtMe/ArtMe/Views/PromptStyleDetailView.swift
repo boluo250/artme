@@ -34,7 +34,7 @@ struct PromptStyleDetailView: View {
                     .padding(.bottom)
             }
         }
-        .navigationTitle(style.subcategory)
+        .navigationTitle(displayTitle)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar(.hidden, for: .tabBar)
         .task {
@@ -73,6 +73,13 @@ struct PromptStyleDetailView: View {
                 }
             }
         )
+    }
+    
+    private var displayTitle: String {
+        if let localized = style.subcategoryCn, !localized.isEmpty {
+            return localized
+        }
+        return style.subcategory
     }
     
     private var imageView: some View {
@@ -371,8 +378,10 @@ struct ImageGenerationView: View {
             id: "test",
             category: "cartoon",
             categoryId: 1,
+            categoryCn: "卡通动漫",
             subcategory: "3D_figurine",
             subcategoryId: 1,
+            subcategoryCn: "3D手办",
             prompt: "Test prompt",
             thumbnailUrl: "/api/v1/data/cartoon/3D_figurine.jpg",
             originalUrl: "/api/v1/data/cartoon/3D_figurine.jpg"

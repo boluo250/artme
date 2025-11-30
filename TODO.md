@@ -444,3 +444,43 @@
 - `ViewModels/GenerateViewModel.swift` - 支持图片上传生成
 - `App/ContentView.swift` 或 `App/ArtMeApp.swift` - 配置导航流程
 
+---
+
+## 14. 心情驱动 AI 艺术照（新需求）
+
+### 14.1 心情配置与 API
+- [ ] 新建 `mood_service` 读取 `backend/data/emotion_visual_map.json` 并缓存
+- [ ] 提供 `GET /api/moods` 接口，返回 15 种心情及关键词
+- [ ] 增加配置热更新或版本号字段，方便前端缓存
+
+### 14.2 DeepSeek Prompt 生成
+- [ ] 创建 `DeepSeekPromptService`，封装 ds API 调用与 30 单词内约束
+- [ ] 将心情中文/英文、用户一句话组装成模板并请求 ds，模板为：
+  ```
+  [当前情绪类型 (Mood): {{mood}} 用户描述 (User Input): {{scene}}]
+  你是一位专业的 AI 图像生成提示词工程师。你的任务是根据给定的“情绪类型”和“用户的场景/动作描述”，生成一段高度艺术化、富有画面感、且适合 Midjourney/nanabannan 等 AI 模型的英文提示词片段。你的输出必须是纯英文关键词，用逗号分隔，且不包含任何解释性文字、数字、编号或多余的标点。关键词总长度必须严格控制在 30 个英文单词以内。
+  ```
+- [ ] 生成 `Final Prompt = "portrait of user, preserving original face" + ds 输出 + mood 关键词`
+  - mood 关键词 = `style_keywords + color_keywords + lighting_keywords + medium_modifiers`（来源 `backend/data/emotion_visual_map.json`）
+
+### 14.3 新生成接口
+- [ ] 新增 `POST /api/mood-art`，接收图片、mood_id、scene_text
+- [ ] 校验图片类型/大小，保存临时文件并调用 `ai_service.generate_image_with_doubao`
+- [ ] 统一错误码/日志，返回图片 URL、最终 prompt、心情信息
+
+### 14.4 iOS 前端页面改造
+- [ ] `GenerateView` 增加图片选择/预览（`PhotosPicker`），支持重新选择
+- [ ] 心情选择 UI：展示 15 种心情（中文标签 + 关键词提示），单选高亮
+- [ ] 新增“一句话场景”输入框，限制 60 字并显示计数
+- [ ] 生成按钮与 Loading/错误状态联动，需图片+心情+文本齐全
+
+### 14.5 前端数据层
+- [ ] 新增 `MoodAPI` 拉取心情列表并本地缓存 24h
+- [ ] 新增 `AIArtAPI.generateMoodPortrait`，以 multipart 方式提交图片/心情/文本
+- [ ] 调整 `GenerateViewModel`，管理 `selectedMood`、`userSentence`、`selectedImage` 及新接口调用
+
+### 14.6 体验与测试
+- [ ] 增加前端错误提示、重试、生成结果 prompt 展示
+- [ ] 后端记录生成耗时、mood_id、ds token 使用等指标
+- [ ] 编写单元/集成测试（心情 API、Prompt 组装、端到端上传生成）
+

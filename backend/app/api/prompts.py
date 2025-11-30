@@ -24,8 +24,10 @@ class PromptStyle(BaseModel):
     id: str
     category: str
     category_id: int
+    category_cn: Optional[str] = None
     subcategory: str
     subcategory_id: int
+    subcategory_cn: Optional[str] = None
     prompt: str
     thumbnail_url: str
     original_url: str
@@ -356,6 +358,7 @@ def load_prompts_from_json() -> tuple[List[PromptStyle], Optional[AppConfig]]:
                 category_id = cat.get("id", 0)
                 category_name = cat.get("name", "").strip()
                 subcategories = cat.get("subcategories", [])
+                category_cn = cat.get("name_cn")
                 
                 if not category_name:
                     continue
@@ -367,6 +370,7 @@ def load_prompts_from_json() -> tuple[List[PromptStyle], Optional[AppConfig]]:
                     subcategory_id = subcat.get("id", 0)
                     subcategory_name = subcat.get("name", "").strip()
                     prompt = subcat.get("prompt", "").strip()
+                    subcategory_cn = subcat.get("name_cn")
                     
                     if not subcategory_name or not prompt:
                         continue
@@ -383,8 +387,10 @@ def load_prompts_from_json() -> tuple[List[PromptStyle], Optional[AppConfig]]:
                         id=prompt_id,
                         category=category_name,
                         category_id=category_id,
+                        category_cn=category_cn,
                         subcategory=subcategory_name,
                         subcategory_id=subcategory_id,
+                        subcategory_cn=subcategory_cn,
                         prompt=prompt,
                         thumbnail_url=thumbnail_route,
                         original_url=original_route

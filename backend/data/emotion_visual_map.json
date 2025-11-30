@@ -1,0 +1,139 @@
+{
+    "mood_configurations": [
+      {
+        "id": 1,
+        "mood_chinese": "喜悦",
+        "mood_english": "Joyful",
+        "style_keywords": "dynamic, vibrant, energetic, wide smile, playful",
+        "color_keywords": "golden yellow, warm orange, saturated coral, high contrast",
+        "lighting_keywords": "golden hour, sun flare, high key, diffused sunlight, sparkling",
+        "medium_modifiers": "Pop Art, digital painting, whimsical, trending on ArtStation"
+      },
+      {
+        "id": 2,
+        "mood_chinese": "兴奋",
+        "mood_english": "Excitement",
+        "style_keywords": "burst of energy, anticipation, rapid motion, exhilarated",
+        "color_keywords": "electric blue, neon pink, bold red, contrasting colors",
+        "lighting_keywords": "stadium lighting, lens flare, motion blur, sharp focus",
+        "medium_modifiers": "Cyberpunk, Glitch Art, high octane, kinetic"
+      },
+      {
+        "id": 3,
+        "mood_chinese": "活力",
+        "mood_english": "Energetic",
+        "style_keywords": "movement, strong posture, robust, ready for action",
+        "color_keywords": "lime green, burning red, high saturation and vibrancy",
+        "lighting_keywords": "strong daylight, crisp shadows, outdoor bright light",
+        "medium_modifiers": "Street Photography, Comic Book Style, graffiti aesthetic"
+      },
+      {
+        "id": 4,
+        "mood_chinese": "浪漫",
+        "mood_english": "Romantic",
+        "style_keywords": "tender, intimate, affectionate, soft gaze",
+        "color_keywords": "rose gold, soft pink, deep burgundy, creamy highlights",
+        "lighting_keywords": "candlelight, backlighting, shallow depth of field, sunset",
+        "medium_modifiers": "Impressionism, soft focus photography, dreamy"
+      },
+      {
+        "id": 5,
+        "mood_chinese": "好奇",
+        "mood_english": "Curious",
+        "style_keywords": "exploratory, wide-eyed, seeking, focused attention",
+        "color_keywords": "vibrant magenta, electric yellow, clean white background",
+        "lighting_keywords": "spotlight on face, soft rim lighting, dappled light",
+        "medium_modifiers": "Abstract Photography, Scientific Illustration, Macro shot"
+      },
+      {
+        "id": 6,
+        "mood_chinese": "忧郁",
+        "mood_english": "Melancholy",
+        "style_keywords": "pensive, solitude, introspective, gentle curve",
+        "color_keywords": "deep indigo, cold blue, muted gray, low saturation",
+        "lighting_keywords": "low key, soft shadows, rainy day, twilight, neon glow at night",
+        "medium_modifiers": "Film Grain Photo, dark academia, analog photo"
+      },
+      {
+        "id": 7,
+        "mood_chinese": "抑郁",
+        "mood_english": "Depression",
+        "style_keywords": "heavy stillness, isolation, vacant stare, withdrawn",
+        "color_keywords": "monochromatic, almost black and white, dusty tones, sepia",
+        "lighting_keywords": "minimal light, deep dark areas, heavy fog, silhouette",
+        "medium_modifiers": "Black and White Photography, expressionism, chiaroscuro"
+      },
+      {
+        "id": 8,
+        "mood_chinese": "伤心",
+        "mood_english": "Sadness",
+        "style_keywords": "tears, sorrowful expression, hunched posture, fragile",
+        "color_keywords": "deep sapphire, ash gray, pale blue, low contrast",
+        "lighting_keywords": "overcast sky, diffused cold light, light from single window",
+        "medium_modifiers": "Watercolor, oil painting with heavy texture, vintage style"
+      },
+      {
+        "id": 9,
+        "mood_chinese": "愤怒",
+        "mood_english": "Anger",
+        "style_keywords": "intense, powerful, aggressive, sharp lines, confrontational",
+        "color_keywords": "bold red, deep black, contrasting colors, magma tones",
+        "lighting_keywords": "harsh side lighting, firelight, strong shadows, storm lighting",
+        "medium_modifiers": "Cyberpunk, Glitch Art, dramatic lighting, aggressive brushstrokes"
+      },
+      {
+        "id": 10,
+        "mood_chinese": "恐惧",
+        "mood_english": "Fear",
+        "style_keywords": "paralyzed, wide-eyed terror, hiding, defensive posture",
+        "color_keywords": "toxic green, sickly yellow, deep shadow, high contrast",
+        "lighting_keywords": "backlit silhouette, flickering light, deep darkness, flashlight beam",
+        "medium_modifiers": "Horror Art, Surrealism, heavy vignette, digital painting"
+      },
+      {
+        "id": 11,
+        "mood_chinese": "宁静",
+        "mood_english": "Peaceful",
+        "style_keywords": "serene, calm, meditative, minimalist, composed",
+        "color_keywords": "pastel blue, seafoam green, soft white, natural wood tone",
+        "lighting_keywords": "misty morning, soft ambient light, clean bokeh, foggy",
+        "medium_modifiers": "Minimalist Photography, Japanese Ink (Sumi-e), ethereal"
+      },
+      {
+        "id": 12,
+        "mood_chinese": "神秘",
+        "mood_english": "Mysterious",
+        "style_keywords": "enigmatic, occult, obscured, hidden elements, dreamlike",
+        "color_keywords": "emerald green, deep purple, smoky black, metallic silver",
+        "lighting_keywords": "deep shadow, moonlight, heavy fog, neon glow, particle effects",
+        "medium_modifiers": "Surrealism, Dark Fantasy, 3D Render, WLOP style"
+      },
+      {
+        "id": 13,
+        "mood_chinese": "怀旧",
+        "mood_english": "Nostalgia",
+        "style_keywords": "vintage feel, looking back, cherished memory",
+        "color_keywords": "sepia tone, faded color, warm filter, dusty palette",
+        "lighting_keywords": "soft glow, antique lighting, sunlight filtering through dust",
+        "medium_modifiers": "Analog Photography, Polariod style, retro aesthetic, film grain"
+      },
+      {
+        "id": 14,
+        "mood_chinese": "力量感",
+        "mood_english": "Powerful",
+        "style_keywords": "dominant, commanding presence, strong stance, determined",
+        "color_keywords": "deep bronze, metallic gray, electric blue highlights",
+        "lighting_keywords": "heroic lighting, rim light, low angle perspective, epic scene",
+        "medium_modifiers": "Fantasy Art, Sculptural Render, Cinematic composition"
+      },
+      {
+        "id": 15,
+        "mood_chinese": "平静",
+        "mood_english": "Calm",
+        "style_keywords": "balanced, still, unmoving, clear mind",
+        "color_keywords": "clean white, neutral gray, light beige, subtle chroma",
+        "lighting_keywords": "evenly lit, studio lighting, shadowless environment",
+        "medium_modifiers": "Portrait Photography, Bauhaus style, clean lines, minimalist design"
+      }
+    ]
+  }

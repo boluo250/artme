@@ -12,8 +12,10 @@ struct PromptStyle: Codable, Identifiable {
     let id: String
     let category: String
     let categoryId: Int
+    let categoryCn: String?
     let subcategory: String
     let subcategoryId: Int
+    let subcategoryCn: String?
     let prompt: String
     let thumbnailUrl: String
     let originalUrl: String
