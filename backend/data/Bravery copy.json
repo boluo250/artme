@@ -1,0 +1,542 @@
+[
+  {
+    "id": "lv1_cabin_warm_smile",
+    "level": 1,
+    "name": "木屋暖光下的轻轻微笑",
+    "prompt": "young adult inside a cozy wooden cabin, soft natural home outfit, warm textures; pose: standing near wooden wall, gentle relaxed posture, hands loosely together; expression: tiny encouraging smile; environment: warm cabin interior with soft amber light, wooden beams, fireplace glow; lighting: warm diffused indoor light with soft highlights; tone: comforting cinematic warm; lens: 50mm f1.8 shallow depth; composition: medium portrait centered in warm wooden background"
+  },
+  {
+    "id": "lv1_cabin_window_light",
+    "level": 1,
+    "name": "木屋窗边轻抬头的勇气",
+    "prompt": "young adult in a small wooden cabin, soft sweater outfit; pose: standing beside a small cabin window, head slightly lifted upward; expression: gentle curiosity, subtle courage; environment: warm wood textures, small window letting in soft winter daylight; lighting: warm indoor ambient mixed with cool window rim light; tone: warm peaceful; lens: 50mm natural portrait; composition: side-lit portrait with window framing"
+  },
+  {
+    "id": "lv1_cabin_door_first_step",
+    "level": 1,
+    "name": "木屋门口的小小第一步",
+    "prompt": "young adult inside a rustic wooden cabin, simple daily clothing; pose: hand on wooden door handle, taking a tiny step forward; expression: calm determination; environment: wooden cabin interior, door opening to brighter hallway; lighting: warm interior glow + soft doorway cool light; tone: comforting and safe; lens: 35mm; composition: doorway framing emphasizing small step"
+  },
+  {
+    "id": "lv1_cabin_bookshelf_thought",
+    "level": 1,
+    "name": "木屋书架前整理心态",
+    "prompt": "young adult inside a warm cabin library corner, knit sweater outfit; pose: standing in front of wooden bookshelf, adjusting sleeves gently; expression: calm and thoughtful, micro-courage; environment: wooden shelves with books, cozy textures; lighting: warm lamp light with soft highlights; tone: warm intimate; lens: 50mm; composition: medium portrait with bookshelf background"
+  },
+  {
+    "id": "lv1_cabin_fireplace_breath",
+    "level": 1,
+    "name": "壁炉旁的小小深呼吸",
+    "prompt": "young adult in cozy wooden cabin wearing soft homewear; pose: sitting near fireplace, hands on knees, taking a slow breath; expression: gentle readiness; environment: glowing fireplace, rustic wood interior; lighting: warm firelight with soft shadows; tone: cinematic warm orange; lens: 35mm; composition: warm fireplace-side portrait"
+  },
+  {
+    "id": "lv1_cabin_coffee_moment",
+    "level": 1,
+    "name": "木屋静谧清晨的勇气咖啡",
+    "prompt": "young adult in wooden cabin kitchen, soft morning outfit; pose: holding a warm mug with both hands, small inhale; expression: calm, quietly encouraging themselves; environment: rustic wooden table, soft cabin morning light; lighting: warm ambient + window rim light; tone: peaceful and introspective; lens: 50mm; composition: medium shot with table foreground"
+  },
+  {
+    "id": "lv1_cabin_mirror_small_smile",
+    "level": 1,
+    "name": "木屋镜子前的自我鼓励",
+    "prompt": "young adult inside wooden cabin bedroom, soft daily outfit; pose: facing a small cabin mirror, slight forward lean; expression: tiny optimistic smile; environment: wooden wall, small mirror frame, soft textiles; lighting: warm diffused lamp light; tone: gentle and safe; lens: 50mm; composition: mirror-reflection framing"
+  },
+  {
+    "id": "lv1_cabin_bedside_prepare",
+    "level": 1,
+    "name": "木屋床边的轻轻准备动作",
+    "prompt": "young adult in warm rustic cabin bedroom, soft homewear; pose: sitting on bedside, hands resting on thighs as if preparing to stand; expression: slight nervousness turning into calm determination; environment: wooden bedframe, soft fabrics, warm room; lighting: warm golden lamp light; tone: soothing warm; lens: 35mm; composition: bedside medium portrait"
+  },
+  {
+    "id": "lv1_cabin_light_touch_frame",
+    "level": 1,
+    "name": "轻触木门框的微勇气",
+    "prompt": "young adult inside a cozy wooden cabin hallway; pose: gently touching doorframe with fingertips, small movement forward; expression: quiet inner strength; environment: warm wood panels, soft cabin lighting; lighting: golden ambient light; tone: soft warm tones; lens: 50mm; composition: centered portrait with wooden frame"
+  },
+  {
+    "id": "lv1_cabin_soft_walk",
+    "level": 1,
+    "name": "木屋内缓慢前行的一步",
+    "prompt": "young adult in small warm cabin, relaxed outfit; pose: slow gentle step across wooden floor, shoulders open; expression: calm, lightly encouraged; environment: rustic cabin interior with soft warm lights; lighting: warm ambient glow with mild shadows; tone: comforting cinematic; lens: 35mm; composition: hallway leading lines in wooden interior"
+  },
+  {
+    "id": "lv2_cabin_step_outside",
+    "level": 2,
+    "name": "踏出木屋门口的第一步",
+    "prompt": "young adult in a rustic wooden cabin doorway, soft outdoor-ready outfit; pose: stepping gently from warm cabin interior to outside porch; expression: calm anticipation; environment: wooden doorway, outdoor light casting soft glow; lighting: warm indoor light mixing with cool morning light; tone: warm-to-cool transition; lens: 35mm; composition: symbolic threshold framing"
+  },
+  {
+    "id": "lv2_cabin_putting_on_jacket",
+    "level": 2,
+    "name": "在木屋中穿上外套准备出发",
+    "prompt": "young adult inside a cozy wooden cabin, wearing light jacket; pose: pulling jacket zipper halfway, preparing to step outside; expression: subtle determination; environment: wooden walls, boots near door; lighting: warm cabin lamp + soft daylight; tone: warm and encouraging; lens: 50mm; composition: medium portrait with door in background"
+  },
+  {
+    "id": "lv2_cabin_open_window_breeze",
+    "level": 2,
+    "name": "打开木屋窗户感受微风",
+    "prompt": "young adult inside wooden cabin, casual outdoor outfit; pose: opening small cabin window, letting breeze in; expression: gentle curiosity; environment: window frame, forest hints outside; lighting: warm indoor mixed with soft natural light; tone: cozy fresh; lens: 35mm; composition: side-lit portrait with open window"
+  },
+  {
+    "id": "lv2_cabin_hallway_walk",
+    "level": 2,
+    "name": "穿过木屋走廊的轻步探索",
+    "prompt": "young adult in a warm rustic cabin hallway; pose: walking slowly forward, hands relaxed; expression: calm, slightly adventurous; environment: narrow wooden corridor; lighting: warm directional cabin lamps; tone: intimate warm; lens: 35mm; composition: centered composition with hallway lines"
+  },
+  {
+    "id": "lv2_cabin_peek_outside",
+    "level": 2,
+    "name": "从木屋门缝轻轻向外张望",
+    "prompt": "young adult wearing soft casual clothes; pose: slightly leaning toward door gap, peeking outside; expression: cautious curiosity; environment: wooden cabin door, muted outdoor light; lighting: warm interior shadow with soft cool highlights; tone: cinematic warm; lens: 85mm; composition: tight portrait with door edge framing"
+  },
+  {
+    "id": "lv2_cabin_lacing_boots",
+    "level": 2,
+    "name": "在木屋里系上登山靴",
+    "prompt": "young adult in small wooden cabin entryway; pose: sitting on wooden bench, tying laces of outdoor boots; expression: focused readiness; environment: wooden textures, hooks with jackets; lighting: warm cabin ambient; tone: cozy adventurous; lens: 50mm; composition: lower-angle lifestyle shot"
+  },
+  {
+    "id": "lv2_cabin_map_check",
+    "level": 2,
+    "name": "木屋桌旁轻轻查看地图",
+    "prompt": "young adult in cozy cabin workspace; pose: leaning slightly over wooden table checking small map; expression: calm planning; environment: rustic desk, lamp, small items; lighting: warm lamp light; tone: warm detailed; lens: 35mm; composition: over-the-shoulder map view"
+  },
+  {
+    "id": "lv2_cabin_opening_backpack",
+    "level": 2,
+    "name": "检查轻便背包准备出门",
+    "prompt": "young adult in wooden cabin, light outdoor outfit; pose: opening backpack, small preparation gesture; expression: peaceful readiness; environment: wooden interior, coat hook, soft ambient light; lighting: warm cabin glow; tone: warm cozy; lens: 50mm; composition: medium lifestyle shot"
+  },
+  {
+    "id": "lv2_cabin_on_porch_first_step",
+    "level": 2,
+    "name": "走上木屋前廊的轻勇气",
+    "prompt": "young adult stepping onto cabin porch, soft outdoor outfit; pose: gentle step forward, hands relaxed; expression: calm curiosity; environment: wooden porch, soft forest hints; lighting: warm indoor light transitioning to outdoor cool; tone: adventurous soft; lens: 35mm; composition: porch framing with natural depth"
+  },
+  {
+    "id": "lv2_cabin_doorway_sunlight",
+    "level": 2,
+    "name": "木屋门口面对晨光",
+    "prompt": "young adult in rustic cabin entrance, wearing light jacket; pose: standing still facing outdoor sunlight; expression: calm inner courage; environment: wooden doorway, forest light outside; lighting: warm-to-cool soft morning rays; tone: serene warm; lens: 50mm; composition: silhouette softened by outdoor light"
+  },
+  {
+    "id": "lv3_forest_path_first_step",
+    "level": 3,
+    "name": "踏上森林小径的第一步",
+    "prompt": "young adult in outdoor clothes, soft hiking outfit; pose: taking a small first step onto forest path; expression: cautious but curious; environment: soft forest light, moss-covered ground, tall trees; lighting: diffused sunlight through leaves; tone: natural calm adventure; lens: 35mm; composition: leading path lines"
+  },
+  {
+    "id": "lv3_forest_cautious_walk",
+    "level": 3,
+    "name": "森林中的轻缓步行",
+    "prompt": "young adult walking gently along forest trail; expression: mixed curiosity and mild tension; environment: dense forest, soft shadows; lighting: soft sun beams through canopy; tone: calm green; lens: 35mm; composition: centered walkway shot"
+  },
+  {
+    "id": "lv3_forest_look_back",
+    "level": 3,
+    "name": "回头确认路径的谨慎探索者",
+    "prompt": "young adult wearing light outdoor jacket; pose: turning head back slightly; expression: alert but composed; environment: quiet forest path; lighting: soft directional rays; tone: calm natural; lens: 50mm; composition: forest depth background"
+  },
+  {
+    "id": "lv3_forest_bridge_cross",
+    "level": 3,
+    "name": "穿过森林小木桥",
+    "prompt": "young adult crossing small wooden bridge; pose: gentle step forward; expression: light courage; environment: creek, wooden bridge, lush forest; lighting: diffused ambient; tone: cool-warm nature blend; lens: 35mm; composition: bridge leading lines"
+  },
+  {
+    "id": "lv3_forest_listening",
+    "level": 3,
+    "name": "在林间停下倾听风声",
+    "prompt": "young adult standing still in forest, head slightly tilted; expression: calm awareness; environment: tall pine trees; lighting: soft filtered light; tone: atmospheric green; lens: 85mm; composition: intimate nature portrait"
+  },
+  {
+    "id": "lv3_forest_sunbeam_touch",
+    "level": 3,
+    "name": "轻触穿过树叶的阳光",
+    "prompt": "young adult reaching hand toward sunbeam; expression: soft curiosity; environment: forest clearing; lighting: strong sunbeam streaks; tone: glowing warm; lens: 50mm; composition: hand in sunbeam foreground"
+  },
+  {
+    "id": "lv3_forest_map_check",
+    "level": 3,
+    "name": "在森林入口查看地图",
+    "prompt": "young adult holding folded map; expression: slightly unsure but determined; environment: forest gate, wooden sign; lighting: soft daylight; tone: adventurous light; lens: 35mm; composition: map foreground angle"
+  },
+  {
+    "id": "lv3_forest_small_jump",
+    "level": 3,
+    "name": "跨过小树根的轻动作",
+    "prompt": "young adult stepping over small root; expression: gentle bravery; environment: forest floor, scattered leaves; lighting: natural soft; tone: earthy warm; lens: 35mm; composition: action mid-step"
+  },
+  {
+    "id": "lv3_forest_first_climb",
+    "level": 3,
+    "name": "轻轻攀上低矮岩石",
+    "prompt": "young adult climbing small rock; expression: determined but safe; environment: mossy stones, forest sunlight; lighting: natural rim light; tone: cinematic nature; lens: 50mm; composition: low-angle small climb"
+  },
+  {
+    "id": "lv3_forest_following_trail_mark",
+    "level": 3,
+    "name": "根据树上的标记前进",
+    "prompt": "young adult spotting trail marking on tree; expression: thoughtful and curious; environment: forest path with painted trail sign; lighting: diffused nature light; tone: calm green; lens: 50mm; composition: sign foreground with subject"
+  },
+  {
+    "id": "lv4_forest_confident_walk",
+    "level": 4,
+    "name": "更坚定地迈入森林深处",
+    "prompt": "young adult in practical hiking outfit; pose: confident stride forward; expression: focused determination; environment: deeper forest with tall trees; lighting: dramatic sun rays; tone: bold natural; lens: 35mm; composition: dynamic forward motion"
+  },
+  {
+    "id": "lv4_forest_cliff_view",
+    "level": 4,
+    "name": "站在森林悬崖边安全观景台",
+    "prompt": "young adult standing at safe forest viewpoint railing; expression: calm bravery; environment: high forest cliff, clouds below; lighting: warm sunlight on face; tone: cinematic warm; lens: 24mm; composition: vast scenic background"
+  },
+  {
+    "id": "lv4_forest_run",
+    "level": 4,
+    "name": "林间轻跑",
+    "prompt": "young adult running lightly on forest path; expression: energetic courage; environment: fast-moving trees blur; lighting: morning sun; tone: fresh warm; lens: 35mm; composition: motion-focused shot"
+  },
+  {
+    "id": "lv4_forest_walk_with_stick",
+    "level": 4,
+    "name": "拿着木杖探索更深密林",
+    "prompt": "young adult with hiking stick; pose: steady walking posture; expression: confident calm; environment: dense green forest; lighting: soft volumetric light; tone: rich earthy; lens: 50mm; composition: centered explorer shot"
+  },
+  {
+    "id": "lv4_forest_high_rock_pose",
+    "level": 4,
+    "name": "站上高一点的岩石俯瞰树林",
+    "prompt": "young adult on mid-sized rock; expression: proud courage; environment: forest clearing; lighting: warm side light; tone: epic natural; lens: 35mm; composition: slight low-angle empowering shot"
+  },
+  {
+    "id": "lv4_forest_open_map_confident",
+    "level": 4,
+    "name": "自信地展开地图寻找路线",
+    "prompt": "young adult holding open map; pose: strong stance; expression: focused; environment: forest with directional sign; lighting: warm sunlight; tone: decisive warm; lens: 50mm; composition: map foreground angle"
+  },
+  {
+    "id": "lv4_forest_river_crossing",
+    "level": 4,
+    "name": "跨过小河石头安全前进",
+    "prompt": "young adult stepping on large stones over stream; expression: determined; environment: forest river, mossy stones; lighting: cool ambient + warm rim; tone: adventurous cool-warm contrast; lens: 35mm; composition: stepping motion"
+  },
+  {
+    "id": "lv4_forest_crouch_inspect",
+    "level": 4,
+    "name": "蹲下观察地面痕迹",
+    "prompt": "young adult crouching on forest floor; expression: focused awareness; environment: leaves, branches, soft earth; lighting: natural filtered light; tone: detailed and warm; lens: 85mm; composition: close portrait crouching view"
+  },
+  {
+    "id": "lv4_forest_silhouette_sun",
+    "level": 4,
+    "name": "背对阳光的冒险者剪影",
+    "prompt": "young adult standing tall in forest clearing; expression: strong calm; environment: bright sun behind creating silhouette; lighting: strong backlight; tone: warm epic; lens: 35mm; composition: heroic silhouette framing"
+  },
+  {
+    "id": "lv4_forest_tree_climb_low",
+    "level": 4,
+    "name": "爬上一棵低矮安全的树干",
+    "prompt": "young adult climbing low tree trunk safely; expression: adventurous but careful; environment: thick forest; lighting: warm sunlight filtering; tone: energetic warm; lens: 35mm; composition: upward motion angle"
+  },
+  {
+    "id": "lv5_climb_small_rockface",
+    "level": 5,
+    "name": "攀上安全小岩壁",
+    "prompt": "young adult in light climbing outfit; pose: gripping low rock face; expression: focused bravery; environment: outdoor rocky terrain; lighting: warm strong sunlight; tone: cinematic adventurous; lens: 35mm; composition: low-angle climb"
+  },
+  {
+    "id": "lv5_edge_city_view",
+    "level": 5,
+    "name": "城市边缘的轻攀视角",
+    "prompt": "young adult near safe urban climbing wall; expression: determination; environment: city skyline; lighting: warm sunset gold; tone: blue-orange cinematic; lens: 50mm; composition: city view behind climber"
+  },
+  {
+    "id": "lv5_forest_cliff_side",
+    "level": 5,
+    "name": "在森林岩壁侧身前行",
+    "prompt": "young adult on side of small forest cliff; pose: careful sidestep; environment: mossy rocks; lighting: warm directional; tone: natural heroic; lens: 35mm; composition: cliffside depth"
+  },
+  {
+    "id": "lv5_photo_on_rock",
+    "level": 5,
+    "name": "岩石上进行自由摄影",
+    "prompt": "young adult standing on rock holding camera; expression: confident; environment: outdoor open field; lighting: cool ambient + warm rim; tone: cinematic clarity; lens: 50mm; composition: photographer heroic pose"
+  },
+  {
+    "id": "lv5_sunset_rock_profile",
+    "level": 5,
+    "name": "夕阳岩石侧脸肖像",
+    "prompt": "young adult on rock; pose: profile facing sun; expression: calm determined; environment: warm sunset; lighting: strong rim light; tone: deep gold; lens: 85mm; composition: silhouette-like profile"
+  },
+  {
+    "id": "lv5_climb_grip_closeup",
+    "level": 5,
+    "name": "攀岩抓点特写",
+    "prompt": "young adult gripping safe rock ledge; environment: outdoor cliff; lighting: strong directional; tone: raw natural; lens: 85mm close-up; composition: hand grip foreground"
+  },
+  {
+    "id": "lv5_step_up_high_rock",
+    "level": 5,
+    "name": "迈上更高岩石的瞬间",
+    "prompt": "young adult stepping up rock; expression: brave determination; environment: rocky terrain; lighting: dramatic sunlight; tone: epic natural; lens: 35mm; composition: low-angle step"
+  },
+  {
+    "id": "lv5_cliff_overlook_sit",
+    "level": 5,
+    "name": "坐在岩边俯瞰远景",
+    "prompt": "young adult seated on safe cliff edge; expression: reflective confidence; environment: mountains or forest drop; lighting: warm sunset; tone: contemplative epic; lens: 50mm; composition: wide scenic shot"
+  },
+  {
+    "id": "lv5_photographer_crouch",
+    "level": 5,
+    "name": "蹲下捕捉自然光的摄影师",
+    "prompt": "young adult crouching with camera; expression: focused artistic courage; environment: outdoor nature; lighting: soft beams; tone: warm cinematic; lens: 35mm; composition: dynamic crouch"
+  },
+  {
+    "id": "lv5_rock_shadow_pose",
+    "level": 5,
+    "name": "岩石阴影中的强势姿态",
+    "prompt": "young adult standing half in shadow; expression: determined; environment: rocky wall; lighting: contrasty sunlight; tone: moody dramatic; lens: 50mm; composition: hero shadow balance"
+  },
+  {
+    "id": "lv7_mecha_rooftop_pose",
+    "level": 7,
+    "name": "城市天台的轻装机甲战士",
+    "prompt": "young adult wearing lightweight urban exo-armor, sleek plates and glowing trims; pose: standing firmly on rooftop edge facing wind; expression: fearless calm; environment: high city rooftop, dusk skyline; lighting: golden rimlight + blue ambient; tone: cinematic tech noir; lens: 35mm; composition: low-angle heroic shot"
+  },
+  {
+    "id": "lv7_mecha_kneel_scan",
+    "level": 7,
+    "name": "机甲战士跪地扫描地面",
+    "prompt": "young adult in light tactical exo-mecha suit; pose: kneeling, scanning ground with holographic interface; expression: focused alertness; environment: urban rooftop metal panels; lighting: soft neon reflections; tone: modern sci-fi; lens: 50mm; composition: hologram foreground"
+  },
+  {
+    "id": "lv7_mecha_edge_walk",
+    "level": 7,
+    "name": "机甲战士沿天台边缘前行",
+    "prompt": "young adult wearing aerodynamic exo-armor; pose: slow confident walk along rooftop edge; expression: determined; environment: windy skyline; lighting: directional cold light + warm accents; tone: heroic cool; lens: 35mm; composition: edge leading lines"
+  },
+  {
+    "id": "lv7_mecha_glow_visor",
+    "level": 7,
+    "name": "半透明发光面罩下的眼神",
+    "prompt": "young adult in sleek mecha helmet with semi-transparent visor glowing softly; pose: still portrait; expression: sharp focused eyes; environment: rooftop dusk; lighting: visor glow + rimlight; tone: futuristic cinematic; lens: 85mm; composition: tight portrait"
+  },
+  {
+    "id": "lv7_mecha_backshot",
+    "level": 7,
+    "name": "机甲背影朝城市风中站立",
+    "prompt": "young adult in exo-suit facing skyline with wind; pose: backshot stance; expression: implied courage; environment: high city building top; lighting: sunset flare; tone: epic warm; lens: 35mm; composition: wide scenic"
+  },
+  {
+    "id": "lv7_mecha_small_hud",
+    "level": 7,
+    "name": "机甲战士手部显示器启动",
+    "prompt": "young adult activating wrist HUD on light mecha armor; pose: raising arm slightly; expression: calm concentration; environment: rooftop metal floor; lighting: HUD glow; tone: neon tech; lens: 50mm; composition: HUD foreground"
+  },
+  {
+    "id": "lv7_mecha_wind_stand",
+    "level": 7,
+    "name": "风中静立的机甲勇者",
+    "prompt": "young adult in streamlined exo-armor; pose: firm stance, coat elements blowing; expression: heroic calm; environment: tall rooftop; lighting: blue hour ambient; tone: cool cinematic; lens: 35mm"
+  },
+  {
+    "id": "lv7_mecha_prepare_jump",
+    "level": 7,
+    "name": "机甲战士准备跃下天台",
+    "prompt": "young adult in agile mecha gear; pose: crouched slightly, preparing to jump; expression: focused bravery; environment: rooftop edge; lighting: dramatic rimlight; tone: dynamic tech; lens: 24mm"
+  },
+  {
+    "id": "lv7_mecha_hand_on_rail",
+    "level": 7,
+    "name": "手扶金属栏杆的机甲战士",
+    "prompt": "young adult in light mecha armor; pose: one hand on railing; expression: calm determination; environment: high-rise edge; lighting: neon reflections; tone: atmospheric cool; lens: 50mm"
+  },
+  {
+    "id": "lv7_mecha_hologram_map",
+    "level": 7,
+    "name": "查看城市立体全息图",
+    "prompt": "young adult wearing exo-armor, interacting with small holographic city map; pose: hand mid-air; expression: calculating confidence; environment: rooftop night; lighting: hologram glow; tone: sci-fi clarity; lens: 35mm"
+  },
+  {
+    "id": "lv8_mage_rune_circle",
+    "level": 8,
+    "name": "魔法战士脚下的符文光阵",
+    "prompt": "young adult in fantasy battle robe reinforced with armor plates; pose: standing centered in glowing rune circle; expression: serene confidence; environment: stone platform with swirling mist; lighting: blue-white rune glow; tone: epic mystic; lens: 35mm"
+  },
+  {
+    "id": "lv8_mage_sword_glow",
+    "level": 8,
+    "name": "握着发光剑的魔法勇者",
+    "prompt": "young adult holding glowing arcane blade; pose: ready stance; expression: intense courage; environment: ruined ancient temple; lighting: blade glow + sunlight shafts; tone: heroic fantasy; lens: 50mm"
+  },
+  {
+    "id": "lv8_mage_cloak_wind",
+    "level": 8,
+    "name": "风中挥动长斗篷的战斗法师",
+    "prompt": "young adult in enchanted cloak with metallic edges; pose: standing tall facing wind; expression: noble calm; environment: cliff with clouds; lighting: dramatic backlight; tone: mythic warm; lens: 35mm"
+  },
+  {
+    "id": "lv8_mage_dual_spells",
+    "level": 8,
+    "name": "双手召唤不同魔法元素",
+    "prompt": "young adult casting dual spells, left-hand fire, right-hand light; pose: battle-ready; expression: fierce bravery; environment: ancient ruins; lighting: strong magical glow; tone: epic vibrant; lens: 24mm"
+  },
+  {
+    "id": "lv8_mage_rune_armor",
+    "level": 8,
+    "name": "符文铠甲下的冷静勇者",
+    "prompt": "young adult in rune-engraved armor; pose: still portrait; expression: unwavering calm; environment: stone corridor; lighting: soft rune highlights; tone: mystical; lens: 85mm"
+  },
+  {
+    "id": "lv8_mage_staff_light",
+    "level": 8,
+    "name": "高举法杖召唤光明",
+    "prompt": "young adult lifting glowing staff; expression: divine courage; environment: high ridge above cloud sea; lighting: strong heavenly beam; tone: mythic epic; lens: 35mm"
+  },
+  {
+    "id": "lv8_mage_shield_spell",
+    "level": 8,
+    "name": "魔法护盾在空气中形成",
+    "prompt": "young adult creating translucent magic shield; pose: defensive stance; expression: calm focus; environment: windswept plateau; lighting: shield glow; tone: dramatic cool; lens: 50mm"
+  },
+  {
+    "id": "lv8_mage_step_through_gate",
+    "level": 8,
+    "name": "踏入光之魔法门",
+    "prompt": "young adult stepping through circular magical gate; expression: fearless; environment: floating stone platform; lighting: bright portal glow; tone: fantastical; lens: 24mm"
+  },
+  {
+    "id": "lv8_mage_rising_leaves",
+    "level": 8,
+    "name": "魔力使落叶在身边漂浮",
+    "prompt": "young adult with arcane aura; pose: calm concentration; expression: inner strength; environment: enchanted forest; lighting: warm magic particles; tone: nature fantasy; lens: 50mm"
+  },
+  {
+    "id": "lv8_mage_cliff_glow",
+    "level": 8,
+    "name": "站在峭壁前的魔法光辉",
+    "prompt": "young adult emitting soft magic glow; pose: heroic stance on cliff; expression: steady determination; environment: stormy sky; lighting: strong rimlight + magic glow; tone: epic; lens: 35mm"
+  },
+  {
+    "id": "lv9_pilot_cockpit_pose",
+    "level": 9,
+    "name": "高空座舱中的飞行员",
+    "prompt": "young adult in futuristic pilot suit; pose: seated in cockpit, hands on controls; expression: calm mastery; environment: high-altitude clouds; lighting: cockpit HUD glow; tone: sci-fi aviation; lens: 35mm"
+  },
+  {
+    "id": "lv9_pilot_runway_walk",
+    "level": 9,
+    "name": "未来跑道上坚定走来",
+    "prompt": "young adult wearing sleek pilot uniform; pose: walking toward camera on neon runway; expression: fearless; environment: futuristic hangar; lighting: neon blue/purple; tone: cyber aviation; lens: 50mm"
+  },
+  {
+    "id": "lv9_pilot_helmet_on",
+    "level": 9,
+    "name": "戴上飞行头盔的瞬间",
+    "prompt": "young adult putting on advanced flight helmet; expression: calm bravery; environment: aircraft side view; lighting: warm rim; tone: cinematic; lens: 85mm"
+  },
+  {
+    "id": "lv9_pilot_holo_dashboard",
+    "level": 9,
+    "name": "操控全息驾驶仪表",
+    "prompt": "young adult interacting with holographic dashboard; pose: hand mid-air; expression: focused; environment: futuristic jet cockpit; lighting: HUD glow; tone: sci-fi precision; lens: 35mm"
+  },
+  {
+    "id": "lv9_pilot_afterburner_light",
+    "level": 9,
+    "name": "站在点燃喷射器的机翼旁",
+    "prompt": "young adult in pilot suit; pose: strong stance near jet engine; expression: steady courage; environment: evening airbase; lighting: afterburner glow; tone: heroic; lens: 35mm"
+  },
+  {
+    "id": "lv9_driver_future_bike",
+    "level": 9,
+    "name": "未来机车驾驶者",
+    "prompt": "young adult sitting on glowing anti-gravity bike; expression: confident calm; environment: neon city street; lighting: vibrant neon; tone: cyberpunk; lens: 24mm"
+  },
+  {
+    "id": "lv9_driver_ready_pose",
+    "level": 9,
+    "name": "准备驾驶高速未来载具",
+    "prompt": "young adult in aerodynamic suit; pose: hands gripping handles; expression: high focus; environment: futuristic garage; lighting: LED strips; tone: sharp sci-fi; lens: 35mm"
+  },
+  {
+    "id": "lv9_pilot_cloud_walk",
+    "level": 9,
+    "name": "步行在象征性的云层平台",
+    "prompt": "young adult on floating cloud-like stage; expression: dreamlike fearlessness; environment: sky-blue setup; lighting: bright heaven glow; tone: ethereal; lens: 50mm"
+  },
+  {
+    "id": "lv9_pilot_wind_tunnel",
+    "level": 9,
+    "name": "风洞实验模拟中的稳立姿态",
+    "prompt": "young adult standing firm in wind tunnel; expression: undisturbed bravery; environment: industrial wind test room; lighting: strong directional lights; tone: intense tech; lens: 35mm"
+  },
+  {
+    "id": "lv9_driver_speed_tunnel",
+    "level": 9,
+    "name": "高速光隧道中的驾驶者剪影",
+    "prompt": "young adult in pilot suit; pose: silhouette against speed light tunnel; expression: heroic steady; environment: futuristic tunnel; lighting: streaking light motion; tone: epic sci-fi; lens: 24mm"
+  },
+  {
+    "id": "lv10_astronaut_space_walk",
+    "level": 10,
+    "name": "太空行走中的宇航员勇者",
+    "prompt": "young adult astronaut in advanced spacesuit; pose: floating in space, tether attached; expression: calm cosmic courage; environment: deep space stars; lighting: helmet reflection glow; tone: epic cosmic; lens: 24mm"
+  },
+  {
+    "id": "lv10_space_hero_lightbeam",
+    "level": 10,
+    "name": "从天而降的光柱中的英雄",
+    "prompt": "young adult in futuristic armor bathed in descending celestial beam; pose: centered stance; expression: transcendent courage; environment: cosmic void; lighting: powerful divine beam; tone: mythic sci-fi; lens: 35mm"
+  },
+  {
+    "id": "lv10_astronaut_planet_edge",
+    "level": 10,
+    "name": "站在行星边缘俯瞰星海",
+    "prompt": "young adult in spacesuit on planet cliff; expression: fearless awe; environment: nebula sky; lighting: rimlit cosmic glow; tone: legendary; lens: 24mm"
+  },
+  {
+    "id": "lv10_starship_bridge_pose",
+    "level": 10,
+    "name": "星舰指挥台上的终极勇者",
+    "prompt": "young adult in star commander uniform; pose: hands behind back; expression: absolute calm; environment: starship bridge holograms; lighting: cool sci-fi rimlight; tone: epic power; lens: 50mm"
+  },
+  {
+    "id": "lv10_spaceportal_step",
+    "level": 10,
+    "name": "踏入星际传送门的一步",
+    "prompt": "young adult stepping into swirling star portal; expression: transcendent bravery; environment: cosmic rift; lighting: portal glow; tone: grand sci-fi; lens: 24mm"
+  },
+  {
+    "id": "lv10_nebula_backlight",
+    "level": 10,
+    "name": "星云逆光下的英雄剪影",
+    "prompt": "young adult silhouette against bright nebula; pose: strong stance; expression: mythic calm; environment: space cloud; lighting: intense backlight; tone: majestic; lens: 35mm"
+  },
+  {
+    "id": "lv10_astronaut_rise_above_ship",
+    "level": 10,
+    "name": "漂浮在星舰之上的宇航员",
+    "prompt": "young adult astronaut floating above starship hull; expression: serene determination; environment: starlit void; lighting: helmet illumination; tone: cosmic clarity; lens: 35mm"
+  },
+  {
+    "id": "lv10_starlight_wings",
+    "level": 10,
+    "name": "背后形成星光翼影的象征",
+    "prompt": "young adult with symbolic star-glow wings; pose: open-shoulder heroic stance; environment: cosmic horizon; lighting: glowing wing aura; tone: divine cosmic; lens: 50mm"
+  },
+  {
+    "id": "lv10_cosmic_gate_guardian",
+    "level": 10,
+    "name": "守护宇宙之门的星际勇者",
+    "prompt": "young adult in celestial armor guarding massive gate; expression: unshakable; environment: colossal cosmic architecture; lighting: dramatic gate glow; tone: mythic scale; lens: 24mm"
+  },
+  {
+    "id": "lv10_supernova_glow",
+    "level": 10,
+    "name": "立于超新星光辉中的英雄",
+    "prompt": "young adult facing supernova light; pose: steady silhouette; expression: transcendent strength; environment: exploding star visual; lighting: extreme bright cosmic glow; tone: legendary heroic; lens: 35mm"
+  }
+]

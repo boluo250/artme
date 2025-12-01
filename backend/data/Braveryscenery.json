@@ -1,0 +1,872 @@
+[
+  {
+    "level": 1,
+    "emotion": "Bravery",
+    "stage_name": "Lv1 · Micro Courage · Safe Indoor Warmth",
+    "scenes": [
+      {
+        "id": "lv1_scene_01",
+        "name": "小木屋窗边轻轻抬头"
+      },
+      {
+        "id": "lv1_scene_02",
+        "name": "教室最后一排轻轻整理课本"
+      },
+      {
+        "id": "lv1_scene_03",
+        "name": "自习室角落深呼吸"
+      },
+      {
+        "id": "lv1_scene_04",
+        "name": "书房里翻开新的一页"
+      },
+      {
+        "id": "lv1_scene_05",
+        "name": "卧室床边准备站起"
+      },
+      {
+        "id": "lv1_scene_06",
+        "name": "镜子前对自己微微一笑"
+      },
+      {
+        "id": "lv1_scene_07",
+        "name": "木屋门口触碰门把"
+      },
+      {
+        "id": "lv1_scene_08",
+        "name": "咖啡厅角落轻抿第一口咖啡"
+      },
+      {
+        "id": "lv1_scene_09",
+        "name": "温暖灯光下抱着书坐着"
+      },
+      {
+        "id": "lv1_scene_10",
+        "name": "宿舍床上轻轻伸懒腰"
+      },
+      {
+        "id": "lv1_scene_11",
+        "name": "饭桌前鼓起勇气按下发送键"
+      },
+      {
+        "id": "lv1_scene_12",
+        "name": "拉开窗帘迎接早晨"
+      },
+      {
+        "id": "lv1_scene_13",
+        "name": "小木屋壁炉旁坐下"
+      },
+      {
+        "id": "lv1_scene_14",
+        "name": "轻轻推开储物室的门"
+      },
+      {
+        "id": "lv1_scene_15",
+        "name": "教室窗边轻轻抬头看天"
+      },
+      {
+        "id": "lv1_scene_16",
+        "name": "室内植物旁整理叶片"
+      },
+      {
+        "id": "lv1_scene_17",
+        "name": "小木屋木地板上静静坐着"
+      },
+      {
+        "id": "lv1_scene_18",
+        "name": "卧室衣橱前深呼吸"
+      },
+      {
+        "id": "lv1_scene_19",
+        "name": "室内光线下调整衣领"
+      },
+      {
+        "id": "lv1_scene_20",
+        "name": "书桌上轻触笔尖准备写字"
+      }
+    ]
+  },
+  {
+    "level": 2,
+    "emotion": "Bravery",
+    "stage_name": "Lv2 · Light Exploration · Stepping Outside",
+    "scenes": [
+      {
+        "id": "lv2_scene_01",
+        "name": "跨出小木屋门口"
+      },
+      {
+        "id": "lv2_scene_02",
+        "name": "校园走廊里迈步向前"
+      },
+      {
+        "id": "lv2_scene_03",
+        "name": "图书馆出口前停顿一下"
+      },
+      {
+        "id": "lv2_scene_04",
+        "name": "公寓楼道轻轻走出"
+      },
+      {
+        "id": "lv2_scene_05",
+        "name": "宿舍楼前抬头看天空"
+      },
+      {
+        "id": "lv2_scene_06",
+        "name": "教室门口往外张望"
+      },
+      {
+        "id": "lv2_scene_07",
+        "name": "咖啡店门口犹豫后迈出一小步"
+      },
+      {
+        "id": "lv2_scene_08",
+        "name": "公园入口轻轻走进"
+      },
+      {
+        "id": "lv2_scene_09",
+        "name": "家门口换好鞋准备外出"
+      },
+      {
+        "id": "lv2_scene_10",
+        "name": "木屋外台阶坐下整理鞋带"
+      },
+      {
+        "id": "lv2_scene_11",
+        "name": "院子里轻轻走动"
+      },
+      {
+        "id": "lv2_scene_12",
+        "name": "地铁闸机前深呼吸"
+      },
+      {
+        "id": "lv2_scene_13",
+        "name": "推开阳台门感受风"
+      },
+      {
+        "id": "lv2_scene_14",
+        "name": "收到邀请后轻点接受"
+      },
+      {
+        "id": "lv2_scene_15",
+        "name": "在外卖柜前鼓起勇气取件"
+      },
+      {
+        "id": "lv2_scene_16",
+        "name": "社区楼下轻轻走动"
+      },
+      {
+        "id": "lv2_scene_17",
+        "name": "公寓大厅按下电梯按钮"
+      },
+      {
+        "id": "lv2_scene_18",
+        "name": "小巷口向前迈出一步"
+      },
+      {
+        "id": "lv2_scene_19",
+        "name": "公园长椅旁试探性地站起来"
+      },
+      {
+        "id": "lv2_scene_20",
+        "name": "社区花园里轻轻闻花香"
+      }
+    ]
+  },
+  {
+    "level": 3,
+    "emotion": "Bravery",
+    "stage_name": "Lv3 · Forest Adventurer · Cautious Exploration",
+    "scenes": [
+      {
+        "id": "lv3_scene_01",
+        "name": "踏入森林小径入口"
+      },
+      {
+        "id": "lv3_scene_02",
+        "name": "森林里跨过小树根"
+      },
+      {
+        "id": "lv3_scene_03",
+        "name": "小桥上轻轻前行"
+      },
+      {
+        "id": "lv3_scene_04",
+        "name": "森林入口查看路线牌"
+      },
+      {
+        "id": "lv3_scene_05",
+        "name": "树干上手指触摸年轮"
+      },
+      {
+        "id": "lv3_scene_06",
+        "name": "森林光柱下张望"
+      },
+      {
+        "id": "lv3_scene_07",
+        "name": "在林间听风声"
+      },
+      {
+        "id": "lv3_scene_08",
+        "name": "在草丛旁蹲下观察花朵"
+      },
+      {
+        "id": "lv3_scene_09",
+        "name": "轻攀低矮岩石"
+      },
+      {
+        "id": "lv3_scene_10",
+        "name": "河边轻轻触碰水面"
+      },
+      {
+        "id": "lv3_scene_11",
+        "name": "森林木栈道走两步"
+      },
+      {
+        "id": "lv3_scene_12",
+        "name": "落叶小径缓步前行"
+      },
+      {
+        "id": "lv3_scene_13",
+        "name": "森林空地抬头看天空"
+      },
+      {
+        "id": "lv3_scene_14",
+        "name": "蹲下系鞋带准备继续走"
+      },
+      {
+        "id": "lv3_scene_15",
+        "name": "森林入口举起手机拍照"
+      },
+      {
+        "id": "lv3_scene_16",
+        "name": "小瀑布前静静站着"
+      },
+      {
+        "id": "lv3_scene_17",
+        "name": "在森林木栏杆上靠一下"
+      },
+      {
+        "id": "lv3_scene_18",
+        "name": "林间阳光下整理背包"
+      },
+      {
+        "id": "lv3_scene_19",
+        "name": "轻轻跨过一段倒木"
+      },
+      {
+        "id": "lv3_scene_20",
+        "name": "牵动藤蔓观察质感"
+      }
+    ]
+  },
+  {
+    "level": 4,
+    "emotion": "Bravery",
+    "stage_name": "Lv4 · Forest Adventurer · Confident Exploration",
+    "scenes": [
+      {
+        "id": "lv4_scene_01",
+        "name": "在森林深处坚定走行"
+      },
+      {
+        "id": "lv4_scene_02",
+        "name": "爬上更高的岩石眺望"
+      },
+      {
+        "id": "lv4_scene_03",
+        "name": "穿过更窄的林间小桥"
+      },
+      {
+        "id": "lv4_scene_04",
+        "name": "轻跳过溪流石头"
+      },
+      {
+        "id": "lv4_scene_05",
+        "name": "森林中举起罗盘确认方向"
+      },
+      {
+        "id": "lv4_scene_06",
+        "name": "攀上树干宽厚的根部"
+      },
+      {
+        "id": "lv4_scene_07",
+        "name": "河岸边站稳迎风"
+      },
+      {
+        "id": "lv4_scene_08",
+        "name": "往更暗的森林深处走去"
+      },
+      {
+        "id": "lv4_scene_09",
+        "name": "森林悬崖安全观景台远望"
+      },
+      {
+        "id": "lv4_scene_10",
+        "name": "在大树旁整理登山杖"
+      },
+      {
+        "id": "lv4_scene_11",
+        "name": "林间轻快奔跑"
+      },
+      {
+        "id": "lv4_scene_12",
+        "name": "稀薄雾气中前行"
+      },
+      {
+        "id": "lv4_scene_13",
+        "name": "手扶树干跨上土坡"
+      },
+      {
+        "id": "lv4_scene_14",
+        "name": "森林空地上调整帽子"
+      },
+      {
+        "id": "lv4_scene_15",
+        "name": "上一个更陡的小土坡"
+      },
+      {
+        "id": "lv4_scene_16",
+        "name": "处理地图与GPS设备"
+      },
+      {
+        "id": "lv4_scene_17",
+        "name": "森林巨石旁拍照记录"
+      },
+      {
+        "id": "lv4_scene_18",
+        "name": "站上树桩"
+      },
+      {
+        "id": "lv4_scene_19",
+        "name": "森林中整理围巾抵风"
+      },
+      {
+        "id": "lv4_scene_20",
+        "name": "坚定迈向森林深处的亮光"
+      }
+    ]
+  },
+  {
+    "level": 5,
+    "emotion": "Bravery",
+    "stage_name": "Lv5 · Climbing & Urban Edge · Physical Courage",
+    "scenes": [
+      {
+        "id": "lv5_scene_01",
+        "name": "攀爬中型岩壁"
+      },
+      {
+        "id": "lv5_scene_02",
+        "name": "站在岩石边缘眺望远方"
+      },
+      {
+        "id": "lv5_scene_03",
+        "name": "小型峭壁上寻找落脚点"
+      },
+      {
+        "id": "lv5_scene_04",
+        "name": "森林岩壁间穿行"
+      },
+      {
+        "id": "lv5_scene_05",
+        "name": "城市高台边缘轻站立"
+      },
+      {
+        "id": "lv5_scene_06",
+        "name": "夕阳下站在高石头上"
+      },
+      {
+        "id": "lv5_scene_07",
+        "name": "山坡上单膝撑地前进"
+      },
+      {
+        "id": "lv5_scene_08",
+        "name": "小悬崖上稳步移动"
+      },
+      {
+        "id": "lv5_scene_09",
+        "name": "在岩石上摆好相机"
+      },
+      {
+        "id": "lv5_scene_10",
+        "name": "小陡坡上攀爬"
+      },
+      {
+        "id": "lv5_scene_11",
+        "name": "高处俯拍下坚定站姿"
+      },
+      {
+        "id": "lv5_scene_12",
+        "name": "弯腰抓住岩石边缘"
+      },
+      {
+        "id": "lv5_scene_13",
+        "name": "大风环境中站稳"
+      },
+      {
+        "id": "lv5_scene_14",
+        "name": "雨中的城市天台坚守姿态"
+      },
+      {
+        "id": "lv5_scene_15",
+        "name": "夜景天台迎风而立"
+      },
+      {
+        "id": "lv5_scene_16",
+        "name": "在山间石阵中探索路径"
+      },
+      {
+        "id": "lv5_scene_17",
+        "name": "攀岩装备检查动作"
+      },
+      {
+        "id": "lv5_scene_18",
+        "name": "山坡上使用登山杖辅助"
+      },
+      {
+        "id": "lv5_scene_19",
+        "name": "站在岩石平台俯瞰森林"
+      },
+      {
+        "id": "lv5_scene_20",
+        "name": "站在城市天台边缘俯瞰"
+      }
+    ]
+  },
+  {
+    "level": 6,
+    "emotion": "Bravery",
+    "stage_name": "Lv6 · Advanced Climbing & Outdoor Photography",
+    "scenes": [
+      {
+        "id": "lv6_scene_01",
+        "name": "更高岩壁上手脚并用攀爬"
+      },
+      {
+        "id": "lv6_scene_02",
+        "name": "坚守在山脊线上"
+      },
+      {
+        "id": "lv6_scene_03",
+        "name": "狂风山顶上站稳"
+      },
+      {
+        "id": "lv6_scene_04",
+        "name": "越过更宽的岩石缝隙"
+      },
+      {
+        "id": "lv6_scene_05",
+        "name": "在高岩石上举相机拍摄风景"
+      },
+      {
+        "id": "lv6_scene_06",
+        "name": "山谷强风中整理风衣"
+      },
+      {
+        "id": "lv6_scene_07",
+        "name": "沿着狭窄的山路坚定前行"
+      },
+      {
+        "id": "lv6_scene_08",
+        "name": "大石坡上半蹲观察地形"
+      },
+      {
+        "id": "lv6_scene_09",
+        "name": "山峰晨光中的剪影站姿"
+      },
+      {
+        "id": "lv6_scene_10",
+        "name": "暴风雪来临前的雪地站姿"
+      },
+      {
+        "id": "lv6_scene_11",
+        "name": "海岸巨石上迎浪而立"
+      },
+      {
+        "id": "lv6_scene_12",
+        "name": "站在小瀑布旁稳定拍摄"
+      },
+      {
+        "id": "lv6_scene_13",
+        "name": "单脚踏上高石的英雄角度"
+      },
+      {
+        "id": "lv6_scene_14",
+        "name": "攀上弧形山石最高点"
+      },
+      {
+        "id": "lv6_scene_15",
+        "name": "在强风环境下保持平衡"
+      },
+      {
+        "id": "lv6_scene_16",
+        "name": "山洞入口点亮头灯"
+      },
+      {
+        "id": "lv6_scene_17",
+        "name": "黑森林深处照明前行"
+      },
+      {
+        "id": "lv6_scene_18",
+        "name": "站在大峡谷平台俯视深渊"
+      },
+      {
+        "id": "lv6_scene_19",
+        "name": "寒风中整理背包肩带"
+      },
+      {
+        "id": "lv6_scene_20",
+        "name": "面对闪电远景的稳定站姿"
+      }
+    ]
+  },
+  {
+    "level": 7,
+    "emotion": "Bravery",
+    "stage_name": "Lv7 · Light Mecha Warrior · Urban Futuristic Courage",
+    "scenes": [
+      {
+        "id": "lv7_scene_01",
+        "name": "穿轻机甲在城市屋顶迎风站立"
+      },
+      {
+        "id": "lv7_scene_02",
+        "name": "半透明面甲下的坚毅眼神"
+      },
+      {
+        "id": "lv7_scene_03",
+        "name": "启动手腕HUD界面"
+      },
+      {
+        "id": "lv7_scene_04",
+        "name": "机甲肩灯照亮暴风城市"
+      },
+      {
+        "id": "lv7_scene_05",
+        "name": "跨上机甲飞行器平台准备"
+      },
+      {
+        "id": "lv7_scene_06",
+        "name": "霓虹灯下的机甲剪影"
+      },
+      {
+        "id": "lv7_scene_07",
+        "name": "机甲俯瞰城市天际线"
+      },
+      {
+        "id": "lv7_scene_08",
+        "name": "脚踏天台边缘金属板"
+      },
+      {
+        "id": "lv7_scene_09",
+        "name": "机甲背后喷口微光闪动"
+      },
+      {
+        "id": "lv7_scene_10",
+        "name": "在霓虹城市街道穿行"
+      },
+      {
+        "id": "lv7_scene_11",
+        "name": "机甲调整肩甲准备战斗"
+      },
+      {
+        "id": "lv7_scene_12",
+        "name": "扫描护栏外方位"
+      },
+      {
+        "id": "lv7_scene_13",
+        "name": "雨夜中机甲反射霓虹灯光"
+      },
+      {
+        "id": "lv7_scene_14",
+        "name": "穿过蒸汽弥漫的工业管道"
+      },
+      {
+        "id": "lv7_scene_15",
+        "name": "在广告牌顶部半蹲戒备"
+      },
+      {
+        "id": "lv7_scene_16",
+        "name": "手触金属墙板感受震动"
+      },
+      {
+        "id": "lv7_scene_17",
+        "name": "机甲靴踩在天台灯带上"
+      },
+      {
+        "id": "lv7_scene_18",
+        "name": "夜空下巡逻霓虹大桥"
+      },
+      {
+        "id": "lv7_scene_19",
+        "name": "风暴云层下的机甲背影"
+      },
+      {
+        "id": "lv7_scene_20",
+        "name": "机甲站在高楼边缘注视远方"
+      }
+    ]
+  },
+  {
+    "level": 8,
+    "emotion": "Bravery",
+    "stage_name": "Lv8 · Magic Warrior · Epic Fantasy Power",
+    "scenes": [
+      {
+        "id": "lv8_scene_01",
+        "name": "脚下魔法阵骤然亮起"
+      },
+      {
+        "id": "lv8_scene_02",
+        "name": "高举法杖释放光辉"
+      },
+      {
+        "id": "lv8_scene_03",
+        "name": "风暴云前展开符文护盾"
+      },
+      {
+        "id": "lv8_scene_04",
+        "name": "斗篷在飓风中猎猎作响"
+      },
+      {
+        "id": "lv8_scene_05",
+        "name": "掌心凝聚元素光球"
+      },
+      {
+        "id": "lv8_scene_06",
+        "name": "魔法光门逐渐打开"
+      },
+      {
+        "id": "lv8_scene_07",
+        "name": "古代神庙废墟中施展咒语"
+      },
+      {
+        "id": "lv8_scene_08",
+        "name": "悬崖边引导元素力量"
+      },
+      {
+        "id": "lv8_scene_09",
+        "name": "脚下漂浮石板跨越深渊"
+      },
+      {
+        "id": "lv8_scene_10",
+        "name": "魔力驱散森林迷雾"
+      },
+      {
+        "id": "lv8_scene_11",
+        "name": "双手释放不同属性魔法"
+      },
+      {
+        "id": "lv8_scene_12",
+        "name": "符文铠甲散发淡淡光芒"
+      },
+      {
+        "id": "lv8_scene_13",
+        "name": "独立于古塔顶迎风施法"
+      },
+      {
+        "id": "lv8_scene_14",
+        "name": "魔法书页自行翻动"
+      },
+      {
+        "id": "lv8_scene_15",
+        "name": "光翼在身后浮现"
+      },
+      {
+        "id": "lv8_scene_16",
+        "name": "黑暗洞穴中释放光束照亮前方"
+      },
+      {
+        "id": "lv8_scene_17",
+        "name": "岩石因魔力轻轻裂开"
+      },
+      {
+        "id": "lv8_scene_18",
+        "name": "星辰漂浮于周身的魔力态"
+      },
+      {
+        "id": "lv8_scene_19",
+        "name": "元素旋风在身边缓缓环绕"
+      },
+      {
+        "id": "lv8_scene_20",
+        "name": "悬浮岛屿上高举法杖"
+      }
+    ]
+  },
+  {
+    "level": 9,
+    "emotion": "Bravery",
+    "stage_name": "Lv9 · Pilot & Future Driver · High-Speed Sci-Fi Courage",
+    "scenes": [
+      {
+        "id": "lv9_scene_01",
+        "name": "未来座舱内操作全息界面"
+      },
+      {
+        "id": "lv9_scene_02",
+        "name": "走向跑道尽头的坚定背影"
+      },
+      {
+        "id": "lv9_scene_03",
+        "name": "佩戴高级飞行头盔准备起飞"
+      },
+      {
+        "id": "lv9_scene_04",
+        "name": "未来机库中检查装备"
+      },
+      {
+        "id": "lv9_scene_05",
+        "name": "高速悬浮摩托上的驾驶姿态"
+      },
+      {
+        "id": "lv9_scene_06",
+        "name": "霓虹城市下驾驶悬浮载具"
+      },
+      {
+        "id": "lv9_scene_07",
+        "name": "风洞实验中稳稳站立"
+      },
+      {
+        "id": "lv9_scene_08",
+        "name": "未来高速光隧道中飞驰"
+      },
+      {
+        "id": "lv9_scene_09",
+        "name": "未来机场玻璃旁凝视天空"
+      },
+      {
+        "id": "lv9_scene_10",
+        "name": "走向引擎喷射光的跑道"
+      },
+      {
+        "id": "lv9_scene_11",
+        "name": "全息地图前规划航线"
+      },
+      {
+        "id": "lv9_scene_12",
+        "name": "握住未来战斗机操纵杆的瞬间"
+      },
+      {
+        "id": "lv9_scene_13",
+        "name": "未来跑道雨水倒影中的剪影"
+      },
+      {
+        "id": "lv9_scene_14",
+        "name": "戴好头盔后坚定抬头"
+      },
+      {
+        "id": "lv9_scene_15",
+        "name": "悬浮桥上高速穿越"
+      },
+      {
+        "id": "lv9_scene_16",
+        "name": "云层模拟室中的训练站姿"
+      },
+      {
+        "id": "lv9_scene_17",
+        "name": "在高空平台迎风而立"
+      },
+      {
+        "id": "lv9_scene_18",
+        "name": "在科技机库灯光下果断转身"
+      },
+      {
+        "id": "lv9_scene_19",
+        "name": "驾驶未来战机准备起飞"
+      },
+      {
+        "id": "lv9_scene_20",
+        "name": "高速风洞中保持完美平衡"
+      }
+    ]
+  },
+  {
+    "level": 10,
+    "emotion": "Bravery",
+    "stage_name": "Lv10 · Space Astronaut & Interstellar Hero · Ultimate Courage",
+    "scenes": [
+      {
+        "id": "lv10_scene_01",
+        "name": "深空中自由漂浮的宇航员"
+      },
+      {
+        "id": "lv10_scene_02",
+        "name": "星舰指挥台上俯瞰银河"
+      },
+      {
+        "id": "lv10_scene_03",
+        "name": "踏上陌生行星的第一步"
+      },
+      {
+        "id": "lv10_scene_04",
+        "name": "背后是巨大星云的剪影"
+      },
+      {
+        "id": "lv10_scene_05",
+        "name": "行走在外星岩石地表"
+      },
+      {
+        "id": "lv10_scene_06",
+        "name": "星门前踏入光之裂缝"
+      },
+      {
+        "id": "lv10_scene_07",
+        "name": "在月球地平线迎风站立"
+      },
+      {
+        "id": "lv10_scene_08",
+        "name": "星河光束照亮全身"
+      },
+      {
+        "id": "lv10_scene_09",
+        "name": "巨型宇宙结构脚下的渺小身影"
+      },
+      {
+        "id": "lv10_scene_10",
+        "name": "星际传送门激活瞬间"
+      },
+      {
+        "id": "lv10_scene_11",
+        "name": "行走在星球之巅俯瞰宇宙海"
+      },
+      {
+        "id": "lv10_scene_12",
+        "name": "漂浮在星舰外壁进行维修"
+      },
+      {
+        "id": "lv10_scene_13",
+        "name": "被恒星强光照亮的英勇姿态"
+      },
+      {
+        "id": "lv10_scene_14",
+        "name": "行走在星辰碎片组成的通道"
+      },
+      {
+        "id": "lv10_scene_15",
+        "name": "背后形成象征性的星光翼影"
+      },
+      {
+        "id": "lv10_scene_16",
+        "name": "面对黑洞边缘的沉稳站姿"
+      },
+      {
+        "id": "lv10_scene_17",
+        "name": "跨越星际裂缝的漂浮跳跃"
+      },
+      {
+        "id": "lv10_scene_18",
+        "name": "立于超新星尾光下的英雄背影"
+      },
+      {
+        "id": "lv10_scene_19",
+        "name": "手触及太空能量球的瞬间"
+      },
+      {
+        "id": "lv10_scene_20",
+        "name": "深空虚空中如神祇般的站姿"
+      }
+    ]
+  }
+]
