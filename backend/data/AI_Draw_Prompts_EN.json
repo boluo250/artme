@@ -3,7 +3,9 @@
     "home_banner": {
       "image": "banner1.jpg",
       "action": "open_category_hot",
-      "enable": true
+      "enable": true,
+      "categories": 5,
+      "subcategories": 2
     }
   },
   "categories": [
@@ -39,6 +41,13 @@
           "name_cn": "疯狂动物城2男",
           "thumbnail": "Zootopia_2_Theme_Male_abbreviated.jpg",
           "prompt": "Generate 1 photo of a cinema group portrait themed around 'Zootopia 2,' keeping the original facial features and face shape unchanged, pose in a selfie posture with the body slightly turned sideways, standing between the Judy Hopps and Nick Wilde mascots, standing close side-by-side with them, head gently leaning toward the mascots, face directly facing the camera. Outfit (male version): wearing a male-version Judy Hopps–themed police uniform with a blue tactical-style jacket and matching tactical pants with a masculine cut, paired with a same-color plush beret decorated with a golden badge and gray plush rabbit ears with pink inner lining adapted to male proportions. Accessories: simple thin black or silver necklace suitable for male style. Hairstyle: dark brown short or medium-short hair with natural soft waves and airy bangs. Scene: cinema auditorium with black seats filled with audiences; big screen shows the 'Zootopia 2' poster featuring Judy, Nick, and Flash Slothmore with text 'FUR DX'. Style: movie-themed immersive group photo with cute and lively vibes. Lighting: cinema ambient lighting plus screen light, soft ambient light illuminating the person while screen light enhances the background for natural realism. Color tone: dominated by dark blue and black with bright blue/red accents from the screen, slight film grain. Composition: vertical selfie close-up with the person and mascots occupying 60% of the frame and auditorium background 40%, subjects centered. Filter: low-saturation cinema-style atmosphere filter for realism while keeping makeup clear. Additional elements: official 'Zootopia 2' Judy and Nick mascots—Judy in blue police uniform, Nick in green short-sleeve shirt with black/purple diagonal striped tie, maintaining plush texture. Text: at the bottom include 'Disney ZOOTOPIA 2 ONLY IN THEATERS NOVEMBER 26' in movie-poster style occupying 50% frame width. Quality: 32K ultra-high resolution with master-level cinematic quality, preserving real human skin texture without over-smoothing."
+        },
+        {
+          "id": 4,
+          "name": "New_Year_Eve",
+          "name_cn": "新年夜",
+          "thumbnail": "New_Year_Eve_abbreviated.jpg",
+          "prompt": "Create a photorealistic New Year’s Eve celebration photo featuring a man (use the uploaded face for 100% accurate facial reference) standing in a large crowd near Sydney Harbour. He is laughing brightly, holding a drink in one hand, wearing a colorful party hat, with confetti falling around him. His expression should be joyful and full of excitement.Behind him, show the Sydney Opera House, the Harbour Bridge, and a massive firework display lighting up the sky with gold, white, red, and multicolor bursts. The water should reflect the firework glow and city lights. Surround him with a dense crowd of people holding phones, capturing the moment. Add a warm, cinematic night-time atmosphere with bokeh lights and soft smoke from the fireworks.Include a small digital timestamp in the corner reading: “JAN 01, 2026 — 12:00 AM” to mimic a candid party-camera photo. The overall vibe should feel energetic, celebratory, and real — a perfect New Year’s countdown moment in Sydney."
         }
       ]
     },
@@ -56,20 +65,27 @@
         },
         {
           "id": 2,
+          "name": "artist_painting_figurine",
+          "name_cn": "艺术家雕像",
+          "thumbnail": "artist_painting_figurine_abbreviated.png",
+          "prompt": "Refer to this photo and maintain the consistency of the characters.Create an image of this person as an artist painting a tiny miniature figurine version of themselves.  looking directly at the camera with a confident expression while holding a tiny paintbrush in one hand. The small action figure-sized version of themselves is prominently placed on a clean workbench in front of them - make the miniature slightly larger and more visible than realistic scale so it clearly stands out. The doll is a complete body.The miniature figure is also wearing the same iconic outfit in a signature pose. Minimal art supplies on the workbench to avoid clutter - just 2-3 small paint bottles and one extra brush, keeping the focus on the person and their miniature. Soft neutral white background, professional studio lighting, shallow depth of field. The composition emphasizes the person’s face looking at camera and the miniature figure they’re working on. Clean, uncluttered, photorealistic style with high detail on both figures"
+        },
+        {
+          "id": 3,
           "name": "Giant_Fluffy_Cute_Cartoon_Monster",
           "name_cn": "可爱怪兽",
           "thumbnail": "Giant_Fluffy_Cute_Cartoon_Monster_abbreviated.png",
           "prompt": "Turn me into a real human sitting next to a giant fluffy cute cartoon monster. I am real but monster is 3d cartoon. It’s hugging me and cute. Big eyes"
         },
         {
-          "id": 3,
+          "id": 4,
           "name": "Figurine_Standing_Hand",
           "name_cn": "站立手办",
           "thumbnail": "Figurine_Standing_Hand_abbreviated.png",
           "prompt": "Transform the uploaded photo into a character figurine standing on a black plastic base held by a hand. Background includes the Shanghai Bund, softly blurred to create depth and focus on the figure. Maintain the character’s original appearance and facial features."
         },
         {
-          "id": 4,
+          "id": 5,
           "name": "Figurine_keychain_Hand",
           "name_cn": "钥匙链手办",
           "thumbnail": "Figurine_keychain_Hand_abbreviated.jpg",
@@ -164,7 +180,7 @@
     {
       "id": 5,
       "name": "portrait",
-      "name_cn": "艺术人像",
+      "name_cn": "写真人像",
       "subcategories": [
         {
           "id": 1,
@@ -287,6 +303,20 @@
       "subcategories": [
         {
           "id": 1,
+          "name": "Natural_Retouching",
+          "name_cn": "一键美颜",
+          "thumbnail": "Natural_Retouching_abbreviated.png",
+          "prompt": "Remove all acne and acne scars from the character's face, apply natural light retouching, preserve the original skin texture to avoid a plastic face effect, and do not alter other facial features or skin tone.Enhance the overall brightness of the image, optimize light distribution, eliminate facial shadows and noise in dark areas, achieve even and soft facial lighting, while maintaining the harmony of the background color tone without overexposure.Naturally brighten the character's skin tone, improve dullness and sallowness, create a translucent and fair skin texture, and do not compromise the three-dimensionality of facial features or the original skin texture.Eliminate freckles, age spots, wrinkles, dark circles, and nasolabial folds from the character's face, repair minor skin blemishes, and ensure the skin appears natural without the plastic-like effect of over-retouching."
+        },
+        {
+          "id": 2,
+          "name": "ID_Photo",
+          "name_cn": "证件照",
+          "thumbnail": "ID_Photo_abbreviated.png",
+          "prompt": "masterpiece, ultra-realistic ID photo, shoulders-up portrait of the same person, wearing a sharp navy-blue business suit and crisp white shirt, solid neutral background (#ffffff), soft even lighting, no shadows, face clearly visible, neutral expression, eyes straight at camera, ears visible, no glasses, smile, official ID photo dimensions 35 mm × 45 mm (413 × 531 px @ 300 dpi), passport-style framing."
+        },
+        {
+          "id": 3,
           "name": "Colorize_Old_Photo",
           "name_cn": "老照片上色",
           "thumbnail": "Colorize_Old_Photo_abbreviated.png",

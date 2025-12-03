@@ -36,7 +36,6 @@ struct PromptStyleDetailView: View {
         }
         .navigationTitle(displayTitle)
         .navigationBarTitleDisplayMode(.inline)
-        .toolbar(.hidden, for: .tabBar)
         .task {
             await loadImage()
         }
@@ -332,7 +331,6 @@ struct ImageGenerationView: View {
         }
         .navigationTitle("生成图片")
         .navigationBarTitleDisplayMode(.inline)
-        .toolbar(.hidden, for: .tabBar)
         .alert("保存成功", isPresented: $showSaveSuccess) {
             Button("确定", role: .cancel) {}
         } message: {

@@ -12,6 +12,11 @@ struct PromptStyleGridView: View {
     @StateObject private var viewModel = PromptStyleViewModel()
     @State private var isRefreshing = false
     @State private var targetCategory: String?
+    private let onAccountTapped: (() -> Void)?
+    
+    init(onAccountTapped: (() -> Void)? = nil) {
+        self.onAccountTapped = onAccountTapped
+    }
     
     var body: some View {
         ScrollViewReader { proxy in
@@ -40,10 +45,8 @@ struct PromptStyleGridView: View {
                         VStack(spacing: Spacing.xl) {
                             if let banner = viewModel.appConfig?.homeBanner,
                                (banner.enable ?? true) {
-                                HomeBannerView(banner: banner) {
-                                    handleBannerAction(banner)
-                                }
-                                .padding(.horizontal, Spacing.lg)
+                                bannerSection(for: banner)
+                                    .padding(.horizontal, Spacing.lg)
                             }
                             
                             ForEach(viewModel.categories, id: \.self) { category in
@@ -72,13 +75,12 @@ struct PromptStyleGridView: View {
                 }
             }
         }
-        .toolbar(.visible, for: .tabBar)
         .task {
             await viewModel.loadPromptStyles()
         }
     }
     
-    private func handleBannerAction(_ banner: BannerConfig) {
+    private func handleBannerAction(_ banner: BannerConfig) {        
         guard let action = banner.action else { return }
         let prefix = "open_category_"
         let lowercasedAction = action.lowercased()
@@ -89,6 +91,56 @@ struct PromptStyleGridView: View {
         if let matched = viewModel.categories.first(where: { $0.lowercased() == categoryKey }) {
             targetCategory = matched
         }
+    }
+    
+    private func targetStyle(for banner: BannerConfig) -> PromptStyle? {
+        guard let categoryId = banner.categoryId,
+              let subcategoryId = banner.subcategoryId else {
+            return nil
+        }
+        return viewModel.getStyle(categoryId: categoryId, subcategoryId: subcategoryId)
+    }
+    
+    @ViewBuilder
+    private func bannerSection(for banner: BannerConfig) -> some View {
+        ZStack(alignment: .topTrailing) {
+            bannerContent(for: banner)
+            if let onAccountTapped = onAccountTapped {
+                accountButton(action: onAccountTapped)
+                    .padding(.top, Spacing.md)
+                    .padding(.trailing, Spacing.md)
+            }
+        }
+    }
+    
+    @ViewBuilder
+    private func bannerContent(for banner: BannerConfig) -> some View {
+        if let targetStyle = targetStyle(for: banner) {
+            NavigationLink(destination: PromptStyleDetailView(style: targetStyle)) {
+                HomeBannerView(banner: banner)
+            }
+            .buttonStyle(PlainButtonStyle())
+        } else {
+            HomeBannerView(banner: banner) {
+                handleBannerAction(banner)
+            }
+        }
+    }
+    
+    private func accountButton(action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            HStack(spacing: 6) {
+                Image(systemName: "sparkles")
+                Text("我的")
+                    .font(.callout)
+                    .fontWeight(.semibold)
+            }
+            .foregroundStyle(.white)
+        }
+        .padding(.vertical, 6)
+        .padding(.horizontal, 12)
+        .background(Color.gray, in: Capsule())
+        .accessibilityLabel("个人页面")
     }
 }
 
@@ -274,41 +326,53 @@ struct HomeBannerView: View {
     private let bannerAspectRatio: CGFloat = 4.0 / 3.0
     
     var body: some View {
-        Button(action: {
-            onTap?()
-        }) {
-            ZStack(alignment: .bottomLeading) {
-                Group {
-                    if let image = bannerImage {
-                        Image(uiImage: image)
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                    } else if isLoading {
-                        Rectangle()
-                            .fill(Color.gray.opacity(0.1))
-                            .overlay {
-                                ProgressView()
-                                    .purpleProgressIndicator()
-                            }
-                    } else {
-                        Rectangle()
-                            .fill(Color.gray.opacity(0.15))
-                            .overlay {
-                                Image(systemName: "photo")
-                                    .foregroundColor(.gray400)
-                            }
-                    }
-                }
-                .aspectRatio(bannerAspectRatio, contentMode: .fit)
-                .frame(maxWidth: .infinity)
-                .clipShapeLG()
-                .cardShadow()
-                
+        interactiveBanner
+            .task {
+                await loadImageIfNeeded()
             }
+    }
+    
+    @ViewBuilder
+    private var interactiveBanner: some View {
+        let content = bannerContent
+            .contentShape(Rectangle())
+        
+        if let onTap = onTap {
+            content.onTapGesture {
+                onTap()
+            }
+        } else {
+            content
         }
-        .buttonStyle(PlainButtonStyle())
-        .task {
-            await loadImageIfNeeded()
+    }
+    
+    private var bannerContent: some View {
+        ZStack(alignment: .bottomLeading) {
+            Group {
+                if let image = bannerImage {
+                    Image(uiImage: image)
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                } else if isLoading {
+                    Rectangle()
+                        .fill(Color.gray.opacity(0.1))
+                        .overlay {
+                            ProgressView()
+                                .purpleProgressIndicator()
+                        }
+                } else {
+                    Rectangle()
+                        .fill(Color.gray.opacity(0.15))
+                        .overlay {
+                            Image(systemName: "photo")
+                                .foregroundColor(.gray400)
+                        }
+                }
+            }
+            .aspectRatio(bannerAspectRatio, contentMode: .fit)
+            .frame(maxWidth: .infinity)
+            .clipShapeLG()
+            .cardShadow()
         }
     }
     

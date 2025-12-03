@@ -38,6 +38,8 @@ class BannerConfig(BaseModel):
     image: str
     action: Optional[str] = None
     enable: bool = True
+    category_id: Optional[int] = None
+    subcategory_id: Optional[int] = None
 
 
 class AppConfig(BaseModel):
@@ -341,7 +343,15 @@ def load_prompts_from_json() -> tuple[List[PromptStyle], Optional[AppConfig]]:
             # 读取 App 配置
             if "app_config" in data:
                 try:
-                    app_config = AppConfig(**data["app_config"])
+                    app_config_data = data["app_config"]
+                    home_banner_data = app_config_data.get("home_banner")
+                    if isinstance(home_banner_data, dict):
+                        # 兼容 legacy 字段名（categories/subcategories），并映射为 *_id
+                        if "category_id" not in home_banner_data and "categories" in home_banner_data:
+                            home_banner_data["category_id"] = home_banner_data["categories"]
+                        if "subcategory_id" not in home_banner_data and "subcategories" in home_banner_data:
+                            home_banner_data["subcategory_id"] = home_banner_data["subcategories"]
+                    app_config = AppConfig(**app_config_data)
                     # 处理 banner 图片路径
                     if app_config.home_banner and app_config.home_banner.image:
                         # 假设 banner 图片在 data/banner/ 目录下

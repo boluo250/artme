@@ -8,7 +8,14 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var selectedTab = 0
+    private enum ActiveSheet: String, Identifiable {
+        case generate
+        case account
+        
+        var id: String { rawValue }
+    }
+    
+    @State private var activeSheet: ActiveSheet?
     
     init() {
         // 初始化主题
@@ -16,33 +23,18 @@ struct ContentView: View {
     }
     
     var body: some View {
-        TabView(selection: $selectedTab) {
-            NavigationStack {
-                PromptStyleGridView()
-                    .toolbar(.hidden, for: .navigationBar)
+        NavigationStack {
+            PromptStyleGridView {
+                activeSheet = .account
             }
-            .tabItem {
-                Label("风格", systemImage: "photo.on.rectangle.angled")
+        }
+        .sheet(item: $activeSheet) { sheet in
+            switch sheet {
+            case .generate:
+                GenerateView()
+            case .account:
+                AccountView()
             }
-            .tag(0)
-            
-            GenerateView()
-                .tabItem {
-                    Label("生成", systemImage: "sparkles")
-                }
-                .tag(1)
-            
-            HistoryView()
-                .tabItem {
-                    Label("历史", systemImage: "clock")
-                }
-                .tag(2)
-            
-            AccountView()
-                .tabItem {
-                    Label("账户", systemImage: "person.circle")
-                }
-                .tag(3)
         }
         .withTheme()
     }

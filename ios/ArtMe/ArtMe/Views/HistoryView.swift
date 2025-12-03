@@ -83,7 +83,6 @@ struct HistoryView: View {
             }
             .navigationTitle("历史记录")
             .navigationBarTitleDisplayMode(.large)
-            .toolbar(.visible, for: .tabBar)
             .toolbar {
                 if !historyManager.history.isEmpty {
                     ToolbarItem(placement: .navigationBarTrailing) {

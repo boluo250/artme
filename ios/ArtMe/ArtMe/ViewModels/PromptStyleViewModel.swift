@@ -254,4 +254,11 @@ class PromptStyleViewModel: ObservableObject {
             $0.category == category && $0.subcategory == subcategory 
         }
     }
+    
+    // 根据 categoryId 和 subcategoryId 查找样式
+    func getStyle(categoryId: Int, subcategoryId: Int) -> PromptStyle? {
+        return promptStyles.first {
+            $0.categoryId == categoryId && $0.subcategoryId == subcategoryId
+        }
+    }
 }

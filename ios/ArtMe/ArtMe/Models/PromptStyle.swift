@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-struct PromptStyle: Codable, Identifiable {
+struct PromptStyle: Codable, Identifiable, Hashable {
     let id: String
     let category: String
     let categoryId: Int
@@ -25,6 +25,8 @@ struct BannerConfig: Codable {
     let image: String
     let action: String?
     let enable: Bool?
+    let categoryId: Int?
+    let subcategoryId: Int?
 }
 
 struct AppConfig: Codable {
