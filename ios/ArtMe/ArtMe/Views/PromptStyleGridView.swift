@@ -19,60 +19,68 @@ struct PromptStyleGridView: View {
     }
     
     var body: some View {
-        ScrollViewReader { proxy in
-            Group {
-                if viewModel.isLoading && viewModel.promptStyles.isEmpty {
-                    // 首次加载时显示加载指示器
-                    VStack {
-                        ProgressView()
-                            .purpleProgressIndicator()
-                        Text("加载中...")
-                            .textStyleCaption()
-                            .padding(.top, Spacing.md)
-                    }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                } else if let errorMessage = viewModel.errorMessage, viewModel.promptStyles.isEmpty {
-                    // 只在没有缓存数据时显示错误
-                    EmptyStateView(
-                        icon: "exclamationmark.triangle",
-                        title: "加载失败",
-                        message: errorMessage
-                    )
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                } else {
-                    // 显示内容
-                    ScrollView {
-                        VStack(spacing: Spacing.xl) {
-                            if let banner = viewModel.appConfig?.homeBanner,
-                               (banner.enable ?? true) {
-                                bannerSection(for: banner)
-                                    .padding(.horizontal, Spacing.lg)
-                            }
-                            
-                            ForEach(viewModel.categories, id: \.self) { category in
-                                CategorySection(
-                                    category: category,
-                                    styles: viewModel.getStyles(forCategory: category)
-                                )
-                                .id(category)
-                            }
+        ZStack(alignment: .topTrailing) {
+            ScrollViewReader { proxy in
+                Group {
+                    if viewModel.isLoading && viewModel.promptStyles.isEmpty {
+                        // 首次加载时显示加载指示器
+                        VStack {
+                            ProgressView()
+                                .purpleProgressIndicator()
+                            Text("加载中...")
+                                .textStyleCaption()
+                                .padding(.top, Spacing.md)
                         }
-                        .padding(.bottom, Spacing.lg)
-                    }
-                    .refreshable {
-                        await viewModel.refreshIfNeeded()
-                    }
-                    .onChange(of: targetCategory) { category in
-                        guard let category = category else { return }
-                        withAnimation {
-                            proxy.scrollTo(category, anchor: .top)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    } else if let errorMessage = viewModel.errorMessage, viewModel.promptStyles.isEmpty {
+                        // 只在没有缓存数据时显示错误
+                        EmptyStateView(
+                            icon: "exclamationmark.triangle",
+                            title: "加载失败",
+                            message: errorMessage
+                        )
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    } else {
+                        // 显示内容
+                        ScrollView {
+                            VStack(spacing: Spacing.xl) {
+                                if let banner = viewModel.appConfig?.homeBanner,
+                                   (banner.enable ?? true) {
+                                    bannerSection(for: banner)
+                                        .padding(.horizontal, Spacing.lg)
+                                }
+                                
+                                ForEach(viewModel.categories, id: \.self) { category in
+                                    CategorySection(
+                                        category: category,
+                                        styles: viewModel.getStyles(forCategory: category)
+                                    )
+                                    .id(category)
+                                }
+                            }
+                            .padding(.bottom, Spacing.lg)
                         }
-                        // 滚动完成后清空，避免重复触发
-                        DispatchQueue.main.async {
-                            targetCategory = nil
+                        .refreshable {
+                            await viewModel.refreshIfNeeded()
+                        }
+                        .onChange(of: targetCategory) { category in
+                            guard let category = category else { return }
+                            withAnimation {
+                                proxy.scrollTo(category, anchor: .top)
+                            }
+                            // 滚动完成后清空，避免重复触发
+                            DispatchQueue.main.async {
+                                targetCategory = nil
+                            }
                         }
                     }
                 }
+            }
+            
+            if let onAccountTapped = onAccountTapped {
+                accountButton(action: onAccountTapped)
+                    .padding(.trailing, Spacing.lg)
+                    .padding(.top, Spacing.md)
             }
         }
         .task {
@@ -103,18 +111,6 @@ struct PromptStyleGridView: View {
     
     @ViewBuilder
     private func bannerSection(for banner: BannerConfig) -> some View {
-        ZStack(alignment: .topTrailing) {
-            bannerContent(for: banner)
-            if let onAccountTapped = onAccountTapped {
-                accountButton(action: onAccountTapped)
-                    .padding(.top, Spacing.md)
-                    .padding(.trailing, Spacing.md)
-            }
-        }
-    }
-    
-    @ViewBuilder
-    private func bannerContent(for banner: BannerConfig) -> some View {
         if let targetStyle = targetStyle(for: banner) {
             NavigationLink(destination: PromptStyleDetailView(style: targetStyle)) {
                 HomeBannerView(banner: banner)
@@ -139,7 +135,7 @@ struct PromptStyleGridView: View {
         }
         .padding(.vertical, 6)
         .padding(.horizontal, 12)
-        .background(Color.gray, in: Capsule())
+        .background(Color.gray.opacity(0.75), in: Capsule())
         .accessibilityLabel("个人页面")
     }
 }
