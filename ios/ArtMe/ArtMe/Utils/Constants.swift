@@ -20,7 +20,9 @@ struct Constants {
     static let apiBaseURL = "http://192.168.31.128:8000"
     #endif
     #else
-    static let apiBaseURL = "https://api.artme.com"
+    // ⚠️ 临时配置：Release 也指向本地/局域网后端，方便排查问题
+    // 上架或连接正式环境前，请改回 https://api.artme.com
+    static let apiBaseURL = "http://192.168.31.128:8000"
     #endif
     
     static let apiVersion = "v1"

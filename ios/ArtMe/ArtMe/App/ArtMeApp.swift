@@ -17,9 +17,6 @@ struct ArtMeApp: App {
         WindowGroup {
             ContentView()
                 .preferredColorScheme(.dark)
-                .onAppear {
-                    print("ContentView 已显示")
-                }
         }
     }
 }

@@ -13,9 +13,8 @@ struct PromptStyleDetailView: View {
     
     @State private var image: UIImage?
     @State private var isLoading = true
-    @State private var showImagePicker = false
-    @State private var showCamera = false
-    @State private var showImageSourceActionSheet = false
+    // 相册选择相关状态（直接进入相册）
+    @State private var showPhotosPicker = false
     @State private var selectedImage: UIImage?
     @State private var navigateToUploadPreview = false
     @State private var scale: CGFloat = 1.0
@@ -39,24 +38,10 @@ struct PromptStyleDetailView: View {
         .task {
             await loadImage()
         }
-        .sheet(isPresented: $showImagePicker) {
-            ImagePicker(selectedImage: $selectedImage, sourceType: .photoLibrary) {
+        .sheet(isPresented: $showPhotosPicker) {
+            CachedPickerWrapper(selectedImage: $selectedImage) {
                 navigateToUploadPreview = true
             }
-        }
-        .sheet(isPresented: $showCamera) {
-            ImagePicker(selectedImage: $selectedImage, sourceType: .camera) {
-                navigateToUploadPreview = true
-            }
-        }
-        .confirmationDialog("选择图片来源", isPresented: $showImageSourceActionSheet, titleVisibility: .visible) {
-            Button("从相册选择") {
-                showImagePicker = true
-            }
-            Button("拍照") {
-                showCamera = true
-            }
-            Button("取消", role: .cancel) {}
         }
         .background(
             Group {
@@ -143,7 +128,7 @@ struct PromptStyleDetailView: View {
         VStack(spacing: 12) {
             // 立即制作按钮
             Button(action: {
-                showImageSourceActionSheet = true
+                showPhotosPicker = true
             }) {
                 HStack {
                     Image(systemName: "sparkles")
@@ -220,6 +205,55 @@ struct ImagePicker: UIViewControllerRepresentable {
         
         func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
             parent.dismiss()
+        }
+    }
+}
+
+// MARK: - UIKit PHPicker 封装（替代 SwiftUI .photosPicker）
+
+struct PhotoPickerUIKit: UIViewControllerRepresentable {
+    @Binding var image: UIImage?
+    let onPicked: (() -> Void)?
+    
+    func makeUIViewController(context: Context) -> PHPickerViewController {
+        var config = PHPickerConfiguration()
+        config.selectionLimit = 1
+        config.filter = .images
+        
+        let picker = PHPickerViewController(configuration: config)
+        picker.delegate = context.coordinator
+        return picker
+    }
+    
+    func updateUIViewController(_ vc: PHPickerViewController, context: Context) {}
+    
+    func makeCoordinator() -> Coordinator {
+        Coordinator(self)
+    }
+    
+    class Coordinator: NSObject, PHPickerViewControllerDelegate {
+        let parent: PhotoPickerUIKit
+        
+        init(_ parent: PhotoPickerUIKit) {
+            self.parent = parent
+        }
+        
+        func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+            picker.dismiss(animated: true)
+            
+            guard let provider = results.first?.itemProvider,
+                  provider.canLoadObject(ofClass: UIImage.self) else {
+                return
+            }
+            
+            provider.loadObject(ofClass: UIImage.self) { image, _ in
+                if let uiImage = image as? UIImage {
+                    DispatchQueue.main.async {
+                        self.parent.image = uiImage
+                        self.parent.onPicked?()
+                    }
+                }
+            }
         }
     }
 }

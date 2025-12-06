@@ -134,6 +134,9 @@ struct PromptStyleGridView: View {
             }
         }
         .task {
+            print(">>> [Homepage] preheat start")
+            PickerCache.shared.prepare()                   // 预热并缓存 PHPicker 实例
+            PhotoPreheater.shared.preheatIfNeeded()        // 预热 PhotoKit / TCC
             await viewModel.loadPromptStyles()
             await pollPendingTasksIfNeeded()
         }
