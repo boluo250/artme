@@ -32,22 +32,29 @@
           "id": 3,
           "name": "Zootopia_2_Theme",
           "name_cn": "疯狂动物城2",
-          "thumbnail": "Zootopia_2_Theme_abbreviated.jpg",
+          "thumbnail": "Zootopia_2_Theme_abbreviated.png",
           "prompt": "Generate 1 photo of a cinema group portrait themed around 'Zootopia 2,' keeping the original facial features and face shape unchanged. Pose: selfie posture with the body slightly turned sideways, standing between the Judy Hopps and Nick Wilde mascots, closely side-by-side with them, head gently leaning toward the mascots, face directly facing the camera. Outfit: wearing Judy Hopps’ signature police uniform paired with a same-color plush beret decorated with a golden badge and gray plush rabbit ears with pink lining. Accessories: thin gold necklace. Hairstyle: dark brown long curly hair with natural waves and air bangs. Scene: cinema auditorium with black seats filled with audiences; the big screen shows the 'Zootopia 2' poster featuring Judy, Nick, and Flash Slothmore, with the text 'FUR DX'. Style: movie-themed immersive group-photo combining cuteness and a lively vibe. Lighting: cinema ambient lighting + screen light; soft ambient light illuminates the character while screen light enhances the background for natural, realistic lighting. Color tone: dark blue and black with blue/red accents from the screen; real cinema atmosphere with slight film grain. Composition: vertical selfie close-up with character and mascots occupying 60% of the frame and the auditorium background 40%, subjects centered. Filter: low-saturation cinema-style atmosphere filter for realism with vivid makeup. Additional elements: official 'Zootopia 2' Judy and Nick mascot designs—Judy in blue police uniform, Nick in green short-sleeve shirt with black/purple diagonal striped tie, maintaining plush texture. Text: at the bottom, include 'Disney ZOOTOPIA 2 ONLY IN THEATERS NOVEMBER 26' in movie-poster style, occupying 50% of the frame width. Quality: 32K ultra-high resolution with master-level cinematic image quality, retaining real human skin texture without over-smoothing."
         },
         {
           "id": 4,
           "name": "Zootopia_2_Theme_Male",
           "name_cn": "疯狂动物城2男",
-          "thumbnail": "Zootopia_2_Theme_Male_abbreviated.jpg",
+          "thumbnail": "Zootopia_2_Theme_Male_abbreviated.png",
           "prompt": "Generate 1 photo of a cinema group portrait themed around 'Zootopia 2,' keeping the original facial features and face shape unchanged, pose in a selfie posture with the body slightly turned sideways, standing between the Judy Hopps and Nick Wilde mascots, standing close side-by-side with them, head gently leaning toward the mascots, face directly facing the camera. Outfit (male version): wearing a male-version Judy Hopps–themed police uniform with a blue tactical-style jacket and matching tactical pants with a masculine cut, paired with a same-color plush beret decorated with a golden badge and gray plush rabbit ears with pink inner lining adapted to male proportions. Accessories: simple thin black or silver necklace suitable for male style. Hairstyle: dark brown short or medium-short hair with natural soft waves and airy bangs. Scene: cinema auditorium with black seats filled with audiences; big screen shows the 'Zootopia 2' poster featuring Judy, Nick, and Flash Slothmore with text 'FUR DX'. Style: movie-themed immersive group photo with cute and lively vibes. Lighting: cinema ambient lighting plus screen light, soft ambient light illuminating the person while screen light enhances the background for natural realism. Color tone: dominated by dark blue and black with bright blue/red accents from the screen, slight film grain. Composition: vertical selfie close-up with the person and mascots occupying 60% of the frame and auditorium background 40%, subjects centered. Filter: low-saturation cinema-style atmosphere filter for realism while keeping makeup clear. Additional elements: official 'Zootopia 2' Judy and Nick mascots—Judy in blue police uniform, Nick in green short-sleeve shirt with black/purple diagonal striped tie, maintaining plush texture. Text: at the bottom include 'Disney ZOOTOPIA 2 ONLY IN THEATERS NOVEMBER 26' in movie-poster style occupying 50% frame width. Quality: 32K ultra-high resolution with master-level cinematic quality, preserving real human skin texture without over-smoothing."
         },
         {
-          "id": 4,
+          "id": 5,
           "name": "New_Year_Eve",
           "name_cn": "新年夜",
           "thumbnail": "New_Year_Eve_abbreviated.jpg",
           "prompt": "Create a photorealistic New Year’s Eve celebration photo featuring a man (use the uploaded face for 100% accurate facial reference) standing in a large crowd near Sydney Harbour. He is laughing brightly, holding a drink in one hand, wearing a colorful party hat, with confetti falling around him. His expression should be joyful and full of excitement.Behind him, show the Sydney Opera House, the Harbour Bridge, and a massive firework display lighting up the sky with gold, white, red, and multicolor bursts. The water should reflect the firework glow and city lights. Surround him with a dense crowd of people holding phones, capturing the moment. Add a warm, cinematic night-time atmosphere with bokeh lights and soft smoke from the fireworks.Include a small digital timestamp in the corner reading: “JAN 01, 2026 — 12:00 AM” to mimic a candid party-camera photo. The overall vibe should feel energetic, celebratory, and real — a perfect New Year’s countdown moment in Sydney."
+        },
+        {
+          "id": 6,
+          "name": "Pet_Employee",
+          "name_cn": "宠物员工",
+          "thumbnail": "Pet_Employee_abbreviated.png",
+          "prompt": "Using the reference image of the uploaded pet, create a realistic anthropomorphic version of the pet as a professional office worker. The pet is sitting at an office desk, wearing a smart business suit with a tie, typing on a apple laptop, papers and coffee cup on the desk. The pet's facial features and fur patterns are faithfully preserved. Modern office environment, natural soft lighting, ultra-realistic details, high-resolution, professional and focused atmosphere. Avoid distortion, keep proportions natural, do not alter pet identity."
         }
       ]
     },
@@ -165,8 +172,8 @@
           "id": 5,
           "name": "Grid_4x4_1880s",
           "name_cn": "复古拼图",
-          "thumbnail": "Grid_4x4_1880s_abbreviated.png",
-          "prompt": "Generate an image of an instant camera photo on a black surface. In the photo: gentle motion blur, warm, nostalgic, candid film-style effect, * this exact person * hugging a panda"
+          "thumbnail": "Grid_4x4_1880s_abbreviated.jpg",
+          "prompt": "Make a 4×4 grid starting with the 1880s. In each section, I should appear styled according to that decade (clothing, hairstyle, facial hair, accessories). Use colors, background, & film style accordingly.he aspect ratio of the picture is 3:4"
         },
         {
           "id": 6,
@@ -198,20 +205,27 @@
         },
         {
           "id": 3,
+          "name": "9_grid_winter",
+          "name_cn": "雪景人像2",
+          "thumbnail": "9_grid_winter_abbreviated.png",
+          "prompt": "Generate a cohesive 3x3 grid cinematic contact sheet featuring 9 distinct photorealistic camera shots of the subject(s) from the input image. Location & Setting: set the scene at winter. Emotional Theme: overall emotional theme should be inserted here (fun / joy / bittersweet / calm / curious / determined etc.), and each shot should subtly reinforce this theme. Style & Emotion: maintain a consistent dramatic and emotionally profound mood across all 9 shots, with facial expressions dynamically adapting to each unique perspective while conveying the overall emotional theme. 9 Shot Coverage: full environment view with subject small in a vast atmospheric setting; full body shot emphasizing presence against backdrop; mid-body knees-up emotionally charged shot; upper-body waist-up expressive posture shot; intimate chest-up emphasizing gaze and feeling; tight face close-up conveying specific emotion; macro detail shot of hands, texture, or eyes; upward gaze shot from below (worm’s eye view) emphasizing quiet power; downward gaze shot from above (bird’s eye view) suggesting reflection or vulnerability. Strict Constraints: maintain strict consistency of subject, clothing, and lighting across all 9 panels; depth of field must shift realistically with bokeh in close-ups; absolutely no text, logos, labels, symbols, numbers, lettering, or typography in any image."
+        },
+        {
+          "id": 4,
           "name": "Luxurious_Artistic_Portrait",
           "name_cn": "奢华人像",
           "thumbnail": "Luxurious_Artistic_Portrait_abbreviated.png",
           "prompt": "Based on the reference photo, preserve 100% of the subject’s facial features and appearance. Generate a high-resolution full-color artistic portrait with realistic photographic texture, light film grain, and cinematic luxurious atmosphere. Subject: A young East Asian woman in a luxurious red sequin strapless gown, wearing diamond tassel jewelry including earrings, necklace, and bracelets, hair styled elegantly while maintaining her original hairstyle and facial features, expression gazing at the camera with a soft dreamy slightly tipsy look, exuding romantic sophistication and luxury. Pose & Composition: Sitting at a table, body slightly leaning forward, hands clasped under her chin, close-up or 3:4 vertical framing focusing on face and upper body, shot with an 85mm f/1.4 lens, shallow depth of field, background extremely blurred to emphasize the subject. Environment & Lighting: Luxury birthday party setting with softly blurred cake and candelabra in the foreground, vintage golden bokeh lights in the background creating a warm opulent glow, warm candlelight with subtle diffused fill, gentle highlights on face, gown, and jewelry, star filter effect creating starburst highlights on sequins and candle flames, paired with soft-focus diffusion for a dreamy ethereal feel. Texture & Detail: Skin natural and realistic with fine pores, no plastic look, sequin gown sparkling with starburst highlights, diamond jewelry reflecting light with subtle sparkle, light film grain applied, cinematic, romantic, and luxurious, overall mood dreamy, opulent, lazy elegance, high-society glamour."
         },
         {
-          "id": 4,
+          "id": 5,
           "name": "Seated_Artistic_Portrait",
           "name_cn": "坐姿人像",
           "thumbnail": "Seated_Artistic_Portrait_abbreviated.png",
           "prompt": "Based on the uploaded reference photo, preserve the subject’s facial features and appearance exactly. Generate a high-resolution full-color artistic portrait with realistic photographic style, avoiding style drift. Composition: Full-body seated portrait, young woman sits on a bed with white sheets, body slightly leaning to the left, legs crossed and extended forward to the right, one bent and one straight, right elbow resting on knee supporting her face, left hand resting naturally at her side, head slightly tilted, eyes looking straight or slightly upward toward the camera, expression calm, restrained, slightly detached. Subject & Styling: Deep brown long hair tied in a low ponytail with ends slightly flipped out, soft loose strands around forehead and sides, clean natural makeup with soft brows, light eye makeup, defined eyelashes, soft rose-red lips; outfit: loose white long-sleeve shirt covering upper thighs with narrow black tie, light-colored patterned or lace-edged ankle socks, overall style simple, slightly androgynous, relaxed elegance. Environment: Minimalist indoor setting with seamless wall background from light gray to beige, right side slightly brighter to add depth, white sheets with natural folds, no clutter. Lighting: Key light from right, slightly elevated soft side light, natural highlights, clean shadows, left side maintains neutral shadow, slight falloff across background, soft realistic shadows under sheets and legs, warm-neutral color temperature. Lens & Camera Settings: Full-frame 50–85mm lens, aperture f/1.8–2.8, shallow depth of field with soft background but sharp subject outline, camera at eye level or slightly low, slightly to the right to emphasize leg extension. Texture & Detail: Skin natural with subtle pores, leg highlights translucent not overexposed, shirt folds, sleeve stacking, and tie reflections clearly visible, socks knitting holes and lace edges detailed, bed sheet folds natural, slight film grain with mild vignetting, sharpening applied only to hair strands and fabric textures, avoid HDR, plastic-looking skin, over-sharpening, or repeating background textures."
         },
         {
-          "id": 5,
+          "id": 6,
           "name": "Sport_Artistic_Portrait",
           "name_cn": "运动人像",
           "thumbnail": "Sport_Artistic_Portrait_abbreviated.png",
@@ -313,7 +327,7 @@
           "name": "ID_Photo",
           "name_cn": "证件照",
           "thumbnail": "ID_Photo_abbreviated.png",
-          "prompt": "masterpiece, ultra-realistic ID photo, shoulders-up portrait of the same person, wearing a sharp navy-blue business suit and crisp white shirt, solid neutral background (#ffffff), soft even lighting, no shadows, face clearly visible, neutral expression, eyes straight at camera, ears visible, no glasses, smile, official ID photo dimensions 35 mm × 45 mm (413 × 531 px @ 300 dpi), passport-style framing."
+          "prompt": "Based on the reference photo,keeping the original face,Transform the uploaded photo into ultra-realistic ID photo, shoulders-up portrait of the same person, wearing a sharp navy-blue business suit and crisp white shirt, solid neutral background (#ffffff), soft even lighting, no shadows, face clearly visible, neutral expression, eyes straight at camera, ears visible, no glasses, smile, official ID photo dimensions 35 mm × 45 mm (413 × 531 px @ 300 dpi), passport-style framing."
         },
         {
           "id": 3,
@@ -321,6 +335,13 @@
           "name_cn": "老照片上色",
           "thumbnail": "Colorize_Old_Photo_abbreviated.png",
           "prompt": "Restore and colorize this old photo: remove all scratches, blemishes, fading, and mold spots, recover clear facial features and additional details. Avoid over-sharpening; keep the image clean and natural."
+        },
+        {
+          "id": 4,
+          "name": "Pet_Id_Photo",
+          "name_cn": "宠物ID照",
+          "thumbnail": "Pet_Id_Photo_abbreviated.png",
+          "prompt": "Generate a passport photo of this pet, looking towards the camera, centered, front, with a white background"
         }
       ]
     }

@@ -1,7 +1,7 @@
 """
 用户账户数据模型
 """
-from sqlalchemy import Column, String, Float, Boolean, DateTime, Integer, Enum
+from sqlalchemy import Column, String, Float, Boolean, DateTime, Integer, Enum, ForeignKey
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
 import enum
@@ -40,7 +40,7 @@ class Transaction(Base):
     __tablename__ = "transactions"
     
     id = Column(String, primary_key=True, index=True)
-    user_id = Column(String, index=True, nullable=False)
+    user_id = Column(String, ForeignKey("users.id"), index=True, nullable=False)
     transaction_type = Column(String, nullable=False)  # "recharge", "consume", "refund"
     amount = Column(Float, nullable=False)
     description = Column(String, nullable=True)
@@ -57,7 +57,7 @@ class Subscription(Base):
     __tablename__ = "subscriptions"
     
     id = Column(String, primary_key=True, index=True)
-    user_id = Column(String, index=True, nullable=False)
+    user_id = Column(String, ForeignKey("users.id"), index=True, nullable=False)
     subscription_type = Column(Enum(SubscriptionType), nullable=False)
     price = Column(Float, nullable=False)
     started_at = Column(DateTime, server_default=func.now())

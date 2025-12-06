@@ -17,7 +17,7 @@ struct PromptStyleDetailView: View {
     @State private var showCamera = false
     @State private var showImageSourceActionSheet = false
     @State private var selectedImage: UIImage?
-    @State private var navigateToGeneration = false
+    @State private var navigateToUploadPreview = false
     @State private var scale: CGFloat = 1.0
     @State private var lastScale: CGFloat = 1.0
     
@@ -41,14 +41,12 @@ struct PromptStyleDetailView: View {
         }
         .sheet(isPresented: $showImagePicker) {
             ImagePicker(selectedImage: $selectedImage, sourceType: .photoLibrary) {
-                // 选择图片后自动跳转
-                navigateToGeneration = true
+                navigateToUploadPreview = true
             }
         }
         .sheet(isPresented: $showCamera) {
             ImagePicker(selectedImage: $selectedImage, sourceType: .camera) {
-                // 拍照后自动跳转
-                navigateToGeneration = true
+                navigateToUploadPreview = true
             }
         }
         .confirmationDialog("选择图片来源", isPresented: $showImageSourceActionSheet, titleVisibility: .visible) {
@@ -64,8 +62,11 @@ struct PromptStyleDetailView: View {
             Group {
                 if let selectedImage = selectedImage {
                     NavigationLink(
-                        destination: ImageGenerationView(style: style, uploadedImage: selectedImage),
-                        isActive: $navigateToGeneration
+                        destination: ImageUploadPreviewView(
+                            style: style,
+                            uploadedImage: selectedImage
+                        ),
+                        isActive: $navigateToUploadPreview
                     ) {
                         EmptyView()
                     }
@@ -223,6 +224,79 @@ struct ImagePicker: UIViewControllerRepresentable {
     }
 }
 
+// MARK: - 上传确认视图
+
+struct ImageUploadPreviewView: View {
+    let style: PromptStyle
+    let uploadedImage: UIImage
+    
+    @State private var navigateToGeneration = false
+    @Environment(\.dismiss) private var dismiss
+    
+    var body: some View {
+        ScrollView {
+            VStack(spacing: 24) {
+                Image(uiImage: uploadedImage)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(maxWidth: .infinity)
+                    .cornerRadius(16)
+                    .shadow(radius: 10)
+                
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("🔥 5积分")
+                        .font(.title3)
+                        .fontWeight(.semibold)
+                    Text("请确认上传图片，系统将在扣除积分后开始生成。")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                
+                Button(action: {
+                    navigateToGeneration = true
+                }) {
+                    HStack {
+                        Image(systemName: "checkmark.circle.fill")
+                        Text("确认并生成")
+                            .fontWeight(.semibold)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(Color.accentColor)
+                    .foregroundColor(.white)
+                    .cornerRadius(12)
+                }
+                
+                Button(action: {
+                    dismiss()
+                }) {
+                    Text("重新选择图片")
+                        .fontWeight(.medium)
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 12)
+                                .stroke(Color.secondary, lineWidth: 1)
+                        )
+                }
+                .foregroundColor(.primary)
+            }
+            .padding()
+        }
+        .navigationTitle("确认图片")
+        .navigationBarTitleDisplayMode(.inline)
+        .background(
+            NavigationLink(
+                destination: ImageGenerationView(style: style, uploadedImage: uploadedImage),
+                isActive: $navigateToGeneration
+            ) {
+                EmptyView()
+            }
+        )
+    }
+}
+
 // MARK: - 图片生成视图（独立页面）
 
 struct ImageGenerationView: View {
@@ -233,6 +307,7 @@ struct ImageGenerationView: View {
     @State private var hasStartedGeneration = false
     @State private var savingImageId: String?
     @State private var showSaveSuccess = false
+    @Environment(\.dismiss) private var dismiss
     
     var body: some View {
         ScrollView {
@@ -262,6 +337,42 @@ struct ImageGenerationView: View {
                             .multilineTextAlignment(.center)
                     }
                     .padding()
+                }
+
+                // 制作中提示
+                if let status = viewModel.currentStatus,
+                   status == "pending" || status == "processing" {
+                    VStack(alignment: .leading, spacing: 12) {
+                        HStack(spacing: 8) {
+                            Image(systemName: "clock.arrow.2.circlepath")
+                                .foregroundColor(.orange)
+                            Text("作品制作中...")
+                                .font(.headline)
+                        }
+                        Text("已提交生成请求，你可以在本页等待，或选择返回首页继续浏览。作品完成后可在首页顶部查看制作状态。")
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                            .fixedSize(horizontal: false, vertical: true)
+                        
+                        Button(action: {
+                            // 用户主动选择“制作完成后通知我”，返回首页
+                            dismiss()
+                        }) {
+                            HStack(spacing: 8) {
+                                Image(systemName: "bell.badge")
+                                Text("制作完成后通知我，返回首页")
+                            }
+                            .font(.subheadline)
+                            .fontWeight(.semibold)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 10)
+                        }
+                        .buttonStyle(PlainButtonStyle())
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding()
+                    .background(Color.gray.opacity(0.1))
+                    .cornerRadius(12)
                 }
                 
                 // 生成的图片
@@ -331,17 +442,25 @@ struct ImageGenerationView: View {
         }
         .navigationTitle("生成图片")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button("返回首页") {
+                    dismiss()
+                }
+            }
+        }
         .alert("保存成功", isPresented: $showSaveSuccess) {
             Button("确定", role: .cancel) {}
         } message: {
             Text("图片已保存到相册")
         }
         .onAppear {
-            // 页面出现时自动开始生成
+            // 页面出现时自动开始生成，但不自动返回首页
             if !hasStartedGeneration {
                 hasStartedGeneration = true
                 viewModel.selectedPromptStyle = style
                 viewModel.uploadedImage = uploadedImage
+                
                 Task {
                     await viewModel.generateImageWithUpload()
                 }

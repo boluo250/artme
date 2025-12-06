@@ -39,6 +39,15 @@ struct AccountView: View {
                     }
                 }
                 
+                Section("我的作品") {
+                    NavigationLink {
+                        PortfolioView()
+                    } label: {
+                        Label("我的作品集", systemImage: "photo.stack")
+                            .foregroundColor(.purple600)
+                    }
+                }
+                
                 if let subscription = viewModel.subscription {
                     Section("当前订阅") {
                         VStack(alignment: .leading, spacing: Spacing.sm) {

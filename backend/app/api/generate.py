@@ -1,7 +1,7 @@
 """
 图像生成 API
 """
-from fastapi import APIRouter, HTTPException, Depends, UploadFile, File, Form
+from fastapi import APIRouter, HTTPException, Depends, UploadFile, File, Form, Query
 from pydantic import BaseModel
 from typing import Optional, List
 import uuid
@@ -9,13 +9,16 @@ import os
 import tempfile
 from datetime import datetime
 from pathlib import Path
+import json
 from sqlalchemy.orm import Session
 from app.services.ai_service import ai_service
 from app.services.image_service import image_service
 from app.database import get_db
 from app.models.user import User, Transaction
+from app.models.task import GenerationTask
 from app.api.account import GENERATE_IMAGE_COST
 from app.api.prompts import get_prompt_from_json
+from app.services.task_service import task_manager
 import logging
 
 router = APIRouter()
@@ -30,11 +33,12 @@ class GenerateRequest(BaseModel):
     width: int = 512
     height: int = 512
     model: str = "dall-e-3"
+    notify_on_complete: bool = False
 
 
 class GenerateResponse(BaseModel):
     """生成响应模型"""
-    image_url: str
+    image_url: Optional[str] = None
     task_id: str
     status: str
     prompt: str
@@ -46,8 +50,77 @@ class GenerateImageResponse(BaseModel):
     images: List[dict]  # [{"url": str, "id": str}, ...]
     task_id: str
     prompt: str
+    status: str
     usage: Optional[dict] = None
     error: Optional[str] = None
+
+
+class TaskStatusResponse(BaseModel):
+    """任务状态查询响应"""
+    task_id: str
+    status: str
+    prompt: str
+    image_urls: List[str] = []
+    error: Optional[str] = None
+
+
+class TaskListResponse(BaseModel):
+    """任务列表响应"""
+    tasks: List[TaskStatusResponse]
+    total: int
+
+
+def _to_task_status(task: GenerationTask) -> TaskStatusResponse:
+    """内部转换工具"""
+    image_urls: List[str] = []
+    if task.image_urls:
+        try:
+            image_urls = json.loads(task.image_urls)
+        except Exception:
+            image_urls = []
+    return TaskStatusResponse(
+        task_id=task.id,
+        status=task.status,
+        prompt=task.prompt,
+        image_urls=image_urls,
+        error=task.error,
+    )
+
+
+@router.get("/generate/tasks/{task_id}", response_model=TaskStatusResponse)
+async def get_task_status(task_id: str, db: Session = Depends(get_db)):
+    """查询单个任务状态"""
+    task = db.query(GenerationTask).filter(GenerationTask.id == task_id).first()
+    if not task:
+        raise HTTPException(status_code=404, detail="任务不存在")
+    return _to_task_status(task)
+
+
+@router.get("/generate/tasks", response_model=TaskListResponse)
+async def list_tasks(
+    user_id: Optional[str] = Query(None, description="按用户筛选"),
+    status: Optional[str] = Query(None, description="按状态筛选"),
+    limit: int = Query(50, ge=1, le=100),
+    offset: int = Query(0, ge=0),
+    db: Session = Depends(get_db),
+):
+    """列出任务（可按用户/状态过滤）"""
+    query = db.query(GenerationTask)
+    if user_id:
+        query = query.filter(GenerationTask.user_id == user_id)
+    if status:
+        query = query.filter(GenerationTask.status == status)
+    total = query.count()
+    tasks = (
+        query.order_by(GenerationTask.created_at.desc())
+        .offset(offset)
+        .limit(limit)
+        .all()
+    )
+    return TaskListResponse(
+        tasks=[_to_task_status(task) for task in tasks],
+        total=total,
+    )
 
 
 @router.post("/generate", response_model=GenerateResponse)
@@ -95,35 +168,35 @@ async def generate_image(request: GenerateRequest, db: Session = Depends(get_db)
                     db.add(transaction)
                     db.commit()
         
-        # 调用 AI 服务生成图像
-        result = await ai_service.generate_image(
+        # 创建任务记录
+        task_id = str(uuid.uuid4())
+        task = GenerationTask(
+            id=task_id,
+            user_id=request.user_id,
+            request_type="text",
+            prompt=request.prompt,
+            style_id=request.style_id,
+            status="pending",
+            notify_on_complete=request.notify_on_complete,
+        )
+        db.add(task)
+        db.commit()
+        
+        # 入队后台处理
+        await task_manager.enqueue_text_task(
+            task_id=task_id,
             prompt=request.prompt,
             style_id=request.style_id,
             width=request.width,
             height=request.height,
-            model=request.model
+            model=request.model,
         )
-        
-        # 下载并保存图像到本地
-        saved_path = await image_service.download_and_save_image(
-            result["image_url"],
-            subfolder="generated"
-        )
-        
-        # 生成缩略图
-        thumbnail_path = await image_service.create_thumbnail(saved_path)
-        
-        # 生成任务ID
-        task_id = str(uuid.uuid4())
-        
-        # 获取本地图像URL
-        local_image_url = image_service.get_image_url(saved_path)
         
         return GenerateResponse(
-            image_url=local_image_url,
+            image_url=None,
             task_id=task_id,
-            status=result["status"],
-            prompt=result["prompt"]
+            status="pending",
+            prompt=request.prompt
         )
     
     except ValueError as e:
@@ -141,6 +214,7 @@ async def generate_image_with_upload(
     size: str = Form("2K", description="图片尺寸（可选，默认 2K）"),
     watermark: bool = Form(True, description="是否添加水印（可选，默认 true）"),
     max_images: int = Form(5, description="最大生成图片数（可选，默认 5）"),
+    notify_on_complete: bool = Form(False, description="完成后通知"),
     db: Session = Depends(get_db)
 ):
     """
@@ -197,13 +271,11 @@ async def generate_image_with_upload(
                     db.add(transaction)
                     db.commit()
         
-        # 保存上传的图片到临时文件
-        temp_file_path = os.path.join(
-            tempfile.gettempdir(),
-            f"upload_{task_id}_{image.filename}"
-        )
+        # 保存上传的图片到持久临时文件，供后台任务使用
+        temp_dir = Path(image_service.upload_dir) / "tmp"
+        temp_dir.mkdir(parents=True, exist_ok=True)
+        temp_file_path = temp_dir / f"upload_{task_id}_{image.filename}"
         
-        # 读取上传的文件内容
         contents = await image.read()
         with open(temp_file_path, "wb") as f:
             f.write(contents)
@@ -227,46 +299,38 @@ async def generate_image_with_upload(
             
         logger.info(f"从 JSON 配置文件中获取 prompt: {final_prompt[:50]}...")
         
-        # 调用 OpenRouter API 生成图片
-        result = await ai_service.generate_image_with_doubao(
-            image_path_or_url=temp_file_path,
+        # 创建任务记录
+        task = GenerationTask(
+            id=task_id,
+            user_id=user_id,
+            request_type="upload",
             prompt=final_prompt,
-            output_dir=None,  # 使用默认输出目录
-            size=size,
-            watermark=watermark,
-            max_images=max_images
+            category=category,
+            subcategory=subcategory,
+            status="pending",
+            notify_on_complete=notify_on_complete,
         )
-        
-        # 清理临时文件
-        if temp_file_path and os.path.exists(temp_file_path):
-            try:
-                os.remove(temp_file_path)
-                logger.info(f"临时文件已删除: {temp_file_path}")
-            except Exception as e:
-                logger.warning(f"删除临时文件失败: {e}")
-        
-        if not result.get("success"):
-            error_msg = result.get("error", "生成图片失败")
-            logger.error(f"OpenRouter API 调用失败: {error_msg}")
-            raise HTTPException(
-                status_code=500,
-                detail=f"图片生成失败: {error_msg}"
-            )
-        
-        # 构建响应数据
-        image_list = []
-        for idx, image_url in enumerate(result.get("images", [])):
-            image_list.append({
-                "url": image_url,
-                "id": f"{task_id}_{idx}"
-            })
-        
-        return GenerateImageResponse(
-            success=True,
-            images=image_list,
+        db.add(task)
+        db.commit()
+
+        # 入队后台处理
+        await task_manager.enqueue_upload_task(
             task_id=task_id,
             prompt=final_prompt,
-            usage=result.get("usage"),
+            image_path=str(temp_file_path),
+            size=size,
+            watermark=watermark,
+            max_images=max_images,
+        )
+        
+        # 立即返回排队结果
+        return GenerateImageResponse(
+            success=True,
+            images=[],
+            task_id=task_id,
+            prompt=final_prompt,
+            status="pending",
+            usage=None,
             error=None
         )
     

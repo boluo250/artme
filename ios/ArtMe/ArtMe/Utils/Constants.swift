@@ -29,6 +29,7 @@ struct Constants {
     struct API {
         static let generate = "/api/\(apiVersion)/generate"
         static let generateWithImage = "/api/\(apiVersion)/generate/with-image"
+        static let tasks = "/api/\(apiVersion)/generate/tasks"
         static let styles = "/api/\(apiVersion)/styles"
         static let prompts = "/api/\(apiVersion)/prompts"
         static let models = "/api/\(apiVersion)/models"

@@ -16,6 +16,7 @@ struct GenerateImageRequest: Codable {
     let width: Int
     let height: Int
     let model: String
+    let notifyOnComplete: Bool
     
     init(
         prompt: String,
@@ -23,7 +24,8 @@ struct GenerateImageRequest: Codable {
         userId: String? = nil,
         width: Int = 512,
         height: Int = 512,
-        model: String = "dall-e-3"
+        model: String = "dall-e-3",
+        notifyOnComplete: Bool = false
     ) {
         self.prompt = prompt
         self.styleId = styleId
@@ -31,13 +33,14 @@ struct GenerateImageRequest: Codable {
         self.width = width
         self.height = height
         self.model = model
+        self.notifyOnComplete = notifyOnComplete
     }
 }
 
 // MARK: - 生成响应
 
 struct GenerateImageResponse: Codable {
-    let imageUrl: String
+    let imageUrl: String?
     let taskId: String
     let status: String
     let prompt: String
@@ -53,5 +56,15 @@ struct AIModel: Codable, Identifiable {
     let id: String
     let name: String
     let status: String
+}
+
+// MARK: - 任务状态
+
+struct TaskStatusResponse: Codable {
+    let taskId: String
+    let status: String
+    let prompt: String
+    let imageUrls: [String]
+    let error: String?
 }
 

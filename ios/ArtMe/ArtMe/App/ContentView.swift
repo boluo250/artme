@@ -9,7 +9,6 @@ import SwiftUI
 
 struct ContentView: View {
     private enum ActiveSheet: String, Identifiable {
-        case generate
         case account
         
         var id: String { rawValue }
@@ -30,8 +29,6 @@ struct ContentView: View {
         }
         .sheet(item: $activeSheet) { sheet in
             switch sheet {
-            case .generate:
-                GenerateView()
             case .account:
                 AccountView()
             }

@@ -15,6 +15,7 @@ from app.middleware import (
 
 # 导入 API 路由
 from app.api import generate, styles, account, subscription, static, prompts
+from app.services.task_service import task_manager
 
 app = FastAPI(
     title=settings.APP_NAME,
@@ -41,6 +42,12 @@ app.middleware("http")(logging_middleware)
 app.add_exception_handler(RequestValidationError, validation_exception_handler)
 app.add_exception_handler(StarletteHTTPException, http_exception_handler)
 app.add_exception_handler(Exception, general_exception_handler)
+
+
+@app.on_event("startup")
+async def startup_event():
+    """应用启动时初始化任务队列"""
+    await task_manager.start()
 
 
 @app.get("/")

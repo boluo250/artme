@@ -285,6 +285,12 @@ class APIService {
             body.append("\r\n".data(using: .utf8)!)
         }
         
+        // 通知开关
+        body.append("--\(boundary)\r\n".data(using: .utf8)!)
+        body.append("Content-Disposition: form-data; name=\"notify_on_complete\"\r\n\r\n".data(using: .utf8)!)
+        body.append((request.notifyOnComplete ? "true" : "false").data(using: .utf8)!)
+        body.append("\r\n".data(using: .utf8)!)
+        
         // 结束 boundary
         body.append("--\(boundary)--\r\n".data(using: .utf8)!)
         
@@ -312,5 +318,12 @@ class APIService {
         } catch {
             throw APIError.networkError(error)
         }
+    }
+
+    // MARK: - 任务状态
+
+    func fetchTaskStatus(taskId: String) async throws -> TaskStatusResponse {
+        let endpoint = "\(Constants.API.tasks)/\(taskId)"
+        return try await self.request(endpoint: endpoint)
     }
 }

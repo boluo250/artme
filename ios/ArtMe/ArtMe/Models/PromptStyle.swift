@@ -54,6 +54,7 @@ struct GenerateImageWithUploadRequest {
     let size: String?
     let watermark: Bool?
     let maxImages: Int?
+    let notifyOnComplete: Bool
     
     init(
         image: UIImage,
@@ -62,7 +63,8 @@ struct GenerateImageWithUploadRequest {
         userId: String? = nil,
         size: String? = "2K",
         watermark: Bool? = true,
-        maxImages: Int? = 5
+        maxImages: Int? = 5,
+        notifyOnComplete: Bool = false
     ) {
         self.image = image
         self.category = category
@@ -71,6 +73,7 @@ struct GenerateImageWithUploadRequest {
         self.size = size
         self.watermark = watermark
         self.maxImages = maxImages
+        self.notifyOnComplete = notifyOnComplete
     }
 }
 
@@ -81,6 +84,7 @@ struct GenerateImageWithUploadResponse: Codable {
     let images: [GeneratedImage]
     let taskId: String
     let prompt: String
+    let status: String
     let usage: Usage?
     let error: String?
 }
