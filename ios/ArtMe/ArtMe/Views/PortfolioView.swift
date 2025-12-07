@@ -10,6 +10,8 @@ import SwiftUI
 struct PortfolioView: View {
     @StateObject private var historyManager = HistoryManager()
     @State private var images: [String: UIImage] = [:]
+    @State private var selectedImage: UIImage?
+    @State private var isShowingImagePreview: Bool = false
     
     private let gridColumns = [
         GridItem(.flexible(), spacing: Spacing.md),
@@ -30,10 +32,21 @@ struct PortfolioView: View {
                 ScrollView {
                     LazyVGrid(columns: gridColumns, spacing: Spacing.md) {
                         ForEach(historyManager.history) { item in
-                            PortfolioGridItem(item: item, image: images[item.id])
-                                .task {
-                                    await loadImage(for: item)
+                            PortfolioGridItem(
+                                item: item,
+                                image: images[item.id],
+                                onTap: {
+                                    if let image = images[item.id] {
+                                        withAnimation(.easeInOut) {
+                                            selectedImage = image
+                                            isShowingImagePreview = true
+                                        }
+                                    }
                                 }
+                            )
+                            .task {
+                                await loadImage(for: item)
+                            }
                         }
                     }
                     .padding(.horizontal, Spacing.lg)
@@ -43,6 +56,49 @@ struct PortfolioView: View {
         }
         .navigationTitle("我的作品集")
         .navigationBarTitleDisplayMode(.inline)
+        .overlay {
+            if isShowingImagePreview, let image = selectedImage {
+                ZStack {
+                    Color.black.opacity(0.8)
+                        .ignoresSafeArea()
+                        .onTapGesture {
+                            withAnimation(.easeInOut) {
+                                isShowingImagePreview = false
+                                selectedImage = nil
+                            }
+                        }
+                    
+                    VStack {
+                        Spacer()
+                        
+                        Image(uiImage: image)
+                            .resizable()
+                            .scaledToFit()
+                            .cornerRadiusMD()
+                            .padding()
+                        
+                        Spacer()
+                        
+                        Button(action: {
+                            withAnimation(.easeInOut) {
+                                isShowingImagePreview = false
+                                selectedImage = nil
+                            }
+                        }) {
+                            Text("关闭")
+                                .font(.system(size: 16, weight: .medium))
+                                .padding(.horizontal, 24)
+                                .padding(.vertical, 8)
+                                .background(Color.white.opacity(0.9))
+                                .foregroundColor(.black)
+                                .cornerRadius(22)
+                        }
+                        .padding(.bottom, 32)
+                    }
+                }
+                .transition(.opacity)
+            }
+        }
     }
     
     @MainActor
@@ -63,6 +119,7 @@ struct PortfolioView: View {
 private struct PortfolioGridItem: View {
     let item: GeneratedImageHistory
     let image: UIImage?
+    let onTap: () -> Void
     
     var body: some View {
         VStack(alignment: .leading, spacing: Spacing.sm) {
@@ -71,6 +128,10 @@ private struct PortfolioGridItem: View {
                     Image(uiImage: image)
                         .resizable()
                         .aspectRatio(contentMode: .fill)
+                        .contentShape(Rectangle())
+                        .onTapGesture {
+                            onTap()
+                        }
                 } else if item.status == "pending" || item.status == "processing" {
                     Rectangle()
                         .fill(Color.gray300.opacity(0.3))
@@ -98,52 +159,14 @@ private struct PortfolioGridItem: View {
             .cornerRadiusMD()
             
             VStack(alignment: .leading, spacing: Spacing.xs) {
-                Text(item.prompt)
-                    .textStyleSubheadline()
-                    .lineLimit(2)
-                
-                if let styleName = item.styleName {
-                    Text(styleName)
-                        .textStyleCaption()
-                        .foregroundColor(.gray400)
-                }
-                
-                if let status = item.status {
-                    Text(statusLabel(status))
-                        .textStyleCaption()
-                        .foregroundColor(statusColor(status))
-                }
-                
                 Text(item.createdAt, style: .date)
-                    .textStyleCaption()
+                    .textStyleSubheadline()
                     .foregroundColor(.gray400)
             }
         }
         .padding(Spacing.sm)
         .background(Color.gray900.opacity(0.45))
         .cornerRadiusMD()
-    }
-
-    private func statusLabel(_ status: String) -> String {
-        switch status {
-        case "pending", "processing":
-            return "制作中"
-        case "failed":
-            return "制作失败"
-        default:
-            return "已完成"
-        }
-    }
-
-    private func statusColor(_ status: String) -> Color {
-        switch status {
-        case "pending", "processing":
-            return .orange
-        case "failed":
-            return .red
-        default:
-            return .green
-        }
     }
 }
 

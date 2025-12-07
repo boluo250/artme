@@ -10,13 +10,14 @@ import PhotosUI
 
 struct PromptStyleDetailView: View {
     let style: PromptStyle
+    /// 选中图片后回调，由上层（ContentView）控制导航；在普通场景下可以为 nil
+    let onSelectImage: ((PromptStyle, UIImage) -> Void)?
     
     @State private var image: UIImage?
     @State private var isLoading = true
     // 相册选择相关状态（直接进入相册）
     @State private var showPhotosPicker = false
     @State private var selectedImage: UIImage?
-    @State private var navigateToUploadPreview = false
     @State private var scale: CGFloat = 1.0
     @State private var lastScale: CGFloat = 1.0
     
@@ -40,24 +41,11 @@ struct PromptStyleDetailView: View {
         }
         .sheet(isPresented: $showPhotosPicker) {
             CachedPickerWrapper(selectedImage: $selectedImage) {
-                navigateToUploadPreview = true
-            }
-        }
-        .background(
-            Group {
-                if let selectedImage = selectedImage {
-                    NavigationLink(
-                        destination: ImageUploadPreviewView(
-                            style: style,
-                            uploadedImage: selectedImage
-                        ),
-                        isActive: $navigateToUploadPreview
-                    ) {
-                        EmptyView()
-                    }
+                if let image = selectedImage {
+                    onSelectImage?(style, image)
                 }
             }
-        )
+        }
     }
     
     private var displayTitle: String {
@@ -263,8 +251,9 @@ struct PhotoPickerUIKit: UIViewControllerRepresentable {
 struct ImageUploadPreviewView: View {
     let style: PromptStyle
     let uploadedImage: UIImage
+    /// 确认生成后的回调，由上层控制导航
+    let onConfirmGenerate: (() -> Void)?
     
-    @State private var navigateToGeneration = false
     @Environment(\.dismiss) private var dismiss
     
     var body: some View {
@@ -288,7 +277,7 @@ struct ImageUploadPreviewView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 
                 Button(action: {
-                    navigateToGeneration = true
+                    onConfirmGenerate?()
                 }) {
                     HStack {
                         Image(systemName: "checkmark.circle.fill")
@@ -320,14 +309,6 @@ struct ImageUploadPreviewView: View {
         }
         .navigationTitle("确认图片")
         .navigationBarTitleDisplayMode(.inline)
-        .background(
-            NavigationLink(
-                destination: ImageGenerationView(style: style, uploadedImage: uploadedImage),
-                isActive: $navigateToGeneration
-            ) {
-                EmptyView()
-            }
-        )
     }
 }
 
@@ -341,7 +322,9 @@ struct ImageGenerationView: View {
     @State private var hasStartedGeneration = false
     @State private var savingImageId: String?
     @State private var showSaveSuccess = false
-    @Environment(\.dismiss) private var dismiss
+    /// 回到首页的回调，由上层控制导航栈
+    let onReturnHome: (() -> Void)?
+    @EnvironmentObject private var taskStatusManager: TaskStatusManager
     
     var body: some View {
         ScrollView {
@@ -389,8 +372,12 @@ struct ImageGenerationView: View {
                             .fixedSize(horizontal: false, vertical: true)
                         
                         Button(action: {
-                            // 用户主动选择“制作完成后通知我”，返回首页
-                            dismiss()
+                            // 用户主动选择“制作完成后通知我”，标记当前任务需要通知，并直接回首页
+                            viewModel.notifyOnComplete = true
+                            if let taskId = viewModel.taskId {
+                                HistoryManager().updateNotifyOnComplete(id: taskId, notifyOnComplete: true)
+                            }
+                            onReturnHome?()
                         }) {
                             HStack(spacing: 8) {
                                 Image(systemName: "bell.badge")
@@ -479,7 +466,7 @@ struct ImageGenerationView: View {
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button("返回首页") {
-                    dismiss()
+                    onReturnHome?()
                 }
             }
         }
@@ -497,6 +484,9 @@ struct ImageGenerationView: View {
                 
                 Task {
                     await viewModel.generateImageWithUpload()
+                    // 生成任务创建后，启动全局轮询（如果尚未启动），
+                    // 由 TaskStatusManager 统一负责后续状态更新与完成 Toast。
+                    taskStatusManager.startPollingIfNeeded()
                 }
             }
         }
@@ -536,6 +526,7 @@ struct ImageGenerationView: View {
             prompt: "Test prompt",
             thumbnailUrl: "/api/v1/data/cartoon/3D_figurine.jpg",
             originalUrl: "/api/v1/data/cartoon/3D_figurine.jpg"
-        )
+        ),
+        onSelectImage: nil
     )
 }

@@ -19,6 +19,8 @@ struct GeneratedImageHistory: Identifiable, Codable {
     let status: String?        // pending / processing / completed / failed
     let createdAt: Date
     let error: String?
+    /// 用户是否勾选了「制作完成后通知我」
+    let notifyOnComplete: Bool?
 }
 
 // MARK: - 历史记录管理
@@ -55,7 +57,8 @@ class HistoryManager: ObservableObject {
             imageUrl: imageUrl ?? item.imageUrl,
             status: status,
             createdAt: item.createdAt,
-            error: error
+            error: error,
+            notifyOnComplete: item.notifyOnComplete
         )
         saveHistory()
     }
@@ -67,6 +70,24 @@ class HistoryManager: ObservableObject {
     
     func clearHistory() {
         history.removeAll()
+        saveHistory()
+    }
+    
+    /// 更新某条记录的通知开关（不改变其他字段）
+    func updateNotifyOnComplete(id: String, notifyOnComplete: Bool) {
+        guard let idx = history.firstIndex(where: { $0.id == id }) else { return }
+        let item = history[idx]
+        history[idx] = GeneratedImageHistory(
+            id: item.id,
+            prompt: item.prompt,
+            styleId: item.styleId,
+            styleName: item.styleName,
+            imageUrl: item.imageUrl,
+            status: item.status,
+            createdAt: item.createdAt,
+            error: item.error,
+            notifyOnComplete: notifyOnComplete
+        )
         saveHistory()
     }
     

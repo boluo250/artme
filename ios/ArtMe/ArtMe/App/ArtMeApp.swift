@@ -9,6 +9,8 @@ import SwiftUI
 
 @main
 struct ArtMeApp: App {
+    @StateObject private var taskStatusManager = TaskStatusManager()
+    
     init() {
         print("ArtMe App 启动")
     }
@@ -16,6 +18,7 @@ struct ArtMeApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environmentObject(taskStatusManager)
                 .preferredColorScheme(.dark)
         }
     }

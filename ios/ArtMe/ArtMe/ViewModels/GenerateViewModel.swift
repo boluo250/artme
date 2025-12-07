@@ -16,6 +16,7 @@ class GenerateViewModel: ObservableObject {
     @Published var isLoading = false
     @Published var errorMessage: String?
     @Published var taskId: String?
+    /// 当前任务是否需要在完成时通知用户
     @Published var notifyOnComplete: Bool = false
     @Published var currentStatus: String?
     
@@ -36,7 +37,8 @@ class GenerateViewModel: ObservableObject {
             imageUrl: nil,
             status: "pending",
             createdAt: Date(),
-            error: nil
+            error: nil,
+            notifyOnComplete: notifyOnComplete
         )
         HistoryManager().upsertHistory(historyItem)
     }
@@ -86,17 +88,20 @@ class GenerateViewModel: ObservableObject {
                 size: "2K",
                 watermark: true,
                 maxImages: 5,
-                notifyOnComplete: false
+                notifyOnComplete: notifyOnComplete
             )
             
             let response = try await apiService.generateImageWithUpload(request: request)
             
             if response.success {
                 taskId = response.taskId
+                // 统一由 TaskStatusManager 负责后续轮询与状态更新，这里只负责写入一条「pending」历史记录，
+                // 并记录当前接口返回的初始状态，供当前页面展示「制作中」文案。
                 addPendingHistory(taskId: response.taskId, prompt: response.prompt, style: nil)
                 currentStatus = response.status
-
+            
                 if response.status == "completed", !response.images.isEmpty {
+                    // 极短任务：服务端已直接返回完成结果，仍在本页直接展示生成列表，并同步更新历史为 completed。
                     await handleCompletedList(images: response.images)
                     HistoryManager().updateHistoryStatus(
                         id: response.taskId,
@@ -104,9 +109,9 @@ class GenerateViewModel: ObservableObject {
                         imageUrl: response.images.first?.url,
                         error: nil
                     )
-                } else {
-                    await pollTaskStatus(taskId: response.taskId)
                 }
+                // 其他情况（pending / processing）：不再在本地单独轮询，
+                // 由 TaskStatusManager 统一轮询所有 pending 任务并触发 Toast。
             } else {
                 errorMessage = response.error ?? "生成失败"
             }
@@ -116,91 +121,9 @@ class GenerateViewModel: ObservableObject {
         
         isLoading = false
     }
-
-    // MARK: - 任务轮询与完成处理
-
-    private func pollTaskStatus(taskId: String) async {
-        currentStatus = "processing"
-        while true {
-            do {
-                let status = try await apiService.fetchTaskStatus(taskId: taskId)
-                await MainActor.run {
-                    self.currentStatus = status.status
-                }
-                if status.status == "completed" {
-                    // 区分两种模式：
-                    // 1）文本生成头像（单图）：使用 generatedImage
-                    // 2）上传图片生成（多图）：使用 generatedImages
-                    if uploadedImage != nil && selectedPromptStyle != nil {
-                        // 上传生成场景：将返回的 URL 数组转换为 GeneratedImage 列表
-                        let images: [GeneratedImage] = status.imageUrls.enumerated().map { index, url in
-                            GeneratedImage(
-                                id: "\(taskId)-\(index)",
-                                url: url
-                            )
-                        }
-                        if !images.isEmpty {
-                            await handleCompletedList(images: images)
-                        } else {
-                            // 兜底：如果没有返回列表，仍然尝试按单图处理
-                            await handleCompletedTask(imageUrls: status.imageUrls)
-                        }
-                    } else {
-                        // 文本生成头像：保持原有单图逻辑
-                        await handleCompletedTask(imageUrls: status.imageUrls)
-                    }
-                    HistoryManager().updateHistoryStatus(
-                        id: taskId,
-                        status: "completed",
-                        imageUrl: status.imageUrls.first,
-                        error: nil
-                    )
-                    break
-                } else if status.status == "failed" {
-                    await MainActor.run {
-                        self.errorMessage = status.error ?? "生成失败"
-                    }
-                    HistoryManager().updateHistoryStatus(
-                        id: taskId,
-                        status: "failed",
-                        imageUrl: nil,
-                        error: status.error
-                    )
-                    break
-                }
-            } catch {
-                await MainActor.run {
-                    self.errorMessage = "查询任务状态失败: \(error.localizedDescription)"
-                }
-                break
-            }
-
-            // 间隔 2s 再查
-            try? await Task.sleep(nanoseconds: 2_000_000_000)
-        }
-    }
-
-    private func handleCompletedTask(imageUrls: [String]) async {
-        guard let first = imageUrls.first else { return }
-        let fullImageURL = first.hasPrefix("http") ? first : Constants.apiBaseURL + first
-        do {
-            let image = try await imageService.downloadImage(from: fullImageURL)
-            await MainActor.run {
-                self.generatedImage = image
-            }
-            HistoryManager().updateHistoryStatus(
-                id: taskId ?? UUID().uuidString,
-                status: "completed",
-                imageUrl: first,
-                error: nil
-            )
-        } catch {
-            await MainActor.run {
-                self.errorMessage = "下载生成结果失败: \(error.localizedDescription)"
-            }
-        }
-    }
-
+    
+    // MARK: - 任务完成处理（仅用于「立即完成」场景在本页展示结果）
+    
     private func handleCompletedList(images: [GeneratedImage]) async {
         await MainActor.run {
             self.generatedImages = images

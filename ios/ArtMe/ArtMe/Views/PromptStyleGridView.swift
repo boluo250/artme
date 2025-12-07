@@ -10,26 +10,18 @@ import SwiftUI
 
 struct PromptStyleGridView: View {
     @StateObject private var viewModel = PromptStyleViewModel()
-    @State private var isRefreshing = false
     @State private var targetCategory: String?
     private let onAccountTapped: (() -> Void)?
-    
-    // 任务状态提示（逻辑状态）
-    @State private var pendingItem: GeneratedImageHistory?
-    @State private var completedItem: GeneratedImageHistory?
-    
-    // 顶部 Toast 展示状态（UI）
-    @State private var pendingToastItem: GeneratedImageHistory?
-    @State private var completedToastQueue: [GeneratedImageHistory] = []
-    @State private var currentCompletedToast: GeneratedImageHistory?
-    @State private var isProcessingCompletedQueue = false
-    @State private var shownPendingTaskIds: [String] = []
-    @State private var shownCompletedTaskIds: [String] = []
+    private let onSelectStyle: ((PromptStyle) -> Void)?
+    @EnvironmentObject private var taskStatusManager: TaskStatusManager
     @State private var showPortfolio = false
-    @State private var isPolling = false
     
-    init(onAccountTapped: (() -> Void)? = nil) {
+    init(
+        onAccountTapped: (() -> Void)? = nil,
+        onSelectStyle: ((PromptStyle) -> Void)? = nil
+    ) {
         self.onAccountTapped = onAccountTapped
+        self.onSelectStyle = onSelectStyle
     }
     
     var body: some View {
@@ -70,7 +62,10 @@ struct PromptStyleGridView: View {
                                 ForEach(viewModel.categories, id: \.self) { category in
                                     CategorySection(
                                         category: category,
-                                        styles: viewModel.getStyles(forCategory: category)
+                                        styles: viewModel.getStyles(forCategory: category),
+                                        onSelectStyle: { style in
+                                            onSelectStyle?(style)
+                                        }
                                     )
                                     .id(category)
                                 }
@@ -100,50 +95,17 @@ struct PromptStyleGridView: View {
                     .padding(.top, Spacing.md)
             }
 
-            // 顶部轻量 Toast：1）生成开始时「正在制作」提示（2 秒自动消失）
-            if let item = pendingToastItem {
-                ToastBanner(
-                    title: "正在制作",
-                    message: item.prompt,
-                    actionTitle: "查看",
-                    onAction: {
-                        pendingToastItem = nil
-                        showPortfolio = true
-                    },
-                    onDismiss: { pendingToastItem = nil }
-                )
-                .transition(.move(edge: .top).combined(with: .opacity))
-                .padding(.top, 60)
-                .padding(.horizontal, Spacing.lg)
-            }
-            // 2）制作完成时「制作完成」提示：多个任务顺序依次展示，每条约 2 秒
-            else if let item = currentCompletedToast {
-                ToastBanner(
-                    title: "制作完成",
-                    message: item.prompt,
-                    actionTitle: "查看",
-                    onAction: {
-                        currentCompletedToast = nil
-                        showPortfolio = true
-                    },
-                    onDismiss: { currentCompletedToast = nil }
-                )
-                .transition(.move(edge: .top).combined(with: .opacity))
-                .padding(.top, 60)
-                .padding(.horizontal, Spacing.lg)
-            }
+            // Toast 展示已由全局 GlobalToastContainer 统一处理
         }
         .task {
             print(">>> [Homepage] preheat start")
             PickerCache.shared.prepare()                   // 预热并缓存 PHPicker 实例
             PhotoPreheater.shared.preheatIfNeeded()        // 预热 PhotoKit / TCC
             await viewModel.loadPromptStyles()
-            await pollPendingTasksIfNeeded()
+            taskStatusManager.startPollingIfNeeded()
         }
         .onAppear {
-            Task {
-                await pollPendingTasksIfNeeded()
-            }
+            taskStatusManager.startPollingIfNeeded()
         }
         .background(
             NavigationLink(
@@ -179,7 +141,9 @@ struct PromptStyleGridView: View {
         for banner: BannerConfig
     ) -> some View {
         if let targetStyle = targetStyle(for: banner) {
-            NavigationLink(destination: PromptStyleDetailView(style: targetStyle)) {
+            Button {
+                onSelectStyle?(targetStyle)
+            } label: {
                 HomeBannerView(banner: banner)
             }
             .buttonStyle(PlainButtonStyle())
@@ -205,224 +169,83 @@ struct PromptStyleGridView: View {
         .background(Color.gray.opacity(0.75), in: Capsule())
         .accessibilityLabel("个人页面")
     }
-
-    // MARK: - 任务状态轮询
-
-    private func pollPendingTasksIfNeeded() async {
-        if isPolling { return }
-        isPolling = true
-        defer { isPolling = false }
-
-        // 持续轮询，直到本地不再有「制作中」任务或任务被取消
-        while true {
-            let hasPending = await checkPendingTasksOnce()
-            if !hasPending { break }
-            
-            // 任务仍在制作中，3 秒后继续查询
-            try? await Task.sleep(nanoseconds: 3_000_000_000)
-            if Task.isCancelled { break }
-        }
-    }
-
-    /// 查询一次最近一条任务的状态
-    /// - Returns: 是否仍然需要继续轮询（true 表示仍在制作中）
-    private func checkPendingTasksOnce() async -> Bool {
-        // 读取本地历史：最新的任务排在最前
-        let historyManager = HistoryManager()
-
-        // 没有任何历史记录：不需要轮询
-        guard let latest = historyManager.history.first else {
-            await MainActor.run {
-                pendingItem = nil
-            }
-            return false
-        }
-
-        // 如果最新任务已经是「完成」或「失败」状态（本地历史里就已经是 completed/failed），
-        // 说明不是本次会话中新完成的任务，此时只更新状态，不触发完成 Toast。
-        if let status = latest.status {
-            if status == "completed" {
-                await MainActor.run {
-                    pendingItem = nil
-                    completedItem = latest
-                }
-                return false
-            }
-            if status == "failed" {
-                await MainActor.run {
-                    pendingItem = nil
-                }
-                return false
-            }
-        }
-
-        // 最新任务仍是 pending / processing：向后端查询最新状态
-        do {
-            let statusResponse = try await APIService.shared.fetchTaskStatus(taskId: latest.id)
-
-            switch statusResponse.status {
-            case "completed":
-                // 更新本地历史为完成状态
-                historyManager.updateHistoryStatus(
-                    id: latest.id,
-                    status: "completed",
-                    imageUrl: statusResponse.imageUrls.first,
-                    error: nil
-                )
-
-                // 重新读取更新后的这条记录
-                let updated = historyManager.history.first(where: { $0.id == latest.id }) ?? latest
-
-                await MainActor.run {
-                    pendingItem = nil
-                    completedItem = updated
-                    enqueueCompletedToastIfNeeded(for: updated)
-                }
-                return false
-
-            case "failed":
-                historyManager.updateHistoryStatus(
-                    id: latest.id,
-                    status: "failed",
-                    imageUrl: nil,
-                    error: statusResponse.error
-                )
-                await MainActor.run {
-                    pendingItem = nil
-                }
-                return false
-
-            case "pending", "processing":
-                // 仍在制作中：更新本地状态并继续轮询，并触发一次「正在制作」Toast
-                historyManager.updateHistoryStatus(
-                    id: latest.id,
-                    status: statusResponse.status,
-                    imageUrl: statusResponse.imageUrls.first ?? latest.imageUrl,
-                    error: statusResponse.error
-                )
-                let updated = historyManager.history.first(where: { $0.id == latest.id }) ?? latest
-                await MainActor.run {
-                    pendingItem = updated
-                    showPendingToastIfNeeded(for: updated)
-                }
-                return true
-
-            default:
-                // 未知状态：保守处理为已完成，不再轮询
-                await MainActor.run {
-                    pendingItem = nil
-                    completedItem = latest
-                    enqueueCompletedToastIfNeeded(for: latest)
-                }
-                return false
-            }
-
-        } catch {
-            // 查询失败时，保守认为任务仍在制作中，稍后重试，并确保至少展示一次「正在制作」提示
-            await MainActor.run {
-                pendingItem = latest
-                showPendingToastIfNeeded(for: latest)
-            }
-            return true
-        }
-    }
-
-    // MARK: - Toast 辅助方法
-
-    /// 只在每个任务第一次进入「制作中」状态时，展示一次 2 秒的「正在制作」Toast
-    @MainActor
-    private func showPendingToastIfNeeded(for item: GeneratedImageHistory) {
-        guard !shownPendingTaskIds.contains(item.id) else { return }
-        shownPendingTaskIds.append(item.id)
-        pendingToastItem = item
-
-        Task {
-            // 展示约 2 秒
-            try? await Task.sleep(nanoseconds: 2_000_000_000)
-            await MainActor.run {
-                if pendingToastItem?.id == item.id {
-                    pendingToastItem = nil
-                }
-            }
-        }
-    }
-
-    /// 每个任务完成时加入队列，只展示一次；多个任务顺序依次弹出，每条约 2 秒
-    @MainActor
-    private func enqueueCompletedToastIfNeeded(for item: GeneratedImageHistory) {
-        guard !shownCompletedTaskIds.contains(item.id) else { return }
-        shownCompletedTaskIds.append(item.id)
-        completedToastQueue.append(item)
-
-        Task {
-            await processCompletedToastQueueIfNeeded()
-        }
-    }
-
-    /// 依次展示队列中的「制作完成」Toast，每条约 2 秒
-    @MainActor
-    private func processCompletedToastQueueIfNeeded() async {
-        guard !isProcessingCompletedQueue else { return }
-        isProcessingCompletedQueue = true
-
-        while !completedToastQueue.isEmpty {
-            let next = completedToastQueue.removeFirst()
-
-            withAnimation {
-                currentCompletedToast = next
-            }
-
-            // 展示约 2 秒
-            try? await Task.sleep(nanoseconds: 2_000_000_000)
-
-            withAnimation {
-                if currentCompletedToast?.id == next.id {
-                    currentCompletedToast = nil
-                }
-            }
-
-            // 给一点点间隔，避免动画过于拥挤
-            try? await Task.sleep(nanoseconds: 200_000_000)
-        }
-
-        isProcessingCompletedQueue = false
-    }
 }
 
 // MARK: - 轻量内置通知 Banner
 
-private struct ToastBanner: View {
+struct ToastBanner: View {
     let title: String
     let message: String
     let actionTitle: String
     let onAction: () -> Void
     let onDismiss: () -> Void
+    /// 完成时展示的缩略图 URL（相对或绝对），pending 状态可以传 nil
+    let thumbnailUrl: String?
 
     var body: some View {
-        VStack {
-            HStack(alignment: .top, spacing: Spacing.md) {
+        HStack(alignment: .center, spacing: Spacing.md) {
+            // 左侧缩略图：优先展示任务关联的图片（制作中 = 本次上传图片，制作完成 = 最终成品）
+            if let thumbnailUrl = thumbnailUrl,
+               let url = URL(string: thumbnailUrl.hasPrefix("http") ? thumbnailUrl : Constants.apiBaseURL + thumbnailUrl) {
+                AsyncImage(url: url) { phase in
+                    switch phase {
+                    case .empty:
+                        Rectangle()
+                            .fill(Color.gray.opacity(0.1))
+                    case .success(let image):
+                        image
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                    case .failure:
+                        Image(systemName: "photo")
+                            .resizable()
+                            .scaledToFit()
+                            .foregroundColor(.gray400)
+                    @unknown default:
+                        EmptyView()
+                    }
+                }
+                .frame(width: 32, height: 32)
+                .clipped()
+                .cornerRadiusSM()
+            } else {
                 Image(systemName: "checkmark.circle.fill")
                     .foregroundColor(.green)
                     .font(.title3)
-                VStack(alignment: .leading, spacing: Spacing.xs) {
-                    Text(title).textStyleHeadline()
-                    Text(message).textStyleCaption().lineLimit(2)
-                    HStack {
-                        Button(actionTitle, action: onAction)
-                            .font(.callout)
-                            .fontWeight(.semibold)
-                        Spacer()
-                        Button("关闭", action: onDismiss)
-                            .font(.callout)
-                            .foregroundColor(.gray)
-                    }
+            }
+
+            // 右侧文案区域
+            VStack(alignment: .leading, spacing: Spacing.xs) {
+                Text(title)
+                    .font(.system(size: 16, weight: .semibold))
+                    .foregroundColor(.black)
+                
+                Text(message)
+                    .font(.system(size: 13))
+                    .foregroundColor(.gray400)
+                    .lineLimit(2)
+                
+                HStack {
+                    Button(actionTitle, action: onAction)
+                        .font(.callout)
+                        .fontWeight(.semibold)
+                
+                    Spacer(minLength: Spacing.sm)
+                
+                    Button("关闭", action: onDismiss)
+                        .font(.callout)
+                        .foregroundColor(.gray)
                 }
             }
-            .padding()
-            .background(Color.gray.opacity(0.9))
-            .cornerRadiusMD()
-            .shadow(radius: 10)
         }
+        .padding(.vertical, Spacing.sm)
+        .padding(.horizontal, Spacing.md)
+        .background(
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                .fill(Color.white)
+        )
+        .shadow(radius: 8, y: 4)
+        .frame(maxWidth: 280, alignment: .leading)
     }
 }
 
@@ -431,6 +254,7 @@ private struct ToastBanner: View {
 struct CategorySection: View {
     let category: String
     let styles: [PromptStyle]
+    let onSelectStyle: ((PromptStyle) -> Void)?
     
     var body: some View {
         VStack(alignment: .leading, spacing: Spacing.md) {
@@ -443,7 +267,9 @@ struct CategorySection: View {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: Spacing.md) {
                     ForEach(styles) { style in
-                        NavigationLink(destination: PromptStyleDetailView(style: style)) {
+                        Button {
+                            onSelectStyle?(style)
+                        } label: {
                             PromptStyleCard(style: style)
                         }
                         .buttonStyle(PlainButtonStyle())
