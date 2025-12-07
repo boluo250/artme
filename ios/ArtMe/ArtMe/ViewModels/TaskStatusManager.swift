@@ -21,6 +21,8 @@ final class TaskStatusManager: ObservableObject {
     @Published var completedToastQueue: [GeneratedImageHistory] = []
     @Published var currentCompletedToast: GeneratedImageHistory?
     @Published var isProcessingCompletedQueue = false
+    /// 全局导航信号：置为 true 时首页进入「我的作品集」，消费后会被重置为 false
+    @Published var navigateToPortfolio = false
     @Published var shownPendingTaskIds: [String] = []
     @Published var shownCompletedTaskIds: [String] = []
     

@@ -124,15 +124,9 @@ private struct PortfolioGridItem: View {
     var body: some View {
         VStack(alignment: .leading, spacing: Spacing.sm) {
             ZStack {
-                if let image = image {
-                    Image(uiImage: image)
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .contentShape(Rectangle())
-                        .onTapGesture {
-                            onTap()
-                        }
-                } else if item.status == "pending" || item.status == "processing" {
+                // 制作中任务：即使已存在上传图片 URL，也统一展示「制作中」占位视图，
+                // 避免个人作品集提前显示原始上传图片，保持与用户心智一致。
+                if item.status == "pending" || item.status == "processing" {
                     Rectangle()
                         .fill(Color.gray300.opacity(0.3))
                         .overlay {
@@ -143,6 +137,14 @@ private struct PortfolioGridItem: View {
                                     .textStyleCaption()
                                     .foregroundColor(.gray400)
                             }
+                        }
+                } else if let image = image {
+                    Image(uiImage: image)
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .contentShape(Rectangle())
+                        .onTapGesture {
+                            onTap()
                         }
                 } else {
                     Rectangle()

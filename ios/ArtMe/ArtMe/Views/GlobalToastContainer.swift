@@ -20,16 +20,16 @@ struct GlobalToastContainer<Content: View>: View {
         ZStack(alignment: .top) {
             content
             
-            // 顶部轻量 Toast：1）生成开始时「制作中...」提示（2 秒自动消失）
+            // 顶部轻量 Toast：1）生成开始时「制作中...」提示（约 5 秒自动消失）
             if let item = taskStatusManager.pendingToastItem {
                 let _ = print("[GlobalToast] show PENDING toast id=\(item.id), imageUrl=\(item.imageUrl ?? "nil")")
                 ToastBanner(
                     title: "制作中...",
                     message: "已帮您存入「首页-我的-作品集」中",
-                    actionTitle: "查看",
                     onAction: {
                         Task { @MainActor in
                             taskStatusManager.pendingToastItem = nil
+                            taskStatusManager.navigateToPortfolio = true
                         }
                     },
                     onDismiss: {
@@ -50,10 +50,10 @@ struct GlobalToastContainer<Content: View>: View {
                 ToastBanner(
                     title: "AI创作100%",
                     message: "制作完成，点击查看>>",
-                    actionTitle: "查看",
                     onAction: {
                         Task { @MainActor in
                             taskStatusManager.currentCompletedToast = nil
+                            taskStatusManager.navigateToPortfolio = true
                         }
                     },
                     onDismiss: {

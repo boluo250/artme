@@ -323,10 +323,19 @@ async def generate_image_with_upload(
             max_images=max_images,
         )
         
-        # 立即返回排队结果
+        # 立即返回排队结果，并附带「上传图片预览」URL，供前端在 pending 阶段展示缩略图
+        try:
+            # 将临时文件路径转换为相对于 upload_dir 的相对路径
+            rel_path = temp_file_path.relative_to(image_service.upload_dir)
+            preview_url = image_service.get_image_url(str(rel_path))
+            preview_images = [{"url": preview_url, "id": str(task_id)}]
+        except Exception:
+            # 回退：如果路径转换失败，则不返回预览图，保持兼容
+            preview_images = []
+        
         return GenerateImageResponse(
             success=True,
-            images=[],
+            images=preview_images,
             task_id=task_id,
             prompt=final_prompt,
             status="pending",

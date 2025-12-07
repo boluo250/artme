@@ -113,6 +113,13 @@ struct PromptStyleGridView: View {
                 isActive: $showPortfolio
             ) { EmptyView() }
         )
+        // 监听全局 Toast 导航信号：当用户点击顶部 Toast 时，进入「我的作品集」
+        .onChange(of: taskStatusManager.navigateToPortfolio) { shouldNavigate in
+            guard shouldNavigate else { return }
+            showPortfolio = true
+            // 消费一次信号，避免重复触发
+            taskStatusManager.navigateToPortfolio = false
+        }
     }
     
     private func handleBannerAction(_ banner: BannerConfig) {        
@@ -176,7 +183,6 @@ struct PromptStyleGridView: View {
 struct ToastBanner: View {
     let title: String
     let message: String
-    let actionTitle: String
     let onAction: () -> Void
     let onDismiss: () -> Void
     /// 完成时展示的缩略图 URL（相对或绝对），pending 状态可以传 nil
@@ -224,18 +230,6 @@ struct ToastBanner: View {
                     .font(.system(size: 13))
                     .foregroundColor(.gray400)
                     .lineLimit(2)
-                
-                HStack {
-                    Button(actionTitle, action: onAction)
-                        .font(.callout)
-                        .fontWeight(.semibold)
-                
-                    Spacer(minLength: Spacing.sm)
-                
-                    Button("关闭", action: onDismiss)
-                        .font(.callout)
-                        .foregroundColor(.gray)
-                }
             }
         }
         .padding(.vertical, Spacing.sm)
@@ -246,6 +240,11 @@ struct ToastBanner: View {
         )
         .shadow(radius: 8, y: 4)
         .frame(maxWidth: 280, alignment: .leading)
+        // 整个 Toast 可点击：进入作品集
+        .contentShape(Rectangle())
+        .onTapGesture {
+            onAction()
+        }
     }
 }
 

@@ -28,13 +28,19 @@ class GenerateViewModel: ObservableObject {
     private let apiService = APIService.shared
     private let imageService = ImageService.shared
     
-    private func addPendingHistory(taskId: String, prompt: String, style: Style?) {
+    /// 写入一条「制作中」历史记录
+    /// - Parameters:
+    ///   - taskId: 任务 ID
+    ///   - prompt: 文案
+    ///   - style: 选择的风格（目前未使用）
+    ///   - imageUrl: 关联的缩略图 URL（优先使用服务端返回的上传预览图）
+    private func addPendingHistory(taskId: String, prompt: String, style: Style?, imageUrl: String?) {
         let historyItem = GeneratedImageHistory(
             id: taskId,
             prompt: prompt,
             styleId: style?.id,
             styleName: style?.name,
-            imageUrl: nil,
+            imageUrl: imageUrl,
             status: "pending",
             createdAt: Date(),
             error: nil,
@@ -97,7 +103,10 @@ class GenerateViewModel: ObservableObject {
                 taskId = response.taskId
                 // 统一由 TaskStatusManager 负责后续轮询与状态更新，这里只负责写入一条「pending」历史记录，
                 // 并记录当前接口返回的初始状态，供当前页面展示「制作中」文案。
-                addPendingHistory(taskId: response.taskId, prompt: response.prompt, style: nil)
+                // 此处优先使用服务端返回的 images.first?.url 作为「制作中」阶段的缩略图，
+                // 这样全局顶部 Toast 在 pending 状态时就能展示用户上传的预览图，而不是默认对号图标。
+                let pendingThumbnailUrl = response.images.first?.url
+                addPendingHistory(taskId: response.taskId, prompt: response.prompt, style: nil, imageUrl: pendingThumbnailUrl)
                 currentStatus = response.status
             
                 if response.status == "completed", !response.images.isEmpty {
