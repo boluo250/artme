@@ -322,6 +322,8 @@ struct ImageGenerationView: View {
     @State private var hasStartedGeneration = false
     @State private var savingImageId: String?
     @State private var showSaveSuccess = false
+    /// 是否展示「制作完成后通知我 / 返回」相关选项（延迟 3 秒后出现）
+    @State private var showNotifyOptions = false
     /// 回到首页的回调，由上层控制导航栈
     let onReturnHome: (() -> Void)?
     @EnvironmentObject private var taskStatusManager: TaskStatusManager
@@ -359,38 +361,42 @@ struct ImageGenerationView: View {
                 // 制作中提示
                 if let status = viewModel.currentStatus,
                    status == "pending" || status == "processing" {
-                    VStack(alignment: .leading, spacing: 12) {
-                        HStack(spacing: 8) {
-                            Image(systemName: "clock.arrow.2.circlepath")
-                                .foregroundColor(.orange)
-                            Text("作品制作中...")
-                                .font(.headline)
-                        }
-                        Text("已提交生成请求，你可以在本页等待，或选择返回首页继续浏览。作品完成后可在首页顶部查看制作状态。")
-                            .font(.subheadline)
-                            .foregroundColor(.secondary)
-                            .fixedSize(horizontal: false, vertical: true)
-                        
-                        Button(action: {
-                            // 用户主动选择“制作完成后通知我”，标记当前任务需要通知，并直接回首页
-                            viewModel.notifyOnComplete = true
-                            if let taskId = viewModel.taskId {
-                                HistoryManager().updateNotifyOnComplete(id: taskId, notifyOnComplete: true)
-                            }
-                            onReturnHome?()
-                        }) {
-                            HStack(spacing: 8) {
-                                Image(systemName: "bell.badge")
-                                Text("制作完成后通知我，返回首页")
-                            }
-                            .font(.subheadline)
+                    VStack(spacing: 16) {
+                        // 大号居中主标题
+                        Text("图像制作中...")
+                            .font(.title2)
                             .fontWeight(.semibold)
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 10)
+                            .multilineTextAlignment(.center)
+                            .frame(maxWidth: .infinity, alignment: .center)
+
+                        // 居中说明文案（两行小字）
+                        VStack(spacing: 4) {
+                            Text("大约需要40s,请耐心等待")
+                            Text("可在\"首页-我的-作品集\"查看进度")
                         }
-                        .buttonStyle(PlainButtonStyle())
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                        .multilineTextAlignment(.center)
+                        .frame(maxWidth: .infinity, alignment: .center)
+                        
+                        // 「制作完成后通知我」区域：延迟 3 秒后出现
+                        if showNotifyOptions {
+                            Button(action: {
+                                handleNotifyAndReturnHome()
+                            }) {
+                                HStack(spacing: 8) {
+                                    Image(systemName: "bell.badge")
+                                    Text("制作完成后通知我，返回首页")
+                                }
+                                .font(.subheadline)
+                                .fontWeight(.semibold)
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 10)
+                            }
+                            .buttonStyle(PlainButtonStyle())
+                        }
                     }
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .frame(maxWidth: .infinity, alignment: .center)
                     .padding()
                     .background(Color.gray.opacity(0.1))
                     .cornerRadius(12)
@@ -463,10 +469,25 @@ struct ImageGenerationView: View {
         }
         .navigationTitle("生成图片")
         .navigationBarTitleDisplayMode(.inline)
+        // 默认隐藏系统返回按钮，通过自定义左上按钮控制返回逻辑
+        .navigationBarBackButtonHidden(true)
         .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                // 延迟 3 秒后才出现左上返回按钮，效果与「制作完成后通知我，返回首页」一致
+                if showNotifyOptions {
+                    Button {
+                        handleNotifyAndReturnHome()
+                    } label: {
+                        Image(systemName: "chevron.left")
+                    }
+                }
+            }
             ToolbarItem(placement: .navigationBarTrailing) {
-                Button("返回首页") {
-                    onReturnHome?()
+                // 当生成结果已经展示时，在右上显示「返回首页」按钮，仅负责返回，不再勾选通知
+                if !viewModel.generatedImages.isEmpty {
+                    Button("返回首页") {
+                        onReturnHome?()
+                    }
                 }
             }
         }
@@ -488,8 +509,42 @@ struct ImageGenerationView: View {
                     // 由 TaskStatusManager 统一负责后续状态更新与完成 Toast。
                     taskStatusManager.startPollingIfNeeded()
                 }
+                
+                // 点击「确认并生成」后，延迟 3 秒再展示「制作完成后通知我 / 返回」相关入口
+                Task {
+                    try? await Task.sleep(nanoseconds: 3_000_000_000)
+                    if Task.isCancelled { return }
+                    await MainActor.run {
+                        showNotifyOptions = true
+                    }
+                }
             }
         }
+        // 当全局任务管理器检测到有任务完成时，如果该任务正好是当前页面的任务，
+        // 则主动拉取最新结果并在本页展示生成完成的图片（即使用户没有勾选「制作完成后通知我」也能生效）。
+        .onChange(of: taskStatusManager.completedItem?.id) { completedTaskId in
+            guard let completedTaskId = completedTaskId,
+                  completedTaskId == viewModel.taskId,
+                  viewModel.generatedImages.isEmpty else {
+                return
+            }
+            
+            Task {
+                await viewModel.refreshResultIfNeeded(for: completedTaskId)
+            }
+        }
+    }
+    
+    /// 用户选择「制作完成后通知我」或点击左上返回时的统一处理逻辑：
+    /// 1. 标记当前任务 notifyOnComplete = true
+    /// 2. 更新本地历史记录
+    /// 3. 调用 onReturnHome 退出当前页面
+    private func handleNotifyAndReturnHome() {
+        viewModel.notifyOnComplete = true
+        if let taskId = viewModel.taskId {
+            HistoryManager().updateNotifyOnComplete(id: taskId, notifyOnComplete: true)
+        }
+        onReturnHome?()
     }
     
     private func saveImage(generatedImage: GeneratedImage) async {

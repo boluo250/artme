@@ -239,7 +239,6 @@ struct ToastBanner: View {
                 .fill(Color.white)
         )
         .shadow(radius: 8, y: 4)
-        .frame(maxWidth: 280, alignment: .leading)
         // 整个 Toast 可点击：进入作品集
         .contentShape(Rectangle())
         .onTapGesture {

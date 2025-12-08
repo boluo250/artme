@@ -131,6 +131,38 @@ class GenerateViewModel: ObservableObject {
         isLoading = false
     }
     
+    /// 当外部（例如全局 TaskStatusManager）检测到某个任务已完成时，
+    /// 如果该任务正好是当前页面创建的任务，则在本页刷新展示生成结果。
+    func refreshResultIfNeeded(for taskId: String) async {
+        // 只处理当前页面发起的任务
+        guard taskId == self.taskId else {
+            return
+        }
+        
+        do {
+            let statusResponse = try await apiService.fetchTaskStatus(taskId: taskId)
+            self.currentStatus = statusResponse.status
+            
+            // 只有在任务真正完成且返回了图片列表时，才在本页展示结果
+            guard statusResponse.status == "completed",
+                  !statusResponse.imageUrls.isEmpty else {
+                return
+            }
+            
+            // 将任务状态接口返回的图片 URL 列表，转换为用于当前视图展示的 GeneratedImage 列表
+            let images: [GeneratedImage] = statusResponse.imageUrls.enumerated().map { index, url in
+                GeneratedImage(id: "\(taskId)_\(index)", url: url)
+            }
+            
+            await handleCompletedList(images: images)
+        } catch {
+            // 如果拉取结果失败，不覆盖已有错误信息，避免打扰正在生成的流程
+            if self.errorMessage == nil {
+                self.errorMessage = "获取任务结果失败: \(error.localizedDescription)"
+            }
+        }
+    }
+    
     // MARK: - 任务完成处理（仅用于「立即完成」场景在本页展示结果）
     
     private func handleCompletedList(images: [GeneratedImage]) async {
