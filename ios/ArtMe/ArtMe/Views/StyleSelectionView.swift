@@ -147,7 +147,7 @@ struct StyleCard: View {
         do {
             image = try await ImageService.shared.downloadImage(from: fullURL)
         } catch {
-            print("加载图片失败: \(error)")
+            Log.error("加载图片失败: \(error)")
         }
     }
 }

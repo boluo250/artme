@@ -100,21 +100,21 @@ class APIService {
         
         do {
             // 打印请求 URL 用于调试
-            print("🌐 API Request: \(request.httpMethod ?? "GET") \(url.absoluteString)")
+            Log.debug("🌐 API Request: \(request.httpMethod ?? "GET") \(url.absoluteString)")
             
             let (data, response) = try await session.data(for: request)
             
             guard let httpResponse = response as? HTTPURLResponse else {
-                print("❌ Invalid response type")
+                Log.error("❌ Invalid response type")
                 throw APIError.invalidResponse
             }
             
-            print("📥 Response: HTTP \(httpResponse.statusCode)")
+            Log.debug("📥 Response: HTTP \(httpResponse.statusCode)")
             
             guard (200...299).contains(httpResponse.statusCode) else {
-                print("❌ HTTP Error: \(httpResponse.statusCode)")
+                Log.error("❌ HTTP Error: \(httpResponse.statusCode)")
                 if let responseString = String(data: data, encoding: .utf8) {
-                    print("Response body: \(responseString)")
+                    Log.debug("Response body: \(responseString)")
                 }
                 throw APIError.httpError(httpResponse.statusCode)
             }
@@ -124,32 +124,32 @@ class APIService {
             
             do {
                 let result = try decoder.decode(T.self, from: data)
-                print("✅ Decode success")
+                Log.debug("✅ Decode success")
                 return result
             } catch {
-                print("❌ Decode error: \(error)")
+                Log.error("❌ Decode error: \(error)")
                 if let responseString = String(data: data, encoding: .utf8) {
-                    print("Response body: \(responseString.prefix(500))")
+                    Log.debug("Response body: \(responseString.prefix(500))")
                 }
                 throw APIError.decodingError(error)
             }
             
         } catch let error as DecodingError {
-            print("❌ DecodingError: \(error)")
+            Log.error("❌ DecodingError: \(error)")
             throw APIError.decodingError(error)
         } catch let error as APIError {
-            print("❌ APIError: \(error)")
+            Log.error("❌ APIError: \(error)")
             throw error
         } catch let urlError as URLError {
             if urlError.code == .cancelled {
                 // 用户触发刷新/页面切换导致的取消，避免误导性错误日志
-                print("↩️ Request cancelled")
+                Log.debug("↩️ Request cancelled")
             } else {
-                print("❌ Network error: \(urlError)")
+                Log.error("❌ Network error: \(urlError)")
             }
             throw APIError.networkError(urlError)
         } catch {
-            print("❌ Network error: \(error)")
+            Log.error("❌ Network error: \(error)")
             throw APIError.networkError(error)
         }
     }

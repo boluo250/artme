@@ -156,7 +156,7 @@ struct HistoryView: View {
             let image = try await ImageService.shared.downloadImage(from: fullURL)
             images[item.id] = image
         } catch {
-            print("加载图片失败: \(error)")
+            Log.error("加载图片失败: \(error)")
         }
     }
 }

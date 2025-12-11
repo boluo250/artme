@@ -52,7 +52,7 @@ class PaymentService: ObservableObject {
             
             products = storeProducts.sorted { $0.price < $1.price }
         } catch {
-            print("获取产品失败: \(error)")
+            Log.error("获取产品失败: \(error)")
         }
     }
     
@@ -111,7 +111,7 @@ class PaymentService: ObservableObject {
                     await transaction.finish()
                     await self.updatePurchasedProducts()
                 } catch {
-                    print("交易验证失败: \(error)")
+                    Log.error("交易验证失败: \(error)")
                 }
             }
         }
@@ -134,7 +134,7 @@ class PaymentService: ObservableObject {
                 let transaction = try checkVerified(result)
                 purchased.insert(transaction.productID)
             } catch {
-                print("更新购买产品失败: \(error)")
+                Log.error("更新购买产品失败: \(error)")
             }
         }
         

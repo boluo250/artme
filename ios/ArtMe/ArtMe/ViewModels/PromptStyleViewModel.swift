@@ -52,7 +52,7 @@ class PromptStyleViewModel: ObservableObject {
     private func loadCachedData() {
         if let data = UserDefaults.standard.data(forKey: cacheKey),
            let cachedResponse = try? JSONDecoder().decode(PromptStyleListResponse.self, from: data) {
-            print("📦 从缓存加载数据，共 \(cachedResponse.prompts.count) 个样式")
+            Log.info("📦 从缓存加载数据，共 \(cachedResponse.prompts.count) 个样式")
             promptStyles = cachedResponse.prompts
             dataVersion = cachedResponse.version
             appConfig = cachedResponse.appConfig
@@ -67,7 +67,7 @@ class PromptStyleViewModel: ObservableObject {
             if let version = response.version {
                 UserDefaults.standard.set(version, forKey: versionKey)
             }
-            print("💾 数据已缓存，版本: \(response.version ?? "未知")")
+            Log.info("💾 数据已缓存，版本: \(response.version ?? "未知")")
             dataVersion = response.version
             appConfig = response.appConfig
             ImageService.shared.setCacheBuster(response.version)
@@ -86,25 +86,25 @@ class PromptStyleViewModel: ObservableObject {
             let serverVersion = versionResponse.version
             let cachedVersion = getCachedVersion()
             
-            print("🔍 版本检查: 缓存版本=\(cachedVersion ?? "无"), 服务器版本=\(serverVersion)")
+            Log.debug("🔍 版本检查: 缓存版本=\(cachedVersion ?? "无"), 服务器版本=\(serverVersion)")
             
             // 如果没有缓存版本，说明需要加载
             guard let cached = cachedVersion else {
-                print("📝 没有缓存版本，需要加载数据")
+                Log.info("📝 没有缓存版本，需要加载数据")
                 return true
             }
             
             // 如果缓存版本和服务器版本不同，说明有更新
             if cached == serverVersion {
-                print("✅ 数据是最新的，无需更新 (版本: \(cached))")
+                Log.info("✅ 数据是最新的，无需更新 (版本: \(cached))")
                 return false
             } else {
-                print("🔄 检测到更新！缓存版本=\(cached), 服务器版本=\(serverVersion)")
+                Log.info("🔄 检测到更新！缓存版本=\(cached), 服务器版本=\(serverVersion)")
                 return true
             }
         } catch {
-            print("⚠️ 版本检查失败: \(error.localizedDescription)")
-            print("⚠️ 版本检查失败，将尝试重新加载数据")
+            Log.warn("⚠️ 版本检查失败: \(error.localizedDescription)")
+            Log.info("⚠️ 版本检查失败，将尝试重新加载数据")
             // 如果版本检查失败，默认返回 true 以尝试加载数据
             return true
         }
@@ -113,7 +113,7 @@ class PromptStyleViewModel: ObservableObject {
     // 加载数据（会检查版本，有更新才重新加载）
     // forceRefresh: 强制刷新，跳过版本检查
     func loadPromptStyles(forceRefresh: Bool = false) async {
-        print("🚀 开始加载图片列表... (forceRefresh: \(forceRefresh))")
+        Log.info("🚀 开始加载图片列表... (forceRefresh: \(forceRefresh))")
         
         // 如果已有缓存数据且不强制刷新，先检查版本
         if !promptStyles.isEmpty && !forceRefresh {
@@ -121,7 +121,7 @@ class PromptStyleViewModel: ObservableObject {
             
             // 如果没有更新，直接返回，使用缓存数据
             if !hasUpdate {
-                print("✅ 使用缓存数据，无需重新加载")
+                Log.info("✅ 使用缓存数据，无需重新加载")
                 return
             }
         }
@@ -130,14 +130,14 @@ class PromptStyleViewModel: ObservableObject {
         isLoading = true
         errorMessage = nil
         
-        print("📡 API Base URL: \(apiService.baseURL)")
-        print("📡 Full URL: \(apiService.baseURL)/api/v1/prompts/list")
+        Log.debug("📡 API Base URL: \(apiService.baseURL)")
+        Log.debug("📡 Full URL: \(apiService.baseURL)/api/v1/prompts/list")
         
         do {
             let response = try await apiService.fetchPromptStyles()
-            print("✅ 加载成功，共 \(response.prompts.count) 个样式")
-            print("📦 服务器版本: \(response.version ?? "未知")")
-            print("💾 缓存版本: \(getCachedVersion() ?? "无")")
+            Log.info("✅ 加载成功，共 \(response.prompts.count) 个样式")
+            Log.debug("📦 服务器版本: \(response.version ?? "未知")")
+            Log.debug("💾 缓存版本: \(getCachedVersion() ?? "无")")
             
             promptStyles = response.prompts
             appConfig = response.appConfig
@@ -145,13 +145,13 @@ class PromptStyleViewModel: ObservableObject {
             // 保存到缓存
             saveToCache(response)
             
-            print("✅ 数据已更新，当前版本: \(response.version ?? "未知")")
+            Log.info("✅ 数据已更新，当前版本: \(response.version ?? "未知")")
         } catch let error as APIError {
             // 检查是否是取消错误（这是正常的，不需要处理）
             if case .networkError(let networkError) = error,
                let urlError = networkError as? URLError,
                urlError.code == .cancelled {
-                print("⚠️ 请求被取消（可能因为刷新操作），忽略此错误")
+                Log.debug("⚠️ 请求被取消（可能因为刷新操作），忽略此错误")
                 // 取消错误通常是正常的（比如用户快速下拉刷新），不需要显示错误
                 isLoading = false
                 return
@@ -159,40 +159,40 @@ class PromptStyleViewModel: ObservableObject {
             
             // 使用 APIError 的友好错误描述
             let errorDesc = error.localizedDescription ?? "未知错误"
-            print("❌ 加载失败: \(errorDesc)")
+            Log.error("❌ 加载失败: \(errorDesc)")
             
             // 如果加载失败，但有缓存数据，使用缓存数据
             if promptStyles.isEmpty {
                 errorMessage = "加载图片列表失败: \(errorDesc)"
             } else {
-                print("⚠️ 加载失败，但使用缓存数据")
+                Log.warn("⚠️ 加载失败，但使用缓存数据")
                 // 不设置错误信息，使用缓存数据
             }
         } catch let urlError as URLError where urlError.code == .cancelled {
             // 处理 URLSession 取消错误
-            print("⚠️ 请求被取消（可能因为刷新操作），忽略此错误")
+            Log.debug("⚠️ 请求被取消（可能因为刷新操作），忽略此错误")
             isLoading = false
             return
         } catch {
             // 处理其他类型的错误
-            print("❌ 加载失败: \(error.localizedDescription)")
+            Log.error("❌ 加载失败: \(error.localizedDescription)")
             
             // 如果加载失败，但有缓存数据，使用缓存数据
             if promptStyles.isEmpty {
                 errorMessage = "加载图片列表失败: \(error.localizedDescription)"
             } else {
-                print("⚠️ 加载失败，但使用缓存数据")
+                Log.warn("⚠️ 加载失败，但使用缓存数据")
                 // 不设置错误信息，使用缓存数据
             }
         }
         
         isLoading = false
-        print("🏁 加载完成")
+        Log.info("🏁 加载完成")
     }
     
     // 强制刷新数据（清除缓存并重新加载）
     func forceRefresh() async {
-        print("🔄 强制刷新数据...")
+        Log.info("🔄 强制刷新数据...")
         
         // 取消之前的任务（如果有）
         currentTask?.cancel()
@@ -210,15 +210,15 @@ class PromptStyleViewModel: ObservableObject {
 
     // 下拉刷新：先检查版本，有更新再加载；日志与首次加载保持一致风格
     func refreshIfNeeded() async {
-        print("🔄 下拉刷新：检查版本更新中…")
-        print("📡 API Base URL: \(apiService.baseURL)")
-        print("📡 Version URL: \(apiService.baseURL)\(Constants.API.prompts)/version")
+        Log.info("🔄 下拉刷新：检查版本更新中…")
+        Log.debug("📡 API Base URL: \(apiService.baseURL)")
+        Log.debug("📡 Version URL: \(apiService.baseURL)\(Constants.API.prompts)/version")
 
         let cached = getCachedVersion()
         let hasUpdate = await checkForUpdates()
 
         if hasUpdate {
-            print("🆕 发现新版本，缓存版本=\(cached ?? "无")，准备拉取列表…")
+            Log.info("🆕 发现新版本，缓存版本=\(cached ?? "无")，准备拉取列表…")
             // 使用独立任务执行加载，避免被 refreshable 的任务取消导致 -999
             currentTask?.cancel()
             currentTask = Task { [weak self] in
@@ -226,9 +226,9 @@ class PromptStyleViewModel: ObservableObject {
                 await self.loadPromptStyles(forceRefresh: true)
             }
         } else {
-            print("✅ 数据已是最新，无需刷新 (版本: \(cached ?? "无"))")
+            Log.info("✅ 数据已是最新，无需刷新 (版本: \(cached ?? "无"))")
         }
-        print("🏁 刷新结束")
+        Log.info("🏁 刷新结束")
     }
     
     // 按 Category 分组

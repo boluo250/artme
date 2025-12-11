@@ -43,7 +43,10 @@ struct ContentView: View {
                     switch route {
                     case .promptDetail(let style):
                         PromptStyleDetailView(style: style) { selectedStyle, image in
+                            let t0 = Date()
                             if let data = image.jpegData(compressionQuality: 0.9) {
+                                let t1 = Date()
+                                Log.debug(">>> [PickerTiming] jpegData 压缩耗时: \(t1.timeIntervalSince(t0))s")
                                 path.append(Route.uploadPreview(style: selectedStyle, imageData: data))
                             }
                         }

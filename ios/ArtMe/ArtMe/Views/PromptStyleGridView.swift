@@ -98,9 +98,6 @@ struct PromptStyleGridView: View {
             // Toast 展示已由全局 GlobalToastContainer 统一处理
         }
         .task {
-            print(">>> [Homepage] preheat start")
-            PickerCache.shared.prepare()                   // 预热并缓存 PHPicker 实例
-            PhotoPreheater.shared.preheatIfNeeded()        // 预热 PhotoKit / TCC
             await viewModel.loadPromptStyles()
             taskStatusManager.startPollingIfNeeded()
         }
@@ -374,32 +371,32 @@ struct PromptStyleCard: View {
         let fullURL = Constants.apiBaseURL + style.thumbnailUrl
         
         // 调试日志：开始加载
-        print("Card: 开始加载缩略图: \(style.subcategory), URL: \(style.thumbnailUrl)")
+        Log.debug("Card: 开始加载缩略图: \(style.subcategory), URL: \(style.thumbnailUrl)")
         
         do {
             // 先下载数据
             let data = try await ImageService.shared.downloadImageData(from: fullURL)
-            print("Card: 下载完成，数据大小: \(data.count) bytes")
+            Log.debug("Card: 下载完成，数据大小: \(data.count) bytes")
             
             // 检查是否是 GIF（通过文件头判断）
             if isGifData(data) {
                 // 是 GIF，保存数据用于动画播放
-                print("Card: 检测到 GIF 格式！")
+                Log.debug("Card: 检测到 GIF 格式！")
                 imageData = data
                 isGif = true
             } else {
                 // 不是 GIF，转换为 UIImage
-                print("Card: 不是 GIF，尝试转换为 UIImage")
+                Log.debug("Card: 不是 GIF，尝试转换为 UIImage")
                 if let image = UIImage(data: data) {
                     staticImage = image
                     isGif = false
-                    print("Card: 转换为 UIImage 成功")
+                    Log.debug("Card: 转换为 UIImage 成功")
                 } else {
-                     print("Card: 转换为 UIImage 失败")
+                    Log.warn("Card: 转换为 UIImage 失败")
                 }
             }
         } catch {
-            print("Card Error: 加载缩略图失败: \(error)")
+            Log.error("Card Error: 加载缩略图失败: \(error)")
         }
         
         isLoading = false
@@ -492,7 +489,7 @@ struct HomeBannerView: View {
             let image = try await ImageService.shared.downloadImage(from: fullURL)
             bannerImage = image
         } catch {
-            print("Banner: 图片加载失败 \(error.localizedDescription)")
+            Log.error("Banner: 图片加载失败 \(error.localizedDescription)")
         }
         
         isLoading = false

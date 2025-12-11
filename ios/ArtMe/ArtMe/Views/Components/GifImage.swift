@@ -30,7 +30,7 @@ struct GifImage: UIViewRepresentable {
 
     func updateUIView(_ uiView: UIImageView, context: Context) {
         // 调试日志：打印数据长度
-        print("GifImage: 更新视图，数据大小: \(data.count) bytes")
+        Log.debug("GifImage: 更新视图，数据大小: \(data.count) bytes")
         
         // 检查是否已经是正在播放的状态且数据没变
         // 注意：简单的 hashValue 比较可能不够，这里简化判断
@@ -41,19 +41,19 @@ struct GifImage: UIViewRepresentable {
         // 异步解析 GIF 数据，避免阻塞主线程
         DispatchQueue.global(qos: .userInteractive).async {
             // 调试日志：开始解析
-            print("GifImage: 开始解析 GIF 数据...")
+            Log.debug("GifImage: 开始解析 GIF 数据...")
             
             // 尝试创建 CGImageSource
             guard let source = CGImageSourceCreateWithData(self.data as CFData, nil) else {
-                print("GifImage Error: 无法创建 CGImageSource")
+                Log.error("GifImage Error: 无法创建 CGImageSource")
                 return
             }
             
             let count = CGImageSourceGetCount(source)
-            print("GifImage: 帧数 = \(count)")
+            Log.debug("GifImage: 帧数 = \(count)")
             
             if count <= 1 {
-                 print("GifImage: 帧数不足以播放动画，将显示为静态图")
+                Log.debug("GifImage: 帧数不足以播放动画，将显示为静态图")
             }
             
             var images: [UIImage] = []
@@ -69,7 +69,7 @@ struct GifImage: UIViewRepresentable {
                 }
             }
             
-            print("GifImage: 解析完成，有效帧数: \(images.count), 总时长: \(duration)")
+            Log.debug("GifImage: 解析完成，有效帧数: \(images.count), 总时长: \(duration)")
             
             // 回到主线程更新 UI
             DispatchQueue.main.async {
@@ -81,15 +81,15 @@ struct GifImage: UIViewRepresentable {
                         uiView.animationRepeatCount = 0 // 无限循环
                         uiView.image = images.last // 设置最后一张作为静态图备选
                         uiView.startAnimating()
-                        print("GifImage: 开始播放动画")
+                        Log.debug("GifImage: 开始播放动画")
                     } else {
-                         // 单帧 GIF，直接显示
-                         uiView.image = images.first
-                         print("GifImage: 显示单帧静态图")
+                        // 单帧 GIF，直接显示
+                        uiView.image = images.first
+                        Log.debug("GifImage: 显示单帧静态图")
                     }
                 } else {
                     // 如果解析失败，作为普通图片显示
-                    print("GifImage Warning: 解析后的图片数组为空，尝试直接加载 Data")
+                    Log.warn("GifImage Warning: 解析后的图片数组为空，尝试直接加载 Data")
                     uiView.image = UIImage(data: self.data)
                 }
             }

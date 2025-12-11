@@ -15,9 +15,8 @@ struct PromptStyleDetailView: View {
     
     @State private var image: UIImage?
     @State private var isLoading = true
-    // 相册选择相关状态（直接进入相册）
+    // 相册选择相关状态（直接进入自定义抖音风相册）
     @State private var showPhotosPicker = false
-    @State private var selectedImage: UIImage?
     @State private var scale: CGFloat = 1.0
     @State private var lastScale: CGFloat = 1.0
     
@@ -40,10 +39,10 @@ struct PromptStyleDetailView: View {
             await loadImage()
         }
         .sheet(isPresented: $showPhotosPicker) {
-            CachedPickerWrapper(selectedImage: $selectedImage) {
-                if let image = selectedImage {
-                    onSelectImage?(style, image)
-                }
+            DouyinAlbumPickerView { image in
+                // 选中图片后先关闭相册，再通过回调让上层导航到预览页
+                showPhotosPicker = false
+                onSelectImage?(style, image)
             }
         }
     }
@@ -138,7 +137,7 @@ struct PromptStyleDetailView: View {
         do {
             image = try await ImageService.shared.downloadImage(from: fullURL)
         } catch {
-            print("加载图片失败: \(error)")
+            Log.error("加载图片失败: \(error)")
         }
         isLoading = false
     }

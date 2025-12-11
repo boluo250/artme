@@ -1,6 +1,8 @@
 """
 ArtMe Backend API - 主应用入口
 """
+import logging
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.exceptions import RequestValidationError
@@ -16,6 +18,19 @@ from app.middleware import (
 # 导入 API 路由
 from app.api import generate, styles, account, subscription, static, prompts
 from app.services.task_service import task_manager
+
+# -------------------------
+# 日志配置
+# -------------------------
+# 根据配置中的 DEBUG 开关选择日志级别：
+# - DEBUG=True  -> 日志级别 DEBUG（输出调试信息）
+# - DEBUG=False -> 日志级别 INFO（只输出关键运行信息）
+logging.basicConfig(
+    level=logging.DEBUG if settings.DEBUG else logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+)
+logger = logging.getLogger(__name__)
+logger.info("Logging initialized. DEBUG=%s", settings.DEBUG)
 
 app = FastAPI(
     title=settings.APP_NAME,

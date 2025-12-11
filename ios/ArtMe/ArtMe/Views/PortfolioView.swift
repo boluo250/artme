@@ -111,7 +111,7 @@ struct PortfolioView: View {
             let image = try await ImageService.shared.downloadImage(from: fullURL)
             images[item.id] = image
         } catch {
-            print("Portfolio: 图片加载失败 \(error.localizedDescription)")
+            Log.error("Portfolio: 图片加载失败 \(error.localizedDescription)")
         }
     }
 }

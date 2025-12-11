@@ -34,7 +34,7 @@ final class TaskStatusManager: ObservableObject {
         // 只对之后新增的任务弹出「制作完成」Toast。
         let historyManager = HistoryManager()
         shownCompletedTaskIds = historyManager.history.map { $0.id }
-        print("[TaskStatus] init, history count = \(historyManager.history.count), shownCompletedTaskIds = \(shownCompletedTaskIds)")
+        Log.debug("[TaskStatus] init, history count = \(historyManager.history.count), shownCompletedTaskIds = \(shownCompletedTaskIds)")
         // 不自动开始轮询，由根视图显式调用 startPollingIfNeeded()
     }
     
@@ -42,10 +42,10 @@ final class TaskStatusManager: ObservableObject {
     
     func startPollingIfNeeded() {
         guard !isPolling else {
-            print("[TaskStatus] startPollingIfNeeded ignored, already polling")
+            Log.debug("[TaskStatus] startPollingIfNeeded ignored, already polling")
             return
         }
-        print("[TaskStatus] startPollingIfNeeded -> begin polling")
+        Log.debug("[TaskStatus] startPollingIfNeeded -> begin polling")
         Task {
             await pollPendingTasksIfNeeded()
         }
@@ -55,18 +55,18 @@ final class TaskStatusManager: ObservableObject {
     
     private func pollPendingTasksIfNeeded() async {
         if isPolling {
-            print("[TaskStatus] pollPendingTasksIfNeeded called but isPolling = true, return")
+            Log.debug("[TaskStatus] pollPendingTasksIfNeeded called but isPolling = true, return")
             return
         }
         isPolling = true
         defer { isPolling = false }
         
-        print("[TaskStatus] pollPendingTasksIfNeeded start loop")
+        Log.debug("[TaskStatus] pollPendingTasksIfNeeded start loop")
         // 持续轮询，直到本地不再有「制作中」任务或任务被取消
         while true {
             let hasPending = await checkPendingTasksOnce()
             if !hasPending {
-                print("[TaskStatus] no more pending/processing tasks, stop polling")
+                Log.debug("[TaskStatus] no more pending/processing tasks, stop polling")
                 break
             }
             
@@ -83,14 +83,14 @@ final class TaskStatusManager: ObservableObject {
         let historyManager = HistoryManager()
         
         let historySnapshot = historyManager.history
-        print("[TaskStatus] checkPendingTasksOnce, history count = \(historySnapshot.count)")
+        Log.debug("[TaskStatus] checkPendingTasksOnce, history count = \(historySnapshot.count)")
         
         // 没有任何历史记录：不需要轮询
         if historySnapshot.isEmpty {
             await MainActor.run {
                 pendingItem = nil
             }
-            print("[TaskStatus] history empty, stop polling")
+            Log.debug("[TaskStatus] history empty, stop polling")
             return false
         }
         
@@ -104,11 +104,11 @@ final class TaskStatusManager: ObservableObject {
             }
             
             hasPendingOrProcessing = true
-            print("[TaskStatus] polling task id=\(item.id), localStatus=\(localStatus), notifyOnComplete=\(item.notifyOnComplete == true)")
+            Log.debug("[TaskStatus] polling task id=\(item.id), localStatus=\(localStatus), notifyOnComplete=\(item.notifyOnComplete == true)")
             
             do {
                 let statusResponse = try await APIService.shared.fetchTaskStatus(taskId: item.id)
-                print("[TaskStatus] status response id=\(item.id), status=\(statusResponse.status), imageUrls=\(statusResponse.imageUrls)")
+                Log.debug("[TaskStatus] status response id=\(item.id), status=\(statusResponse.status), imageUrls=\(statusResponse.imageUrls)")
                 
                 switch statusResponse.status {
                 case "completed":
@@ -122,7 +122,7 @@ final class TaskStatusManager: ObservableObject {
                     
                     // 重新读取更新后的这条记录
                     let updated = historyManager.history.first(where: { $0.id == item.id }) ?? item
-                    print("[TaskStatus] task completed id=\(updated.id), notifyOnComplete=\(updated.notifyOnComplete == true)")
+                    Log.info("[TaskStatus] task completed id=\(updated.id), notifyOnComplete=\(updated.notifyOnComplete == true)")
                     
                     await MainActor.run {
                         completedItem = updated
@@ -134,7 +134,7 @@ final class TaskStatusManager: ObservableObject {
                     }
                     
                 case "failed":
-                    print("[TaskStatus] task failed id=\(item.id)")
+                    Log.warn("[TaskStatus] task failed id=\(item.id)")
                     historyManager.updateHistoryStatus(
                         id: item.id,
                         status: "failed",
@@ -151,14 +151,14 @@ final class TaskStatusManager: ObservableObject {
                         error: statusResponse.error
                     )
                     let updated = historyManager.history.first(where: { $0.id == item.id }) ?? item
-                    print("[TaskStatus] task still pending/processing id=\(updated.id)")
+                    Log.debug("[TaskStatus] task still pending/processing id=\(updated.id)")
                     await MainActor.run {
                         showPendingToastIfNeeded(for: updated)
                     }
                     
                 default:
                     // 未知状态：保守处理为已完成
-                    print("[TaskStatus] task unknown status treated as completed, id=\(item.id), status=\(statusResponse.status)")
+                    Log.warn("[TaskStatus] task unknown status treated as completed, id=\(item.id), status=\(statusResponse.status)")
                     historyManager.updateHistoryStatus(
                         id: item.id,
                         status: "completed",
@@ -176,7 +176,7 @@ final class TaskStatusManager: ObservableObject {
                 
             } catch {
                 // 查询失败时，保守认为任务仍在制作中，稍后重试，并确保至少展示一次「正在制作」提示
-                print("[TaskStatus] fetch status failed for id=\(item.id), error=\(error)")
+                Log.warn("[TaskStatus] fetch status failed for id=\(item.id), error=\(error)")
                 await MainActor.run {
                     showPendingToastIfNeeded(for: item)
                 }
@@ -193,7 +193,7 @@ final class TaskStatusManager: ObservableObject {
             pendingItem = latestPending
         }
         
-        print("[TaskStatus] checkPendingTasksOnce finished, hasPendingOrProcessing=\(hasPendingOrProcessing), latestPendingId=\(latestPending?.id ?? "nil")")
+        Log.debug("[TaskStatus] checkPendingTasksOnce finished, hasPendingOrProcessing=\(hasPendingOrProcessing), latestPendingId=\(latestPending?.id ?? "nil")")
         return latestPending != nil && hasPendingOrProcessing
     }
     
@@ -204,14 +204,14 @@ final class TaskStatusManager: ObservableObject {
     private func showPendingToastIfNeeded(for item: GeneratedImageHistory) {
         // 只有用户勾选了通知的任务才展示「正在制作」提示
         guard item.notifyOnComplete == true else {
-            print("[TaskStatus] skip pending toast, notifyOnComplete != true, id=\(item.id)")
+            Log.debug("[TaskStatus] skip pending toast, notifyOnComplete != true, id=\(item.id)")
             return
         }
         guard !shownPendingTaskIds.contains(item.id) else {
-            print("[TaskStatus] skip pending toast, already shown for id=\(item.id)")
+            Log.debug("[TaskStatus] skip pending toast, already shown for id=\(item.id)")
             return
         }
-        print("[TaskStatus] show pending toast for id=\(item.id)")
+        Log.debug("[TaskStatus] show pending toast for id=\(item.id)")
         shownPendingTaskIds.append(item.id)
         pendingToastItem = item
         
@@ -220,7 +220,7 @@ final class TaskStatusManager: ObservableObject {
             try? await Task.sleep(nanoseconds: 5_000_000_000)
             await MainActor.run {
                 if pendingToastItem?.id == item.id {
-                    print("[TaskStatus] auto hide pending toast for id=\(item.id)")
+                    Log.debug("[TaskStatus] auto hide pending toast for id=\(item.id)")
                     pendingToastItem = nil
                 }
             }
@@ -231,24 +231,24 @@ final class TaskStatusManager: ObservableObject {
     private func enqueueCompletedToastIfNeeded(for item: GeneratedImageHistory) {
         // 只有用户勾选了「制作完成后通知我」的任务才加入队列
         guard item.notifyOnComplete == true else {
-            print("[TaskStatus] skip completed toast, notifyOnComplete != true, id=\(item.id)")
+            Log.debug("[TaskStatus] skip completed toast, notifyOnComplete != true, id=\(item.id)")
             return
         }
         guard !shownCompletedTaskIds.contains(item.id) else {
-            print("[TaskStatus] skip completed toast, already shown for id=\(item.id)")
+            Log.debug("[TaskStatus] skip completed toast, already shown for id=\(item.id)")
             return
         }
 
         // 如果当前正在展示的 pending Toast 就是这个任务，
         // 让出位置给「制作完成」Toast，避免两者长时间叠加。
         if pendingToastItem?.id == item.id {
-            print("[TaskStatus] clear pending toast before completed for id=\(item.id)")
+            Log.debug("[TaskStatus] clear pending toast before completed for id=\(item.id)")
             pendingToastItem = nil
         }
 
         shownCompletedTaskIds.append(item.id)
         completedToastQueue.append(item)
-        print("[TaskStatus] enqueue completed toast id=\(item.id), queueSize=\(completedToastQueue.count)")
+        Log.debug("[TaskStatus] enqueue completed toast id=\(item.id), queueSize=\(completedToastQueue.count)")
         
         Task {
             await processCompletedToastQueueIfNeeded()
@@ -258,15 +258,15 @@ final class TaskStatusManager: ObservableObject {
     /// 依次展示队列中的「制作完成」Toast，每条约 5 秒
     private func processCompletedToastQueueIfNeeded() async {
         guard !isProcessingCompletedQueue else {
-            print("[TaskStatus] processCompletedToastQueueIfNeeded already running, skip")
+            Log.debug("[TaskStatus] processCompletedToastQueueIfNeeded already running, skip")
             return
         }
         isProcessingCompletedQueue = true
-        print("[TaskStatus] processCompletedToastQueueIfNeeded start, initialQueueSize=\(completedToastQueue.count)")
+        Log.debug("[TaskStatus] processCompletedToastQueueIfNeeded start, initialQueueSize=\(completedToastQueue.count)")
         
         while !completedToastQueue.isEmpty {
             let next = completedToastQueue.removeFirst()
-            print("[TaskStatus] show completed toast id=\(next.id), remainingQueueSize=\(completedToastQueue.count)")
+            Log.debug("[TaskStatus] show completed toast id=\(next.id), remainingQueueSize=\(completedToastQueue.count)")
 
             withAnimation {
                 currentCompletedToast = next
@@ -277,7 +277,7 @@ final class TaskStatusManager: ObservableObject {
             
             withAnimation {
                 if currentCompletedToast?.id == next.id {
-                    print("[TaskStatus] hide completed toast id=\(next.id)")
+                    Log.debug("[TaskStatus] hide completed toast id=\(next.id)")
                     currentCompletedToast = nil
                 }
             }
@@ -291,7 +291,7 @@ final class TaskStatusManager: ObservableObject {
         }
         
         isProcessingCompletedQueue = false
-        print("[TaskStatus] processCompletedToastQueueIfNeeded finished")
+        Log.debug("[TaskStatus] processCompletedToastQueueIfNeeded finished")
     }
 }
 

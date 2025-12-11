@@ -362,7 +362,7 @@ struct ComponentShowcaseView: View {
                         message: "这里还没有任何内容",
                         actionTitle: "添加内容"
                     ) {
-                        print("添加内容")
+                        Log.debug("点击添加内容")
                     }
                 }
                 
