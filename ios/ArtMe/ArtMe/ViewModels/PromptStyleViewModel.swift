@@ -44,8 +44,14 @@ class PromptStyleViewModel: ObservableObject {
     }
     
     init() {
+        let t0 = Date()
+        StartupProfiler.mark("PromptStyleViewModel.init 开始（首页 ViewModel 创建）")
         // 从缓存加载数据
         loadCachedData()
+        let t1 = Date()
+        let cost = String(format: "%.3f", t1.timeIntervalSince(t0))
+        Log.info("⏱ [Startup] PromptStyleViewModel.loadCachedData() 耗时 \(cost)s，当前样式数 = \(promptStyles.count)")
+        StartupProfiler.mark("PromptStyleViewModel.init 结束（缓存加载完成）")
     }
     
     // 从缓存加载数据
@@ -114,6 +120,7 @@ class PromptStyleViewModel: ObservableObject {
     // forceRefresh: 强制刷新，跳过版本检查
     func loadPromptStyles(forceRefresh: Bool = false) async {
         Log.info("🚀 开始加载图片列表... (forceRefresh: \(forceRefresh))")
+        StartupProfiler.mark("首页样式列表加载开始 (forceRefresh: \(forceRefresh))")
         
         // 如果已有缓存数据且不强制刷新，先检查版本
         if !promptStyles.isEmpty && !forceRefresh {
@@ -134,7 +141,11 @@ class PromptStyleViewModel: ObservableObject {
         Log.debug("📡 Full URL: \(apiService.baseURL)/api/v1/prompts/list")
         
         do {
+            let t0 = Date()
             let response = try await apiService.fetchPromptStyles()
+            let t1 = Date()
+            let apiCost = String(format: "%.3f", t1.timeIntervalSince(t0))
+            Log.info("⏱ [Startup] fetchPromptStyles() API 耗时 \(apiCost)s")
             Log.info("✅ 加载成功，共 \(response.prompts.count) 个样式")
             Log.debug("📦 服务器版本: \(response.version ?? "未知")")
             Log.debug("💾 缓存版本: \(getCachedVersion() ?? "无")")
@@ -188,6 +199,7 @@ class PromptStyleViewModel: ObservableObject {
         
         isLoading = false
         Log.info("🏁 加载完成")
+        StartupProfiler.mark("首页样式列表加载完成 (当前样式数: \(promptStyles.count))")
     }
     
     // 强制刷新数据（清除缓存并重新加载）

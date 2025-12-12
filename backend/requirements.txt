@@ -8,6 +8,7 @@ pydantic-settings==2.1.0
 # 数据库
 sqlalchemy==2.0.23
 alembic==1.12.1
+psycopg2-binary==2.9.9  # PostgreSQL 驱动（本地和 Docker 环境通用）
 
 # 图像处理
 Pillow==10.1.0

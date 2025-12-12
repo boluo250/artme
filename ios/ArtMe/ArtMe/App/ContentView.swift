@@ -27,8 +27,18 @@ struct ContentView: View {
     @State private var path = NavigationPath()
     
     init() {
+        // 启动阶段打点：ContentView 初始化开始
+        StartupProfiler.mark("ContentView.init 开始")
+        
         // 初始化主题
+        let t0 = Date()
         ThemeManager.shared.initialize()
+        let t1 = Date()
+        let cost = String(format: "%.3f", t1.timeIntervalSince(t0))
+        Log.info("⏱ [Startup] ThemeManager.initialize() 耗时 \(cost)s")
+        
+        // 启动阶段打点：ContentView 初始化结束
+        StartupProfiler.mark("ContentView.init 结束")
     }
     
     var body: some View {

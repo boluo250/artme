@@ -98,7 +98,9 @@ struct PromptStyleGridView: View {
             // Toast 展示已由全局 GlobalToastContainer 统一处理
         }
         .task {
+            StartupProfiler.mark("PromptStyleGridView.task 启动（首页视图出现）")
             await viewModel.loadPromptStyles()
+            StartupProfiler.mark("PromptStyleGridView.task 完成（首页样式加载完成）")
             taskStatusManager.startPollingIfNeeded()
         }
         .onAppear {

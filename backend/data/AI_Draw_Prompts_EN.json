@@ -18,42 +18,42 @@
           "id": 1,
           "name": "Decomposition_Clothes",
           "name_cn": "服装分解",
-          "thumbnail": "Decomposition_Clothes_abbreviated.gif",
+          "thumbnail": "Decomposition_Clothes_abbreviated_small.gif",
           "prompt": "1. Character Setting You are a top-tier game and anime concept art master, specializing in creating detailed character design sheets. Equipped with \"pixel-level decomposition\" capabilities, you can analyze the layered structure of characters' outfits, capture subtle facial expression changes, and visually recreate items related to them with precision. You excel at enriching a character's personality and backstory indirectly through their belongings, personal items, and daily life details. 2. Task Objective Based on the character image uploaded or described by the user, generate a \"panoramic character in-depth concept breakdown chart.\" This chart must include a full-body standing illustration of the central character, surrounded by displays of the character's outfit layers, different facial expressions, core props, material close-ups, and lifelike personal items that reflect their daily life. 3. Visual Specifications 3.1 Composition Layout Central Position: Place the character's full-body standing illustration or main dynamic pose as the visual anchor. Surrounding Positions: Arrange the decomposed elements in an orderly manner in the blank spaces around the central character. Visual Guidance: Use hand-drawn arrows or guide lines to connect the surrounding decomposed items to their corresponding parts or relevant areas on the central character. 3.2 Decomposition Content — Core Iteration Areas Outfit Layers: Display the character's clothing as separate individual pieces. Expression Set: Draw 3-4 different head close-ups in a corner to show various emotions (e.g., shyness, distraction, excitement). Material Close-Ups: Select 1-2 key areas for enlarged close-ups (e.g., fabric wrinkles, skin texture, hand details). Associated Items: Beyond large props, include \"slices of life\" that reflect the character's daily routine. Daily Bag & Contents: Illustrate the character's daily commute bag or clutch, \"open it up,\" and display the scattered items inside. Beauty & Skincare: Showcase their frequently used makeup and skincare products (e.g., close-up of a specific shade of lipstick/lip gloss, a pressed powder case with a mirror, perfume bottle design, hand cream). Hidden Lifestyle Items: Visualize items that reflect the character's hidden side. Depending on the character's personality, these may include: a diary, a box of commonly used medications/supplements, an e-cigarette, or personal mementos. 3.3 Style & Annotations Art Style: Maintain a high-quality 2D illustration style or concept design sketch style with clean, crisp lines. Background: Use a beige, parchment, or light gray textured background to create the atmosphere of a design manuscript."
         },
         {
           "id": 2,
           "name": "3D_Figurine",
           "name_cn": "3D手办",
-          "thumbnail": "3D_Figurine_abbreviated.gif",
+          "thumbnail": "3D_Figurine_abbreviated_small.gif",
           "prompt": "A hyper-realistic 1/7 scale figure of the character, on a computer desk, computer screen shows ZBrush modeling software, next to it a Bandai-style box with original art, all on a clear acrylic base, professional product photography, sharp focus"
         },
         {
           "id": 3,
           "name": "Zootopia_2_Theme",
           "name_cn": "疯狂动物城2",
-          "thumbnail": "Zootopia_2_Theme_abbreviated.png",
+          "thumbnail": "Zootopia_2_Theme_thumb_320x320.jpg",
           "prompt": "Generate 1 photo of a cinema group portrait themed around 'Zootopia 2,' keeping the original facial features and face shape unchanged. Pose: selfie posture with the body slightly turned sideways, standing between the Judy Hopps and Nick Wilde mascots, closely side-by-side with them, head gently leaning toward the mascots, face directly facing the camera. Outfit: wearing Judy Hopps’ signature police uniform paired with a same-color plush beret decorated with a golden badge and gray plush rabbit ears with pink lining. Accessories: thin gold necklace. Hairstyle: dark brown long curly hair with natural waves and air bangs. Scene: cinema auditorium with black seats filled with audiences; the big screen shows the 'Zootopia 2' poster featuring Judy, Nick, and Flash Slothmore, with the text 'FUR DX'. Style: movie-themed immersive group-photo combining cuteness and a lively vibe. Lighting: cinema ambient lighting + screen light; soft ambient light illuminates the character while screen light enhances the background for natural, realistic lighting. Color tone: dark blue and black with blue/red accents from the screen; real cinema atmosphere with slight film grain. Composition: vertical selfie close-up with character and mascots occupying 60% of the frame and the auditorium background 40%, subjects centered. Filter: low-saturation cinema-style atmosphere filter for realism with vivid makeup. Additional elements: official 'Zootopia 2' Judy and Nick mascot designs—Judy in blue police uniform, Nick in green short-sleeve shirt with black/purple diagonal striped tie, maintaining plush texture. Text: at the bottom, include 'Disney ZOOTOPIA 2 ONLY IN THEATERS NOVEMBER 26' in movie-poster style, occupying 50% of the frame width. Quality: 32K ultra-high resolution with master-level cinematic image quality, retaining real human skin texture without over-smoothing."
         },
         {
           "id": 4,
           "name": "Zootopia_2_Theme_Male",
           "name_cn": "疯狂动物城2男",
-          "thumbnail": "Zootopia_2_Theme_Male_abbreviated.png",
+          "thumbnail": "Zootopia_2_Theme_Male_thumb_320x320.jpg",
           "prompt": "Generate 1 photo of a cinema group portrait themed around 'Zootopia 2,' keeping the original facial features and face shape unchanged, pose in a selfie posture with the body slightly turned sideways, standing between the Judy Hopps and Nick Wilde mascots, standing close side-by-side with them, head gently leaning toward the mascots, face directly facing the camera. Outfit (male version): wearing a male-version Judy Hopps–themed police uniform with a blue tactical-style jacket and matching tactical pants with a masculine cut, paired with a same-color plush beret decorated with a golden badge and gray plush rabbit ears with pink inner lining adapted to male proportions. Accessories: simple thin black or silver necklace suitable for male style. Hairstyle: dark brown short or medium-short hair with natural soft waves and airy bangs. Scene: cinema auditorium with black seats filled with audiences; big screen shows the 'Zootopia 2' poster featuring Judy, Nick, and Flash Slothmore with text 'FUR DX'. Style: movie-themed immersive group photo with cute and lively vibes. Lighting: cinema ambient lighting plus screen light, soft ambient light illuminating the person while screen light enhances the background for natural realism. Color tone: dominated by dark blue and black with bright blue/red accents from the screen, slight film grain. Composition: vertical selfie close-up with the person and mascots occupying 60% of the frame and auditorium background 40%, subjects centered. Filter: low-saturation cinema-style atmosphere filter for realism while keeping makeup clear. Additional elements: official 'Zootopia 2' Judy and Nick mascots—Judy in blue police uniform, Nick in green short-sleeve shirt with black/purple diagonal striped tie, maintaining plush texture. Text: at the bottom include 'Disney ZOOTOPIA 2 ONLY IN THEATERS NOVEMBER 26' in movie-poster style occupying 50% frame width. Quality: 32K ultra-high resolution with master-level cinematic quality, preserving real human skin texture without over-smoothing."
         },
         {
           "id": 5,
           "name": "New_Year_Eve",
           "name_cn": "新年夜",
-          "thumbnail": "New_Year_Eve_abbreviated.jpg",
+          "thumbnail": "New_Year_Eve_thumb_320x320.jpg",
           "prompt": "Create a photorealistic New Year’s Eve celebration photo featuring a man (use the uploaded face for 100% accurate facial reference) standing in a large crowd near Sydney Harbour. He is laughing brightly, holding a drink in one hand, wearing a colorful party hat, with confetti falling around him. His expression should be joyful and full of excitement.Behind him, show the Sydney Opera House, the Harbour Bridge, and a massive firework display lighting up the sky with gold, white, red, and multicolor bursts. The water should reflect the firework glow and city lights. Surround him with a dense crowd of people holding phones, capturing the moment. Add a warm, cinematic night-time atmosphere with bokeh lights and soft smoke from the fireworks.Include a small digital timestamp in the corner reading: “JAN 01, 2026 — 12:00 AM” to mimic a candid party-camera photo. The overall vibe should feel energetic, celebratory, and real — a perfect New Year’s countdown moment in Sydney."
         },
         {
           "id": 6,
           "name": "Pet_Employee",
           "name_cn": "宠物员工",
-          "thumbnail": "Pet_Employee_abbreviated.png",
+          "thumbnail": "Pet_Employee_thumb_320x320.jpg",
           "prompt": "Using the reference image of the uploaded pet, create a realistic anthropomorphic version of the pet as a professional office worker. The pet is sitting at an office desk, wearing a smart business suit with a tie, typing on a apple laptop, papers and coffee cup on the desk. The pet's facial features and fur patterns are faithfully preserved. Modern office environment, natural soft lighting, ultra-realistic details, high-resolution, professional and focused atmosphere. Avoid distortion, keep proportions natural, do not alter pet identity."
         }
       ]
@@ -67,35 +67,35 @@
           "id": 1,
           "name": "chibi_style",
           "name_cn": "超大Q版",
-          "thumbnail": "chibi_style_abbreviated.png",
+          "thumbnail": "chibi_style_thumb_320x320.jpg",
           "prompt": "Based on the input selfie of the girl, generate a super-sized chibi-style figurine that exactly matches the character's outfit in the photo. The figurine should feature a cute cartoon style with a round face, large eyes, and exaggerated proportions. Composite the real person and this oversized figurine into the same frame, positioning the person slightly in front and to the right of the figurine. Replace the background with a minimalist art gallery setting. The overall composition should create a creative effect of the real person interacting with their giant figurine, presenting a cute, fun, and realistically textured style"
         },
         {
           "id": 2,
           "name": "artist_painting_figurine",
           "name_cn": "艺术家雕像",
-          "thumbnail": "artist_painting_figurine_abbreviated.png",
+          "thumbnail": "artist_painting_figurine_thumb_320x320.jpg",
           "prompt": "Refer to this photo and maintain the consistency of the characters.Create an image of this person as an artist painting a tiny miniature figurine version of themselves.  looking directly at the camera with a confident expression while holding a tiny paintbrush in one hand. The small action figure-sized version of themselves is prominently placed on a clean workbench in front of them - make the miniature slightly larger and more visible than realistic scale so it clearly stands out. The doll is a complete body.The miniature figure is also wearing the same iconic outfit in a signature pose. Minimal art supplies on the workbench to avoid clutter - just 2-3 small paint bottles and one extra brush, keeping the focus on the person and their miniature. Soft neutral white background, professional studio lighting, shallow depth of field. The composition emphasizes the person’s face looking at camera and the miniature figure they’re working on. Clean, uncluttered, photorealistic style with high detail on both figures"
         },
         {
           "id": 3,
           "name": "Giant_Fluffy_Cute_Cartoon_Monster",
           "name_cn": "可爱怪兽",
-          "thumbnail": "Giant_Fluffy_Cute_Cartoon_Monster_abbreviated.png",
+          "thumbnail": "Giant_Fluffy_Cute_Cartoon_Monster_thumb_320x320.jpg",
           "prompt": "Turn me into a real human sitting next to a giant fluffy cute cartoon monster. I am real but monster is 3d cartoon. It’s hugging me and cute. Big eyes"
         },
         {
           "id": 4,
           "name": "Figurine_Standing_Hand",
           "name_cn": "站立手办",
-          "thumbnail": "Figurine_Standing_Hand_abbreviated.png",
+          "thumbnail": "Figurine_Standing_Hand_thumb_320x320.jpg",
           "prompt": "Transform the uploaded photo into a character figurine standing on a black plastic base held by a hand. Background includes the Shanghai Bund, softly blurred to create depth and focus on the figure. Maintain the character’s original appearance and facial features."
         },
         {
           "id": 5,
           "name": "Figurine_keychain_Hand",
           "name_cn": "钥匙链手办",
-          "thumbnail": "Figurine_keychain_Hand_abbreviated.jpg",
+          "thumbnail": "Figurine_keychain_Hand_thumb_320x320.jpg",
           "prompt": "Use the uploaded photo(s) as base.Preserve the original facial features, expression, and pose of the subject. Transform the character into a detailed, complete 3D figurine in a cute chibi style with rich details and bright, vibrant colors. Figurine has a keychain loop on top, gently held by a hand, suspended in the air, displayed above the dashboard of a car, slightly hovering. Environment: outside the car window, realistic street scene softly blurred to create depth. Ambient lighting: soft and warm, creating a cozy comfortable atmosphere. Additional Details: figurine proportions stylized but retaining recognizable features, surface textures clear, colors saturated, details of clothing and accessories well-defined, focus on the figurine while background provides contextual realism."
         }
       ]
@@ -109,28 +109,28 @@
           "id": 1,
           "name": "Ghibli_Animated_Style",
           "name_cn": "吉卜力",
-          "thumbnail": "Ghibli_Animated_Style_abbreviated.jpg",
+          "thumbnail": "Ghibli_Animated_Style_thumb_320x320.jpg",
           "prompt": "Convert this portrait photo into a Studio Ghibli animated character style, adopting the character design aesthetics from Spirited Away or Kiki's Delivery Service. Preserve the facial expression and pose from the original photo while reimagining it with Ghibli's iconic character proportions and facial features."
         },
         {
           "id": 2,
           "name": "3D_Anime_Inspired_Portrait",
           "name_cn": "灵感肖像",
-          "thumbnail": "3D_Anime_Inspired_Portrait_abbreviated.png",
+          "thumbnail": "3D_Anime_Inspired_Portrait_thumb_320x320.jpg",
           "prompt": "Portrait of the uploaded girl, preserving 100% original facial features, with large expressive eyes, delicate soft facial structure, styled into Chun-Li’s signature twin buns hairstyle, wearing a blue silk qipao with gold embroidery in a martial arts energy pose. Style: 3D stylized, realistic yet slightly cartoonish, inspired by video game character design. Lighting: Soft, even lighting with subtle backlight to highlight contours and natural skin glow. Material: Smooth skin, shiny hair strands, silk qipao with realistic texture, light-reflecting ornaments. Rendering: High-quality, hyper-detailed 3D rendering emphasizing facial and hair texture. Color: Dominant blues and golds, natural pinkish skin tone, vibrant and harmonious overall palette. Composition: Half-body portrait focusing on face and upper body, dynamic yet stable. Angle: Slightly top-down view, eyes aligned with frame center, dynamic martial arts posture."
         },
         {
           "id": 3,
           "name": "3D_Disney_Animation_Style",
           "name_cn": "迪士尼风",
-          "thumbnail": "3D_Disney_Animation_Style_abbreviated.png",
+          "thumbnail": "3D_Disney_Animation_Style_thumb_320x320.jpg",
           "prompt": "Use the uploaded photo(s) as base.Disney-style solo portrait re-creation (100% original appearance preserved) – close-up shot focusing on facial features, hands, and upper body details. Portrait of a vibrant, cute young woman. Hairstyle: Deep brown straight long hair with natural luster, length past shoulders, no obvious hair accessories, falling naturally in front of the shoulders for a casual yet gentle vibe. Outfit: Judy Hopps (Zootopia) cosplay costume – Top: Light blue long-sleeve inner shirt with black cropped police vest (yellow \"POLICE\" badge printed on chest), cuffs paired with black wrist guards with silver stripes; Bottom: Dark blue high-waisted cargo pants with black waist belt and leather utility pouch with metal buckle decorations; Accessories: Grayish-brown plush Judy Hopps ear headband with pink inner ears and blue decorative details. Makeup: Lightweight translucent base makeup, soft pink blush on cheeks, water-red lip gloss, curled eyelashes, light pink eyeshadow, creating innocent and charming eyes. Background: Pathway in front of Disney Castle, pink and white color scheme with blue roof decorations, featuring tourists and decorative street lamps, lively and dreamy atmosphere. Poses: Pose 1 – hands on hips, body slightly turned sideways, head tilted up to look at camera, confident yet playfully sweet posture; Pose 2 – standing sideways, right hand gently touching rabbit ear headband, eyes looking directly at camera, agile and interactive posture. Shooting Style + Filter: Outdoor natural light photography, medium close-up, eye-level angle, fully showcasing outfit details while highlighting integration with castle background; filter: eye-level close-up, sunny natural light, soft sweet bokeh filter, bright and fresh color tone."
         },
         {
           "id": 4,
           "name": "Background_To_An_Anime_Style",
           "name_cn": "漫画背景化",
-          "thumbnail": "Background_To_An_Anime_Style_abbreviated.jpg",
+          "thumbnail": "Background_To_An_Anime_Style_thumb_320x320.jpg",
           "prompt": "Preserve the character from the reference photo in full with realistic photographic texture (facial features, hairstyle, and clothing unchanged) as the foreground of a black-and-white manga panel layout. Background: Japanese manga page with a 3×4 or 4×5 panel grid, thin hand-drawn line art + halftone screentone, speed lines, exaggerated expressions, onomatopoeia, and rounded speech bubbles (filled with illegible dummy text). Scene: everyday urban park/street setting (park benches, railings, tree shadows, pavement puddles) with natural perspective and hand-drawn grainy lines. Overall monochromatic black-and-white, with clear hierarchical separation between foreground and background, Preserve the original colors of the character."
         }
       ]
@@ -144,42 +144,42 @@
           "id": 1,
           "name": "Nine_Grid_Emoticons",
           "name_cn": "九宫格表情包",
-          "thumbnail": "Nine_Grid_Emoticons_abbreviated.gif",
+          "thumbnail": "Nine_Grid_Emoticons_thumb_320x320.jpg",
           "prompt": "Keep the main character unchanged and create a set of realistic style emoticons, including nine-grid emoticons with different expressions and poses. The expressions vary greatly and the poses are exaggerated"
         },
         {
           "id": 2,
           "name": "Male_Harry-Potter-style_oil_painting",
           "name_cn": "哈利波特油画",
-          "thumbnail": "Male_Harry-Potter-style_oil_painting_abbreviated.png",
+          "thumbnail": "Male_Harry-Potter-style_oil_painting_thumb_320x320.jpg",
           "prompt": "Use the person from the uploaded reference photo exactly as they appear, keeping the face, hair, and proportions unchanged. Place the person naturally within a warm, cozy home interior, not stiff or mannequin-like, with posture blending authentically into the environment, natural body tension, realistic weight distribution, and lighting that matches the room’s ambient glow. Wooden furniture, magazines, and potted plants fill the softly lit space, with natural light entering from a right-side window. In the lower-left area, a hand holds a square wooden-framed Harry-Potter-style oil painting, and the hand and frame must integrate seamlessly into the scene with correct perspective, matching shadows, and consistent lighting, with no cutout or overlay feeling. The framed artwork contains a vibrant fantasy-style oil painting portrait of the same person from the reference photo, rendered in colorful Harry-Potter magic aesthetics while keeping facial accuracy. Overall: realistic photography, coherent depth, unified lighting, and natural blending of all elements into a single believable scene."
         },
         {
           "id": 3,
           "name": "Dramatic_Photorealistic",
           "name_cn": "戏剧感写实",
-          "thumbnail": "Dramatic_Photorealistic_abbreviated.png",
+          "thumbnail": "Dramatic_Photorealistic_thumb_320x320.jpg",
           "prompt": "A dramatic, photorealistic medium close-up profile shot of the person in the uploaded reference image, keeping the face 100% accurate. They are wearing a dark tailored blazer or similar formal attire, with their head tilted sharply backward and the chin pointed upward, conveying intensity and vulnerability. Lighting: a single intense warm golden spotlight shines directly from above, creating a harsh chiaroscuro effect that illuminates the face, neck, and throat while the rest of the figure falls into deep shadow. The image must be high-contrast and cinematic. Background: a solid, clean deep studio cobalt blue. Aesthetic: ultra-detailed professional studio portrait, high-resolution, sharp focus, preserving all key elements—profile angle, head tilt, formal attire, single golden light, deep blue background, and dramatic contrast."
         },
         {
           "id": 4,
           "name": "Hugging_A_Panda",
           "name_cn": "抱熊猫拍立得",
-          "thumbnail": "Hugging_A_Panda_abbreviated.png",
+          "thumbnail": "Hugging_A_Panda_thumb_320x320.jpg",
           "prompt": "Generate an image of an instant camera photo on a black surface. In the photo: gentle motion blur, warm, nostalgic, candid film-style effect, * this exact person * hugging a panda"
         },
         {
           "id": 5,
           "name": "Grid_4x4_1880s",
           "name_cn": "复古拼图",
-          "thumbnail": "Grid_4x4_1880s_abbreviated.jpg",
+          "thumbnail": "Grid_4x4_1880s_thumb_320x320.jpg",
           "prompt": "Make a 4×4 grid starting with the 1880s. In each section, I should appear styled according to that decade (clothing, hairstyle, facial hair, accessories). Use colors, background, & film style accordingly.he aspect ratio of the picture is 3:4"
         },
         {
           "id": 6,
           "name": "Angel_Theme",
           "name_cn": "天使主题",
-          "thumbnail": "Angel_Theme_abbreviated.png",
+          "thumbnail": "Angel_Theme_thumb_320x320.jpg",
           "prompt": "Create angel-themed portrait photos while preserving the person’s original facial structure and features. The character should appear in varied, elegant poses and compositions, with diverse camera angles. Character: A person with long, flowing, naturally wavy hair. Wearing a headpiece woven from vines and white flowers. Dressed in a white Grecian-style long gown with soft, layered fabrics, with light, airy ribbons draped over the arms. A pair of large, ethereal angel wings extends from the back, with soft, flowing feathers. Barefoot. Scene: The character stands in a quiet, green, mystical forest, surrounded by vines, plants, and white flowers. They hold a bow crafted from vines and blossoms. Pose & Mood: The character performs graceful, elegant movements, with storytelling expression in their eyes. Atmosphere is hazy, divine, and serene, lit with side light or back-side light, showing cool and dreamy tones filled with fairy-tale aesthetics. Composition: Close-up framing. Include sitting poses with eye-level camera angles. Each shot should reflect master-level composition and artistic quality."
         }
       ]
@@ -193,42 +193,42 @@
           "id": 1,
           "name": "High_Resolution_Artistic_Portrait",
           "name_cn": "艺术人像",
-          "thumbnail": "High_Resolution_Artistic_Portrait_abbreviated.png",
+          "thumbnail": "High_Resolution_Artistic_Portrait_thumb_320x320.jpg",
           "prompt": "Based on the reference photo, keep the person’s appearance completely consistent. Generate a high-resolution full-color artistic portrait with realistic photographic texture, clear skin details, and light film-grain. A young East Asian woman with long loose wavy hair over her shoulders, wearing natural nude-pink makeup with a translucent base and subtle highlights, pearl stud earrings, and a white off-shoulder lace long dress with hollow lace texture and vertical pleats, fitted to her silhouette. She wears silver thin-strap high heels with metallic reflections. She sits on the edge of a dark curved cabinet, body angled to the right, legs naturally extended, left hand resting on the cabinet for support, right hand raised gracefully holding a champagne glass. Her head tilts slightly back with her chin gently lifted, looking toward the camera with a calm slightly tipsy relaxed romantic expression. Environment: indoor corner near a window with a dark cabinet with gold handles, a narrow-frame black mirror showing a faint silhouette of her back, no equipment reflections, soft natural light from large white sheer curtains on the right side, and a green large-leaf plant as an accent; the foreground may lightly show the edge of a bed with textured fabric. Lighting: right-side window diffuse light as the key light creating soft highlights on her side face shoulder and neck, mild reflected fill from the cabinet and wall, soft shadows, overall cream-soft lighting with medium-low contrast. Lens & Image Quality: shot on a 50–85mm lens with shallow depth of field focusing on her side profile; skin natural, lace patterns clear, champagne glass refraction realistic, silver heels detailed, light film grain, avoid plastic-like skin HDR look or oversharpening."
         },
         {
           "id": 2,
           "name": "Snow_Artistic_Portrait",
           "name_cn": "雪景人像",
-          "thumbnail": "Snow_Artistic_Portrait_abbreviated.png",
+          "thumbnail": "Snow_Artistic_Portrait_thumb_320x320.jpg",
           "prompt": "Based on the reference photo, generate a high-resolution full-color artistic portrait in a different pose while maintaining realistic photographic quality. The subject is a young adult woman with a high ponytail and a few loose strands framing her face, tall and well-proportioned, wearing a white high-waisted fitted sports tank top, gray short yoga shorts, white knee-high socks, and white chunky sneakers. She sits on the edge of a white tabletop with her body slightly twisted toward the camera, right hand resting behind her on the table for balance, left hand holding a faceted glass cup near her collarbone, left leg bent in front of her and right leg extending naturally downward with toes lightly touching the floor. Her head tilts slightly upward with a soft confident gaze and a gentle natural smile. Environment: pure white photography studio with seamless walls and flooring, minimalistic and clean, a single white table as the main prop, natural light reflecting softly to create a bright high-key atmosphere, subtle highlights and window-pane reflections on the glass cup and tabletop. Lighting: large diffused window light from the front-left upper side as the key light, a white reflector on the right lifting shadows, subtle rim light from the right-rear outlining the ponytail and shoulders, and soft diagonal window shadows across the tabletop. Overall moderate contrast with slightly cool white balance and controlled highlights. Lens & Image Quality: shot with an 85mm prime lens at a gentle 5–10° downward angle aligned with the tabletop, slightly elevated contrast and clarity, natural skin texture with fine pores and soft vellus hair, realistic glass highlights and refractions, soft defined geometric window shadows, and light film grain for a modern fashion atmosphere."
         },
         {
           "id": 3,
           "name": "9_grid_winter",
           "name_cn": "雪景人像2",
-          "thumbnail": "9_grid_winter_abbreviated.png",
+          "thumbnail": "9_grid_winter_thumb_320x320.jpg",
           "prompt": "Generate a cohesive 3x3 grid cinematic contact sheet featuring 9 distinct photorealistic camera shots of the subject(s) from the input image. Location & Setting: set the scene at winter. Emotional Theme: overall emotional theme should be inserted here (fun / joy / bittersweet / calm / curious / determined etc.), and each shot should subtly reinforce this theme. Style & Emotion: maintain a consistent dramatic and emotionally profound mood across all 9 shots, with facial expressions dynamically adapting to each unique perspective while conveying the overall emotional theme. 9 Shot Coverage: full environment view with subject small in a vast atmospheric setting; full body shot emphasizing presence against backdrop; mid-body knees-up emotionally charged shot; upper-body waist-up expressive posture shot; intimate chest-up emphasizing gaze and feeling; tight face close-up conveying specific emotion; macro detail shot of hands, texture, or eyes; upward gaze shot from below (worm’s eye view) emphasizing quiet power; downward gaze shot from above (bird’s eye view) suggesting reflection or vulnerability. Strict Constraints: maintain strict consistency of subject, clothing, and lighting across all 9 panels; depth of field must shift realistically with bokeh in close-ups; absolutely no text, logos, labels, symbols, numbers, lettering, or typography in any image."
         },
         {
           "id": 4,
           "name": "Luxurious_Artistic_Portrait",
           "name_cn": "奢华人像",
-          "thumbnail": "Luxurious_Artistic_Portrait_abbreviated.png",
+          "thumbnail": "Luxurious_Artistic_Portrait_thumb_320x320.jpg",
           "prompt": "Based on the reference photo, preserve 100% of the subject’s facial features and appearance. Generate a high-resolution full-color artistic portrait with realistic photographic texture, light film grain, and cinematic luxurious atmosphere. Subject: A young East Asian woman in a luxurious red sequin strapless gown, wearing diamond tassel jewelry including earrings, necklace, and bracelets, hair styled elegantly while maintaining her original hairstyle and facial features, expression gazing at the camera with a soft dreamy slightly tipsy look, exuding romantic sophistication and luxury. Pose & Composition: Sitting at a table, body slightly leaning forward, hands clasped under her chin, close-up or 3:4 vertical framing focusing on face and upper body, shot with an 85mm f/1.4 lens, shallow depth of field, background extremely blurred to emphasize the subject. Environment & Lighting: Luxury birthday party setting with softly blurred cake and candelabra in the foreground, vintage golden bokeh lights in the background creating a warm opulent glow, warm candlelight with subtle diffused fill, gentle highlights on face, gown, and jewelry, star filter effect creating starburst highlights on sequins and candle flames, paired with soft-focus diffusion for a dreamy ethereal feel. Texture & Detail: Skin natural and realistic with fine pores, no plastic look, sequin gown sparkling with starburst highlights, diamond jewelry reflecting light with subtle sparkle, light film grain applied, cinematic, romantic, and luxurious, overall mood dreamy, opulent, lazy elegance, high-society glamour."
         },
         {
           "id": 5,
           "name": "Seated_Artistic_Portrait",
           "name_cn": "坐姿人像",
-          "thumbnail": "Seated_Artistic_Portrait_abbreviated.png",
+          "thumbnail": "Seated_Artistic_Portrait_thumb_320x320.jpg",
           "prompt": "Based on the uploaded reference photo, preserve the subject’s facial features and appearance exactly. Generate a high-resolution full-color artistic portrait with realistic photographic style, avoiding style drift. Composition: Full-body seated portrait, young woman sits on a bed with white sheets, body slightly leaning to the left, legs crossed and extended forward to the right, one bent and one straight, right elbow resting on knee supporting her face, left hand resting naturally at her side, head slightly tilted, eyes looking straight or slightly upward toward the camera, expression calm, restrained, slightly detached. Subject & Styling: Deep brown long hair tied in a low ponytail with ends slightly flipped out, soft loose strands around forehead and sides, clean natural makeup with soft brows, light eye makeup, defined eyelashes, soft rose-red lips; outfit: loose white long-sleeve shirt covering upper thighs with narrow black tie, light-colored patterned or lace-edged ankle socks, overall style simple, slightly androgynous, relaxed elegance. Environment: Minimalist indoor setting with seamless wall background from light gray to beige, right side slightly brighter to add depth, white sheets with natural folds, no clutter. Lighting: Key light from right, slightly elevated soft side light, natural highlights, clean shadows, left side maintains neutral shadow, slight falloff across background, soft realistic shadows under sheets and legs, warm-neutral color temperature. Lens & Camera Settings: Full-frame 50–85mm lens, aperture f/1.8–2.8, shallow depth of field with soft background but sharp subject outline, camera at eye level or slightly low, slightly to the right to emphasize leg extension. Texture & Detail: Skin natural with subtle pores, leg highlights translucent not overexposed, shirt folds, sleeve stacking, and tie reflections clearly visible, socks knitting holes and lace edges detailed, bed sheet folds natural, slight film grain with mild vignetting, sharpening applied only to hair strands and fabric textures, avoid HDR, plastic-looking skin, over-sharpening, or repeating background textures."
         },
         {
           "id": 6,
           "name": "Sport_Artistic_Portrait",
           "name_cn": "运动人像",
-          "thumbnail": "Sport_Artistic_Portrait_abbreviated.png",
+          "thumbnail": "Sport_Artistic_Portrait_thumb_320x320.jpg",
           "prompt": "Based on the reference photo, generate a high-resolution full-color artistic portrait in a different pose while maintaining realistic photographic quality. The subject is a young adult woman with a high ponytail and a few loose strands framing her face, tall and well-proportioned, wearing a white high-waisted fitted sports tank top, gray short yoga shorts, white knee-high socks, and white chunky sneakers. She sits on the edge of a white tabletop with her body slightly twisted toward the camera, right hand resting behind her on the table for balance, left hand holding a faceted glass cup near her collarbone, left leg bent in front of her and right leg extending naturally downward with toes lightly touching the floor. Her head tilts slightly upward with a soft confident gaze and a gentle natural smile. Environment: pure white photography studio with seamless walls and flooring, minimalistic and clean, a single white table as the main prop, natural light reflecting softly to create a bright high-key atmosphere, subtle highlights and window-pane reflections on the glass cup and tabletop. Lighting: large diffused window light from the front-left upper side as the key light, a white reflector on the right lifting shadows, subtle rim light from the right-rear outlining the ponytail and shoulders, and soft diagonal window shadows across the tabletop. Overall moderate contrast with slightly cool white balance and controlled highlights. Lens & Image Quality: shot with an 85mm prime lens at a gentle 5–10° downward angle aligned with the tabletop, slightly elevated contrast and clarity, natural skin texture with fine pores and soft vellus hair, realistic glass highlights and refractions, soft defined geometric window shadows, and light film grain for a modern fashion atmosphere."
         }
       ]
@@ -242,35 +242,35 @@
           "id": 1,
           "name": "sit_with_panda",
           "name_cn": "熊猫同坐",
-          "thumbnail": "sit_with_panda_abbreviated.png",
+          "thumbnail": "sit_with_panda_thumb_320x320.jpg",
           "prompt": "A portrait size image depicts the person attached in the uploaded reference image (Keep the face of the person 100% accurate from the reference image) sitting cross-legged on a grassy area, wearing a light khaki t-shirt, khaki shorts, black socks, and green sneakers with white laces. They are smiling gently while looking at the camera. Beside them sits a panda, with its black-and-white fur prominently displayed, including black ears, eye patches, and limbs, and a white face and torso. The panda appears calm, with one paw resting on the person's leg and the other on the ground, its claws slightly visible. The background features a lush, green outdoor setting with blurred trees and foliage, suggesting a natural or zoo-like environment. The overall mood of the image is serene and friendly."
         },
         {
           "id": 2,
           "name": "lying_with_cat",
           "name_cn": "小猫环绕",
-          "thumbnail": "lying_with_cat_abbreviated.png",
+          "thumbnail": "lying_with_cat_thumb_320x320.jpg",
           "prompt": "A dreamy, luxurious fashion editorial shot , Use the uploaded photo(s) as base. Keep the same person(s) — same face(s), body(ies), and identity(ies). with subtle highlights, and a gentle, serene expression. She is dressed in an elegant luxurious cream dress paired with a light pink blazer, adding a sophisticated and feminine touch. The model is lying among a multitude of fluffy cream, pale peach, and soft pink cats, their long fur creating a plush, cloud-like environment around her. One tiny sleeping kitten rests curled on her chest. Her eyes are gently closed, her face calm and relaxed, capturing a moment of serene comfort and quiet elegance. The setting is filled with soft, airy lighting that enhances the detailed textures of the cats' fur, the fabrics, and her smooth glowing skin. The entire scene feels dreamy, whimsical, high-fashion, and ethereal, reminiscent of a luxury magazine editorial with hyper-realistic detail and a pastel color palette."
         },
         {
           "id": 3,
           "name": "lying_with_cat_male",
           "name_cn": "小猫环绕",
-          "thumbnail": "lying_with_cat_male_abbreviated.png",
+          "thumbnail": "lying_with_cat_male_thumb_320x320.jpg",
           "prompt": "A dreamy, luxurious fashion editorial shot , Use the uploaded photo(s) as base. Keep the same person(s) — same face(s), body(ies), and identity(ies). with subtle highlights, and a gentle, serene expression.He is dressed in a sophisticated off-white or cream-colored suit with a vest and a light pink tie.The model is lying among a multitude of fluffy cream, pale peach, and soft pink cats, their long fur creating a plush, cloud-like environment around her. One tiny sleeping kitten rests curled on his chest.His eyes are gently closed, his face calm and relaxed, capturing a moment of serene comfort and quiet elegance.The setting is filled with soft, airy lighting that enhances the detailed textures of the cats' fur, the fabrics, and her smooth glowing skin.The entire scene feels dreamy, whimsical, high-fashion, and ethereal, reminiscent of a luxury magazine editorial with hyper-realistic detail and a pastel color palette."
         },
         {
           "id": 4,
           "name": "lying_with_dog",
           "name_cn": "小狗环绕",
-          "thumbnail": "lying_with_dog_abbreviated.png",
+          "thumbnail": "lying_with_dog_thumb_320x320.jpg",
           "prompt": "A highly detailed, photorealistic composition featuring a person attached in the uploaded reference image (Keep face of person 100% accurate from the reference image) reclining and almost completely surrounded by a dense pile of fluffy puppies. The puppies are a mix of soft cream white and light golden beige colors, with plush, curly fur and round, expressive dark eyes and tiny noses, carefully distributed in a natural, balanced manner around the figure. The puppies’ exact sizes and proportions are realistic and uniform, creating a harmonious, evenly filled foreground and background. She is dressed in an elegant luxurious cream dress paired with a light pink blazer, adding a sophisticated and feminine touch. The lighting is soft and even, creating gentle, natural shadows among the folds of the fabric, the curls of hair, and the plush fur, highlighting texture and three-dimensionality. Color correction preserves warm, pastel tones and creamy highlights – beige, ivory, soft caramel, blush pink – with slight golden undertones for a cozy, inviting atmosphere. Microdetails include visible individual hairs and whiskers on the puppies, intricate textures in the suit fabric, precise, high-resolution shadows and subtle reflections, and natural overlapping forms that enhance overall depth. The mood is playful, luxurious, and tender, blending editorial fashion style with whimsical cuteness. The entire scene is composed tightly with no empty spaces, creating a dreamy, almost surreal pile of puppies and soft textiles with perfect balance and high aesthetic value. 4k resolution, vertical 9:16 aspect ratio, soft natural style, high realism. Atmosphere & Style:Cinematic photography, ultra-realisticAdventurer, luxury travel, exotic experience vibe 8K resolution, studio-quality photo"
         },
         {
           "id": 5,
           "name": "ultra_realistic_wildlife",
           "name_cn": "写实野外",
-          "thumbnail": "ultra_realistic_wildlife_abbreviated.png",
+          "thumbnail": "ultra_realistic_wildlife_thumb_320x320.jpg",
           "prompt": "Ultra-realistic wildlife photography scene, (use reference face from uploaded photo). A man wearing proper wildlife-safari clothing — light brown outdoor shirt, rugged cargo pants, and sturdy field boots. He is lying flat on the grassy ground, holding a professional DSLR camera with a large telephoto lens, focusing on wildlife. On his shoulder sits a playful lion cub looking into the distance. Golden hour natural light, African savannah background, cinematic depth of field, 8K detail, vibrant colors. Keep my face 100% accurate. HD quality DSLR."
         }
       ]
@@ -284,28 +284,28 @@
           "id": 1,
           "name": "couple_3_pic_winter_night",
           "name_cn": "情侣雪夜",
-          "thumbnail": "couple_3_pic_winter_night_abbreviated.gif",
+          "thumbnail": "couple_3_pic_winter_night_thumb_320x320.jpg",
           "prompt": "Use each person in the uploaded photo exactly as they appear — keep every individual’s face, hair, race, pose, and proportions unchanged. Do not add or remove anyone. Keep the exact number of people from the original image. Create a vertical 4K (2160×3840) triptych with three equal horizontal frames showing all original subjects together. Overall Look & Mood: A quiet snowy daytime scene with soft sunlight filtering through a misty forest, falling snow glowing in the light, shot on 35mm film with direct flash (visible grain, light haze, crisp analog winter feel), colors of daylight whites, pale blues, and soft skin warmth. Frame 1 – Over-the-Shoulder: View from slightly behind showing backs and partial side profiles, winter coats (dark gray, brown, navy, plaid), bright scarves (red, burgundy, cobalt), flash freezing snowflakes with sunlight adding rim light, background of sunlit misty trees with drifting snow. Frame 2 – Full Body: Slightly elevated angle on a snow-covered forest path, all facing top-left, optional small winter bouquets (white, lilac, neutral), coat textures, scarves, and footprints glowing under sunlight + flash, sunbeams through snowy trees adding analog softness. Frame 3 – Close-Up: Tight portraits focusing on eyes and calm expressions (warmth, nostalgia, gentle sorrow), shallow depth with sharp eyes and diffused snowy forest behind. Technical & Style: 35mm film, ISO 400, f/2.8, 1/180s, flash ON, daylight + flash lighting, fine film grain, no smoothing, cold daylight shadows, clean whites, natural skin. Output: realistic analog snowy daytime triptych with all original people unchanged."
         },
         {
           "id": 2,
           "name": "couple_3_pic_snow_forest",
           "name_cn": "情侣雪林",
-          "thumbnail": "couple_3_pic_snow_forest_abbreviated.png",
+          "thumbnail": "couple_3_pic_snow_forest_thumb_320x320.jpg",
           "prompt": "Use each person in the uploaded photo exactly as they appear — keep every individual’s face, hair, race, pose, and proportions unchanged. Do not add or remove anyone. Keep the exact number of people from the original image. Create a vertical 4K (2160×3840) triptych with three equal horizontal frames showing all original subjects together. Overall Look & Mood: A quiet snowy daytime scene with soft sunlight filtering through a misty forest, falling snow glowing in the light, shot on 35mm film with direct flash (visible grain, light haze, crisp analog winter feel), colors of daylight whites, pale blues, soft skin warmth. Frame 1 – Over-the-Shoulder: View from slightly behind, showing backs and side profiles, winter coats (dark gray, brown, navy, plaid) with bright scarves (red, burgundy, cobalt), flash freezing snowflakes, sunlight adding soft rim light, background of sunlit misty trees with drifting snow. Frame 2 – Full Body: Slightly elevated angle on a snow-covered forest path, all standing facing top-left, optional small winter bouquets (white, lilac, neutral), coat texture, scarves, and footprints glowing under sunlight + flash, sunbeams through snowy trees adding depth and analog softness. Frame 3 – Close-Up: Tight portraits focusing on eyes and calm expressions (warmth, nostalgia, gentle sorrow), shallow depth with sharp eyes and diffused snowy forest behind. Technical & Style: 35mm film, ISO 400, f/2.8, 1/180s, flash ON, daylight + flash lighting, fine film grain, no smoothing, color tone of cold daylight shadows, clean whites, natural skin. Output: realistic analog snowy daytime triptych with all original people unchanged."
         },
         {
           "id": 3,
           "name": "female_3_pic_snow_umbrella",
           "name_cn": "女生雪伞三连",
-          "thumbnail": "female_3_pic_snow_umbrella_abbreviated.png",
+          "thumbnail": "female_3_pic_snow_umbrella_thumb_320x320.jpg",
           "prompt": "Create a vertical frame (4K quality) divided into three equally sized horizontal images placed together. Do not change facial features of the person from the uploaded photo; keep the face 100% accurate from the reference image. The main character is based on the reference face, hairstyle, and body: a figure with an expression of sadness and nostalgia, deep eyes radiating loneliness. The outfit is a loose winter puffer set with wide-leg pants and a black scarf. The overall atmosphere is covered in white snow, with a cold color palette that evokes melancholy and solitude. Image 1 (portrait): The character holds a transparent umbrella, turning their head slightly back while looking directly at the frame, with a sorrowful expression and soulful eyes. The background is blurred snowy whiteness. Image 2 (full body): The character, with the umbrella, stands alone in a vast snowy field, walking while gazing at the sky; the camera angle looks downward from above, as if the character is raising a hand to catch falling snowflakes. In the distance, a few bare leafless trees stand, conveying smallness and isolation against the vastness of nature. Image 3 (close-up): A zoomed-in shot of the character's eyes, with a distant, sorrowful gaze that evokes feelings of loneliness and yearning."
         },
         {
           "id": 4,
           "name": "Wong_Kar-wai_Films",
           "name_cn": "王家卫电影风",
-          "thumbnail": "Wong_Kar-wai_Films_abbreviated.png",
+          "thumbnail": "Wong_Kar-wai_Films_thumb_320x320.jpg",
           "prompt": "Wong Kar-wai's inspired cinematic triptych of a young man attached in the photo in the city at night, bathed in moody neon green, amber, and red lights, with film grain, dreamy haze, and soft blur with saturated colors, keeping the original face. He has messy comma hair parted to the side with strands falling across his forehead, giving a slightly disheveled romantic look. Top Panel: The man sits outside a late-night 7-Eleven with neon signs glowing behind him with the text \"RNGOCT\", holding a lit cigarette near his lips, expression contemplative and distant. Middle Panel: He takes a slow sip from a canned beer bottle, gaze unfocused as if lost in thought, neon reflections dancing across his face. Bottom Panel: He stands alone on a pedestrian overpass bridge at night, exhaling smoke from a cigarette, head tilted back toward the sky, expression weary and melancholic, with blurred crowded people’s headlights in the distance; shallow depth of field, intimate close-up framing, nostalgic atmosphere."
         }
       ]
@@ -319,28 +319,28 @@
           "id": 1,
           "name": "Natural_Retouching",
           "name_cn": "一键美颜",
-          "thumbnail": "Natural_Retouching_abbreviated.png",
+          "thumbnail": "Natural_Retouching_thumb_320x320.jpg",
           "prompt": "Remove all acne and acne scars from the character's face, apply natural light retouching, preserve the original skin texture to avoid a plastic face effect, and do not alter other facial features or skin tone.Enhance the overall brightness of the image, optimize light distribution, eliminate facial shadows and noise in dark areas, achieve even and soft facial lighting, while maintaining the harmony of the background color tone without overexposure.Naturally brighten the character's skin tone, improve dullness and sallowness, create a translucent and fair skin texture, and do not compromise the three-dimensionality of facial features or the original skin texture.Eliminate freckles, age spots, wrinkles, dark circles, and nasolabial folds from the character's face, repair minor skin blemishes, and ensure the skin appears natural without the plastic-like effect of over-retouching."
         },
         {
           "id": 2,
           "name": "ID_Photo",
           "name_cn": "证件照",
-          "thumbnail": "ID_Photo_abbreviated.png",
+          "thumbnail": "ID_Photo_thumb_320x320.jpg",
           "prompt": "Based on the reference photo,keeping the original face,Transform the uploaded photo into ultra-realistic ID photo, shoulders-up portrait of the same person, wearing a sharp navy-blue business suit and crisp white shirt, solid neutral background (#ffffff), soft even lighting, no shadows, face clearly visible, neutral expression, eyes straight at camera, ears visible, no glasses, smile, official ID photo dimensions 35 mm × 45 mm (413 × 531 px @ 300 dpi), passport-style framing."
         },
         {
           "id": 3,
           "name": "Colorize_Old_Photo",
           "name_cn": "老照片上色",
-          "thumbnail": "Colorize_Old_Photo_abbreviated.png",
+          "thumbnail": "Colorize_Old_Photo_thumb_320x320.jpg",
           "prompt": "Restore and colorize this old photo: remove all scratches, blemishes, fading, and mold spots, recover clear facial features and additional details. Avoid over-sharpening; keep the image clean and natural."
         },
         {
           "id": 4,
           "name": "Pet_Id_Photo",
           "name_cn": "宠物ID照",
-          "thumbnail": "Pet_Id_Photo_abbreviated.png",
+          "thumbnail": "Pet_Id_Photo_thumb_320x320.jpg",
           "prompt": "Generate a passport photo of this pet, looking towards the camera, centered, front, with a white background"
         }
       ]

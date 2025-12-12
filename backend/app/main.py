@@ -16,7 +16,7 @@ from app.middleware import (
 )
 
 # 导入 API 路由
-from app.api import generate, styles, account, subscription, static, prompts
+from app.api import generate, styles, account, subscription, static, prompts, auth, user_info
 from app.services.task_service import task_manager
 
 # -------------------------
@@ -83,10 +83,14 @@ async def health_check():
 # 注册 API 路由
 app.include_router(generate.router, prefix="/api/v1", tags=["generate"])
 app.include_router(styles.router, prefix="/api/v1", tags=["styles"])
-app.include_router(account.router, prefix="/api/v1", tags=["account"])
+# 账户相关接口统一挂载到 /api/v1/account 前缀下，
+# 以符合 API 文档与 iOS 客户端中的 Constants.API.account 定义
+app.include_router(account.router, prefix="/api/v1/account", tags=["account"])
 app.include_router(subscription.router, prefix="/api/v1", tags=["subscription"])
 app.include_router(static.router, prefix="/api/v1", tags=["static"])
 app.include_router(prompts.router, prefix="/api/v1", tags=["prompts"])
+app.include_router(auth.router, prefix="/api/v1")
+app.include_router(user_info.router, prefix="/api/v1")
 
 
 if __name__ == "__main__":

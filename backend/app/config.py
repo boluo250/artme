@@ -15,7 +15,10 @@ class Settings(BaseSettings):
     SECRET_KEY: str = "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"
     
     # 数据库配置
-    DATABASE_URL: str = "sqlite:///./artme.db"
+    # 默认使用 PostgreSQL，方便后续迁移到阿里云 RDS / Supabase
+    # 本地直接运行后端时，请确保本机已启动 Postgres 并存在 artme 数据库
+    # 例：postgresql://用户名:密码@主机:端口/数据库名
+    DATABASE_URL: str = "postgresql://artme:artme123@localhost:5432/artme"
     
     # CORS 配置
     # 开发环境：允许所有来源（包括真机访问）

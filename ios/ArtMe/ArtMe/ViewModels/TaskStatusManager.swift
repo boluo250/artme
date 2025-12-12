@@ -29,12 +29,17 @@ final class TaskStatusManager: ObservableObject {
     private var isPolling = false
     
     init() {
+        let t0 = Date()
+        StartupProfiler.mark("TaskStatusManager.init 开始")
         // 启动时读取一次本地历史：
         // 将当前已有任务视为「旧任务」，它们的完成状态不再弹出 Toast，
         // 只对之后新增的任务弹出「制作完成」Toast。
         let historyManager = HistoryManager()
         shownCompletedTaskIds = historyManager.history.map { $0.id }
-        Log.debug("[TaskStatus] init, history count = \(historyManager.history.count), shownCompletedTaskIds = \(shownCompletedTaskIds)")
+        let t1 = Date()
+        let cost = String(format: "%.3f", t1.timeIntervalSince(t0))
+        Log.info("⏱ [Startup] TaskStatusManager.init 读取历史耗时 \(cost)s, history count = \(historyManager.history.count)")
+        StartupProfiler.mark("TaskStatusManager.init 完成")
         // 不自动开始轮询，由根视图显式调用 startPollingIfNeeded()
     }
     

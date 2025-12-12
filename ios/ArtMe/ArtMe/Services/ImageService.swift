@@ -19,6 +19,8 @@ class ImageService {
     private var cacheBuster: String?
     
     private init() {
+        let t0 = Date()
+        StartupProfiler.mark("ImageService.init 开始（图片缓存服务初始化）")
         // 配置缓存
         cache.countLimit = 50
         cache.totalCostLimit = Constants.imageCacheSize
@@ -29,6 +31,10 @@ class ImageService {
         
         // 创建目录
         try? fileManager.createDirectory(at: documentsDirectory, withIntermediateDirectories: true)
+        let t1 = Date()
+        let cost = String(format: "%.3f", t1.timeIntervalSince(t0))
+        Log.info("⏱ [Startup] ImageService.init 磁盘目录准备耗时 \(cost)s，目录 = \(documentsDirectory.path)")
+        StartupProfiler.mark("ImageService.init 完成（图片缓存服务就绪）")
     }
     
     // 设置图片缓存版本（用于强制刷新缩略图等资源）

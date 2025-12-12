@@ -446,6 +446,7 @@
 
 ---
 
+<!-- TODO 14（心情驱动 AI 艺术照）暂缓，当前版本先不实现 -->
 ## 14. 心情驱动 AI 艺术照（新需求）
 
 ### 14.1 心情配置与 API
@@ -483,4 +484,104 @@
 - [ ] 增加前端错误提示、重试、生成结果 prompt 展示
 - [ ] 后端记录生成耗时、mood_id、ds token 使用等指标
 - [ ] 编写单元/集成测试（心情 API、Prompt 组装、端到端上传生成）
+
+<!-- END TODO 14（心情驱动 AI 艺术照） -->
+
+## 15. 登录与积分系统（我的页面）
+
+### 15.1 产品梳理与方案确认
+- [ ] 明确登录入口交互
+- [ ] 确认「我的」页第一行展示“登录”两个字
+- [ ] 确认“退出登录”入口位置（放在账号设置页）
+- [ ] 确认积分规则
+- [ ] 确认新用户注册奖励积分数（默认 5）
+- [ ] 确认会员入口文案
+- [ ] 第二行入口文案（如「立即开通会员（即将上线）」）
+- [ ] 确认点击后跳转到说明页还是暂时 Toast 提示
+
+### 15.2 后端数据结构与接口设计
+- [ ] 数据库/模型调整
+- [ ] 在 users 表增加字段 phone_number（唯一）、points_balance（默认 0）、is_member、member_expire_at
+- [ ] 新建积分流水表 points_transactions（user_id、change、reason、description、created_at）
+- [ ] 手机号登录相关接口
+- [ ] 设计 POST /auth/send_code 接口（发送短信验证码）
+- [ ] 设计 POST /auth/verify_code 接口（校验验证码，返回 token + 用户信息）
+- [ ] 接口逻辑：首次登录手机号自动创建用户并发放 5 积分 + 积分流水记录
+- [ ] 用户信息与积分接口
+- [ ] 设计 GET /user/me 接口（返回手机号尾号/昵称、积分、会员状态等）
+- [ ] 预留未来会员相关接口字段（如会员等级、到期时间）
+
+### 15.3 iOS 客户端（「我的」页 & 登录）
+- [ ] 「我的」页面 UI 调整
+- [ ] 第一行：未登录状态显示「手机号登录」按钮及说明文案
+- [ ] 第一行：已登录状态显示头像 + 昵称/手机号尾号
+- [ ] 第二行：预留「立即开通会员」入口（带说明文字）
+- [ ] 第三行：展示「我的积分：X」，未登录时显示「登录后可查看」
+- [ ] 登录流程页面
+- [ ] 新增手机号登录页面：输入手机号 + 获取验证码 + 输入验证码
+- [ ] 接入 send_code & verify_code 接口，并处理错误/重发倒计时
+- [ ] 登录成功后保存 token / 用户信息并刷新「我的」页面
+- [ ] 状态管理与展示
+- [ ] 启动 App 时尝试从本地读取 token 并调用 /user/me
+- [ ] 根据是否登录动态更新「我的」页三行内容
+- [ ] 预留“退出登录”逻辑（清理 token、清空本地用户信息）
+
+### 15.4 积分展示与后续扩展
+- [ ] 基础积分展示
+- [ ] 在「我的」页第三行读取并展示 points_balance
+- [ ] 未登录时隐藏积分数值或显示「-- / 登录后可查看」
+- [ ] 积分明细（预留）
+- [ ] 预留「我的积分」点击行为（暂可不实现明细页，仅弹提示）
+- [ ] 未来设计积分明细列表页面 UI 与数据结构（使用 points_transactions）
+
+### 15.5 测试与埋点
+- [ ] 功能测试
+- [ ] 测试新手机号首次登录是否正确创建用户并获得 5 积分
+- [ ] 测试已存在手机号再次登录不会重复发放积分
+- [ ] 测试登录/退出后「我的」页显示是否正确更新
+- [ ] 埋点与统计（可选）
+- [ ] 埋点统计：点击「手机号登录」、登录成功率、登录转化
+- [ ] 埋点统计：点击「立即开通会员」次数，为后续会员功能预热数据做准备
+
+## 16. 基于 RQ 的生图并发 & 积分扣费/退款改造
+
+### 16.1 基础设施与配置
+- [ ] 在后端依赖中加入 `redis`、`rq` 并完成安装
+- [ ] 在配置中新增 `REDIS_URL`、`RQ_QUEUE_NAME`、`RQ_WORKER_CONCURRENCY` 等字段
+- [ ] 本地/测试环境启动 Redis，编写简单脚本验证连接可用
+
+### 16.2 数据模型与积分语义
+- [ ] 为 `Transaction` 增加/确认字段：`status`（pending/completed/canceled/failed）、`related_task_id`
+- [ ] 明确 `User.balance` 语义为“当前可用积分”，不直接被 pending 交易修改
+- [ ] 为 `GenerationTask` 补充/确认 `error`、`updated_at` 字段，方便前端展示失败原因
+
+### 16.3 积分预扣 / 结算服务
+- [ ] 新增统一的积分服务（如 `billing_service`），封装以下能力：
+  - [ ] 计算“可用积分 = balance + 所有 pending 消费金额之和”
+  - [ ] 创建预扣交易：`Transaction(status="pending", amount<0, related_task_id=task_id)`
+  - [ ] 成功时确认扣费：修改 `User.balance`，并将交易置为 `completed`
+  - [ ] 失败时取消预扣：将交易置为 `canceled`（必要时补充退款流水）
+
+### 16.4 API 层改造（/generate & /generate/with-image）
+- [ ] 在 `/generate` 接口增加可用积分检查，不足时返回 400
+- [ ] 在 `/generate` 中创建 `GenerationTask(pending)` 与预扣 `Transaction(pending)`（单一事务内完成）
+- [ ] 移除对 `task_manager.enqueue_*` 的直接调用，改为使用 RQ：`queue.enqueue(generate_text_job, task_id, user_id, transaction_id, ...)`
+- [ ] 在 `/generate/with-image` 中复用预扣逻辑，并将上传图片临时路径一并传给 RQ 任务
+
+### 16.5 RQ Job 逻辑（成功扣费 / 失败不扣）
+- [ ] 新建 `rq_jobs` 模块，实现 `generate_text_job(...)` 与 `generate_upload_job(...)`
+- [ ] 在 Job 内部拉取 `GenerationTask` / `User` / `Transaction`，对 `tx.status != "pending"` 做幂等判断
+- [ ] 成功路径：调用 `ai_service` + `image_service`，更新任务为 `completed`，写入 `image_urls`，在一个事务中扣减 `User.balance` 并将交易置为 `completed`
+- [ ] 失败路径：将任务标记为 `failed` 并记录 `error`，将交易置为 `canceled`，不修改余额
+- [ ] 为 Job 配置合理的 `job_timeout` 和 `Retry` 策略，避免抖动导致误判失败
+
+### 16.6 RQ Worker 启动与运维
+- [ ] 添加启动 Worker 的脚本或命令（如 `rq worker artme_generate`）并写入部署文档
+- [ ] 在 `README_DEPLOY.md` 中补充：生产环境需同时启动 API 服务和 RQ Worker
+- [ ] 设计基础监控：RQ 失败任务数量、队列长度、任务平均耗时等指标
+
+### 16.7 多客户端并发与后续扩展
+- [ ] 为 `GenerationTask` 和 `Transaction` 预留 `app_id` 字段，支持按 App 维度统计与限流
+- [ ] 结合 Redis 设计按用户/按 App 的简单限流策略（QPS、并发任务数等）
+- [ ] 编写集成测试：多并发请求下验证不会出现重复扣费或积分漏扣
 

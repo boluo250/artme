@@ -326,4 +326,32 @@ class APIService {
         let endpoint = "\(Constants.API.tasks)/\(taskId)"
         return try await self.request(endpoint: endpoint)
     }
+
+    // MARK: - 手机号登录 & 用户信息
+    
+    func sendLoginCode(phoneNumber: String) async throws -> SendCodeResponse {
+        let payload = SendCodeRequest(phoneNumber: phoneNumber)
+        let encoder = JSONEncoder()
+        encoder.keyEncodingStrategy = .convertToSnakeCase
+        let body = try encoder.encode(payload)
+        
+        return try await self.request(
+            endpoint: Constants.API.auth + "/send_code",
+            method: "POST",
+            body: body
+        )
+    }
+    
+    func verifyLoginCode(phoneNumber: String, code: String) async throws -> AuthUserResponse {
+        let payload = VerifyCodeRequest(phoneNumber: phoneNumber, code: code)
+        let encoder = JSONEncoder()
+        encoder.keyEncodingStrategy = .convertToSnakeCase
+        let body = try encoder.encode(payload)
+        
+        return try await self.request(
+            endpoint: Constants.API.auth + "/verify_code",
+            method: "POST",
+            body: body
+        )
+    }
 }

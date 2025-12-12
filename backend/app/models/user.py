@@ -23,6 +23,8 @@ class User(Base):
     username = Column(String, unique=True, index=True, nullable=False)
     email = Column(String, unique=True, index=True, nullable=False)
     hashed_password = Column(String, nullable=False)
+    # 新增：手机号登录字段（可选），用于「我的」页面手机号登录
+    phone_number = Column(String, unique=True, index=True, nullable=True)
     balance = Column(Float, default=0.0, nullable=False)
     subscription_type = Column(Enum(SubscriptionType), default=SubscriptionType.NONE)
     subscription_expires_at = Column(DateTime, nullable=True)

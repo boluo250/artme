@@ -21,8 +21,29 @@ class AccountViewModel: ObservableObject {
     private let paymentService = PaymentService.shared
     
     var userId: String? {
-        // TODO: 从用户认证系统获取
         UserDefaults.standard.string(forKey: "userId")
+    }
+    
+    var phoneNumber: String? {
+        UserDefaults.standard.string(forKey: "phoneNumber")
+    }
+    
+    var isLoggedIn: Bool {
+        userId != nil
+    }
+    
+    var maskedPhoneNumber: String {
+        guard let phone = phoneNumber, phone.count >= 4 else {
+            return "已登录"
+        }
+        let suffix = phone.suffix(4)
+        return "手机号尾号 \(suffix)"
+    }
+    
+    /// 当前积分文案（将 balance 视作积分）
+    var pointsText: String {
+        let points = Int(balance.rounded())
+        return "\(points)"
     }
     
     func loadAccountInfo() async {
@@ -122,5 +143,29 @@ struct RechargeResponse: Codable {
     let message: String
     let paymentId: String
     let amount: Double
+}
+
+// MARK: - 手机号登录相关模型
+
+struct SendCodeRequest: Codable {
+    let phoneNumber: String
+}
+
+struct SendCodeResponse: Codable {
+    let message: String
+    let debugCode: String
+}
+
+struct VerifyCodeRequest: Codable {
+    let phoneNumber: String
+    let code: String
+}
+
+struct AuthUserResponse: Codable {
+    let userId: String
+    let phoneNumber: String
+    let balance: Double
+    let subscriptionType: String
+    let subscriptionExpiresAt: String?
 }
 
