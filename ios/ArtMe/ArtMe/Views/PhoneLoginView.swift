@@ -2,7 +2,8 @@
 //  PhoneLoginView.swift
 //  ArtMe
 //
-//  手机号登录视图（用于「我的」页面）
+//  原手机号登录视图（用于「我的」页面）
+//  需求：屏蔽手机号登录。保留此视图作为“账号入口”，提供游客继续使用能力。
 //
 
 import SwiftUI
@@ -10,60 +11,52 @@ import SwiftUI
 struct PhoneLoginView: View {
     @Environment(\.dismiss) private var dismiss
     
-    @State private var phoneNumber: String = ""
-    @State private var code: String = ""
-    @State private var isSendingCode = false
-    @State private var isVerifying = false
     @State private var errorMessage: String?
-    @State private var debugCode: String?
+    @State private var isCreatingGuest = false
     
-    private let apiService = APIService.shared
     var onLoginSuccess: (() -> Void)?
     
     var body: some View {
         NavigationView {
-            Form {
-                Section(header: Text("手机号")) {
-                    TextField("请输入手机号", text: $phoneNumber)
-                        .keyboardType(.numberPad)
+            VStack(spacing: 16) {
+                VStack(spacing: 8) {
+                    Text("手机号登录已下线")
+                        .font(.headline)
+                    Text("你仍可以使用游客模式继续体验（会在本机保存一个 userId，用于扣积分/查询余额）。")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, 20)
                 }
                 
-                Section(header: Text("验证码")) {
-                    HStack {
-                        TextField("请输入验证码", text: $code)
-                            .keyboardType(.numberPad)
-                        
-                        Button(action: {
-                            Task {
-                                await sendCode()
-                            }
-                        }) {
-                            if isSendingCode {
-                                ProgressView()
-                                    .progressViewStyle(CircularProgressViewStyle())
-                            } else {
-                                Text("获取验证码")
-                            }
+                Button {
+                    Task { await createGuest() }
+                } label: {
+                    if isCreatingGuest {
+                        HStack(spacing: 8) {
+                            ProgressView()
+                            Text("创建中…")
                         }
-                        .disabled(isSendingCode || phoneNumber.isEmpty)
-                    }
-                    
-                    if let debug = debugCode {
-                        Text("开发环境验证码：\(debug)")
-                            .font(.caption)
-                            .foregroundColor(.gray)
+                    } else {
+                        Text("继续使用（游客模式）")
+                            .bold()
                     }
                 }
+                .buttonStyle(.borderedProminent)
+                .disabled(isCreatingGuest)
                 
                 if let error = errorMessage {
-                    Section {
-                        Text(error)
-                            .foregroundColor(.red)
-                            .font(.footnote)
-                    }
+                    Text(error)
+                        .foregroundColor(.red)
+                        .font(.footnote)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, 20)
                 }
+                
+                Spacer()
             }
-            .navigationTitle("手机号登录")
+            .padding(.top, 24)
+            .navigationTitle("账号")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -71,59 +64,18 @@ struct PhoneLoginView: View {
                         dismiss()
                     }
                 }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button(action: {
-                        Task {
-                            await verifyCode()
-                        }
-                    }) {
-                        if isVerifying {
-                            ProgressView()
-                        } else {
-                            Text("登录")
-                                .bold()
-                        }
-                    }
-                    .disabled(phoneNumber.isEmpty || code.isEmpty || isVerifying)
-                }
             }
         }
     }
     
     // MARK: - Actions
     
-    private func sendCode() async {
-        guard !phoneNumber.isEmpty else { return }
-        isSendingCode = true
+    private func createGuest() async {
+        isCreatingGuest = true
         errorMessage = nil
         
         do {
-            let response: SendCodeResponse = try await apiService.sendLoginCode(phoneNumber: phoneNumber)
-            debugCode = response.debugCode
-        } catch {
-            if let apiError = error as? APIError {
-                errorMessage = apiError.errorDescription
-            } else {
-                errorMessage = error.localizedDescription
-            }
-        }
-        
-        isSendingCode = false
-    }
-    
-    private func verifyCode() async {
-        guard !phoneNumber.isEmpty, !code.isEmpty else { return }
-        isVerifying = true
-        errorMessage = nil
-        
-        do {
-            let auth: AuthUserResponse = try await apiService.verifyLoginCode(phoneNumber: phoneNumber, code: code)
-            
-            // 持久化用户 ID 与手机号，供 AccountView 使用
-            UserDefaults.standard.set(auth.userId, forKey: "userId")
-            UserDefaults.standard.set(auth.phoneNumber, forKey: "phoneNumber")
-            
-            // 登录成功后回调并关闭
+            _ = try await SessionManager.ensureGuestUser()
             onLoginSuccess?()
             dismiss()
         } catch {
@@ -134,7 +86,7 @@ struct PhoneLoginView: View {
             }
         }
         
-        isVerifying = false
+        isCreatingGuest = false
     }
 }
 

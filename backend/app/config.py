@@ -48,6 +48,21 @@ class Settings(BaseSettings):
     # 服务器配置
     HOST: str = "0.0.0.0"
     PORT: int = 8000
+
+    # -------------------------
+    # RQ / Redis 配置（用于并发后台生图）
+    # -------------------------
+    REDIS_URL: str = "redis://localhost:6379/0"
+    RQ_QUEUE_NAME: str = "artme_generate"
+    # 说明：RQ 本身是“单进程单并发”，并发通常通过启动多个 worker 实现；
+    # 该配置用于脚本一次性拉起多个 worker 进程。
+    RQ_WORKER_CONCURRENCY: int = 1
+    # 单个 Job 的默认超时（秒）
+    RQ_JOB_TIMEOUT: int = 600
+
+    # 可选：失败重试（由 enqueue 时传入 Retry 覆盖）
+    RQ_RETRY_MAX: int = 2
+    RQ_RETRY_INTERVAL: int = 10
     
     class Config:
         env_file = ".env"

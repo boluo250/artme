@@ -34,7 +34,7 @@ class AccountViewModel: ObservableObject {
     
     var maskedPhoneNumber: String {
         guard let phone = phoneNumber, phone.count >= 4 else {
-            return "已登录"
+            return "游客"
         }
         let suffix = phone.suffix(4)
         return "手机号尾号 \(suffix)"
@@ -121,6 +121,7 @@ struct TransactionResponse: Codable, Identifiable {
     let amount: Double
     let description: String?
     let status: String
+    let relatedTaskId: String?
     let createdAt: Date
 }
 
@@ -143,22 +144,6 @@ struct RechargeResponse: Codable {
     let message: String
     let paymentId: String
     let amount: Double
-}
-
-// MARK: - 手机号登录相关模型
-
-struct SendCodeRequest: Codable {
-    let phoneNumber: String
-}
-
-struct SendCodeResponse: Codable {
-    let message: String
-    let debugCode: String
-}
-
-struct VerifyCodeRequest: Codable {
-    let phoneNumber: String
-    let code: String
 }
 
 struct AuthUserResponse: Codable {

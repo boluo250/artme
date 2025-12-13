@@ -185,7 +185,8 @@ struct TransactionRow: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text(transaction.description ?? transaction.transactionType)
                     .font(.subheadline)
-                Text(transaction.createdAt, style: .relative)
+                // 交易时间：前端展示到“分钟”即可（不显示秒）
+                Text(transaction.createdAt, format: .dateTime.year().month().day().hour().minute())
                     .font(.caption)
                     .foregroundColor(.secondary)
             }

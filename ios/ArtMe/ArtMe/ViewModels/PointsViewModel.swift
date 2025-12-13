@@ -1,0 +1,59 @@
+import Foundation
+import SwiftUI
+import Combine
+
+@MainActor
+final class PointsViewModel: ObservableObject {
+    @Published var balance: Double = 0
+    @Published var transactions: [TransactionResponse] = []
+    @Published var isLoading: Bool = false
+    @Published var errorMessage: String?
+
+    private let apiService = APIService.shared
+
+    private var userId: String? {
+        UserDefaults.standard.string(forKey: "userId")
+    }
+
+    func load() async {
+        let userId: String
+        do {
+            userId = try await SessionManager.ensureGuestUser()
+        } catch {
+            errorMessage = "创建游客账号失败: \(error.localizedDescription)"
+            return
+        }
+
+        isLoading = true
+        errorMessage = nil
+        defer { isLoading = false }
+
+        do {
+            let balanceResponse: [String: Double] = try await apiService.request(
+                endpoint: Constants.API.account + "/balance?user_id=\(userId)",
+                method: "GET"
+            )
+            balance = balanceResponse["balance"] ?? 0.0
+
+            transactions = try await apiService.request(
+                endpoint: Constants.API.account + "/transactions?user_id=\(userId)&limit=100&offset=0",
+                method: "GET"
+            )
+        } catch {
+            errorMessage = "加载积分明细失败: \(error.localizedDescription)"
+        }
+    }
+
+    var pointsText: String {
+        "\(Int(balance.rounded()))"
+    }
+
+    /// 扣分记录（只看 consume，amount 为负数）
+    var consumeTransactions: [TransactionResponse] {
+        transactions
+            .filter { $0.transactionType.lowercased() == "consume" }
+            .sorted { $0.createdAt > $1.createdAt }
+    }
+}
+
+

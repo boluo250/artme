@@ -17,10 +17,12 @@ class GenerationTask(Base):
     style_id = Column(String, nullable=True)
     category = Column(String, nullable=True)
     subcategory = Column(String, nullable=True)
+    # 任务状态与结果
     status = Column(String, default="pending", index=True)  # pending/processing/completed/failed
     image_urls = Column(Text, nullable=True)  # JSON 字符串存储图片 URL 数组
     error = Column(Text, nullable=True)
     notify_on_complete = Column(Boolean, default=False)
+
     created_at = Column(DateTime, server_default=func.now())
     updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now())
 

@@ -41,6 +41,7 @@ class TransactionResponse(BaseModel):
     amount: float
     description: Optional[str] = None
     status: str
+    related_task_id: Optional[str] = None
     created_at: datetime
     
     class Config:

@@ -6,7 +6,6 @@ from pydantic import BaseModel
 from typing import Optional, List
 import uuid
 import os
-import tempfile
 from datetime import datetime
 from pathlib import Path
 import json
@@ -14,11 +13,13 @@ from sqlalchemy.orm import Session
 from app.services.ai_service import ai_service
 from app.services.image_service import image_service
 from app.database import get_db
-from app.models.user import User, Transaction
+from app.models.user import User, SubscriptionType, Transaction
 from app.models.task import GenerationTask
 from app.api.account import GENERATE_IMAGE_COST
 from app.api.prompts import get_prompt_from_json
-from app.services.task_service import task_manager
+from app.services.billing_service import billing_service
+from app.services.rq_service import get_rq_queue
+from app.rq_jobs import generate_text_job, generate_upload_job
 import logging
 
 router = APIRouter()
@@ -62,6 +63,8 @@ class TaskStatusResponse(BaseModel):
     prompt: str
     image_urls: List[str] = []
     error: Optional[str] = None
+    # 本次任务实际消耗的积分（正数），从交易记录中计算
+    cost: Optional[float] = None
 
 
 class TaskListResponse(BaseModel):
@@ -70,7 +73,7 @@ class TaskListResponse(BaseModel):
     total: int
 
 
-def _to_task_status(task: GenerationTask) -> TaskStatusResponse:
+def _to_task_status(task: GenerationTask, db: Session) -> TaskStatusResponse:
     """内部转换工具"""
     image_urls: List[str] = []
     if task.image_urls:
@@ -78,12 +81,48 @@ def _to_task_status(task: GenerationTask) -> TaskStatusResponse:
             image_urls = json.loads(task.image_urls)
         except Exception:
             image_urls = []
+    # 从交易记录中推导本次任务的消费金额（积分）
+    cost: Optional[float] = None
+    try:
+        tx = (
+            db.query(Transaction)
+            .filter(
+                Transaction.related_task_id == task.id,
+                Transaction.transaction_type == "consume",
+            )
+            .order_by(Transaction.created_at.desc())
+            .first()
+        )
+        if tx is not None:
+            # amount 为负数，前端展示用正数
+            cost = abs(float(tx.amount))
+    except Exception:
+        cost = None
+
     return TaskStatusResponse(
         task_id=task.id,
         status=task.status,
         prompt=task.prompt,
         image_urls=image_urls,
         error=task.error,
+        cost=cost,
+    )
+
+def _has_active_subscription(user: User) -> bool:
+    try:
+        sub_type = (
+            user.subscription_type
+            if isinstance(user.subscription_type, SubscriptionType)
+            else SubscriptionType(str(user.subscription_type))
+        )
+    except Exception:
+        # 回退：如果存储不规范，就按字符串判断
+        sub_type = SubscriptionType.NONE if str(user.subscription_type) == "none" else SubscriptionType.WEEKLY
+
+    return (
+        sub_type != SubscriptionType.NONE
+        and user.subscription_expires_at is not None
+        and user.subscription_expires_at > datetime.now()
     )
 
 
@@ -93,7 +132,7 @@ async def get_task_status(task_id: str, db: Session = Depends(get_db)):
     task = db.query(GenerationTask).filter(GenerationTask.id == task_id).first()
     if not task:
         raise HTTPException(status_code=404, detail="任务不存在")
-    return _to_task_status(task)
+    return _to_task_status(task, db)
 
 
 @router.get("/generate/tasks", response_model=TaskListResponse)
@@ -118,7 +157,7 @@ async def list_tasks(
         .all()
     )
     return TaskListResponse(
-        tasks=[_to_task_status(task) for task in tasks],
+        tasks=[_to_task_status(task, db) for task in tasks],
         total=total,
     )
 
@@ -135,41 +174,9 @@ async def generate_image(request: GenerateRequest, db: Session = Depends(get_db)
     - **model**: 使用的大模型（默认dall-e-3）
     """
     try:
-        # 如果有用户ID，检查余额并扣费
-        if request.user_id:
-            user = db.query(User).filter(User.id == request.user_id).first()
-            if user:
-                # 检查是否有有效订阅
-                has_subscription = (
-                    user.subscription_type != "none" and
-                    user.subscription_expires_at and
-                    user.subscription_expires_at > datetime.now()
-                )
-                
-                if not has_subscription:
-                    # 检查余额
-                    if user.balance < GENERATE_IMAGE_COST:
-                        raise HTTPException(
-                            status_code=400,
-                            detail=f"余额不足，需要 {GENERATE_IMAGE_COST} 元"
-                        )
-                    
-                    # 扣除费用
-                    user.balance -= GENERATE_IMAGE_COST
-                    from app.models.user import Transaction
-                    transaction = Transaction(
-                        id=str(uuid.uuid4()),
-                        user_id=request.user_id,
-                        transaction_type="consume",
-                        amount=-GENERATE_IMAGE_COST,
-                        description="生成图像",
-                        status="completed"
-                    )
-                    db.add(transaction)
-                    db.commit()
-        
         # 创建任务记录
         task_id = str(uuid.uuid4())
+
         task = GenerationTask(
             id=task_id,
             user_id=request.user_id,
@@ -179,24 +186,71 @@ async def generate_image(request: GenerateRequest, db: Session = Depends(get_db)
             status="pending",
             notify_on_complete=request.notify_on_complete,
         )
+
+        tx_id: Optional[str] = None
+
+        # 如果有 user_id：始终创建 pending 预扣交易（订阅只负责发放积分，不免单）
+        if request.user_id:
+            user = db.query(User).filter(User.id == request.user_id).first()
+            if not user:
+                raise HTTPException(status_code=404, detail="用户不存在")
+
+            available = billing_service.get_available_balance(db, request.user_id)
+            if available < GENERATE_IMAGE_COST:
+                raise HTTPException(
+                    status_code=400,
+                    detail=f"余额不足，需要 {GENERATE_IMAGE_COST} 积分",
+                )
+
+            tx = billing_service.create_pending_consume_transaction(
+                db=db,
+                user_id=request.user_id,
+                task_id=task_id,
+                cost=GENERATE_IMAGE_COST,
+                description="生成图像（预扣）",
+            )
+            tx_id = tx.id
+
         db.add(task)
         db.commit()
         
-        # 入队后台处理
-        await task_manager.enqueue_text_task(
-            task_id=task_id,
-            prompt=request.prompt,
-            style_id=request.style_id,
-            width=request.width,
-            height=request.height,
-            model=request.model,
-        )
+        # 投递到 RQ 队列
+        try:
+            from rq import Retry  # lazy import
+
+            queue = get_rq_queue()
+            queue.enqueue(
+                generate_text_job,
+                task_id=task_id,
+                user_id=request.user_id,
+                transaction_id=tx_id,
+                prompt=request.prompt,
+                style_id=request.style_id,
+                width=request.width,
+                height=request.height,
+                model=request.model,
+                retry=Retry(max=2, interval=[10, 30]),
+                job_timeout=600,
+            )
+        except Exception as e:  # noqa: BLE001
+            # 关键：队列投递失败时，需要取消预扣并将任务标记为失败，避免 pending 预扣“冻结余额”
+            try:
+                task.status = "failed"
+                task.error = f"投递队列失败: {e}"
+                if tx_id:
+                    tx = db.query(Transaction).filter(Transaction.id == tx_id).first()
+                    if tx is not None and tx.status == "pending":
+                        billing_service.cancel_pending_transaction(db=db, tx=tx, reason=str(e))
+                db.commit()
+            except Exception:
+                db.rollback()
+            raise HTTPException(status_code=500, detail=f"投递队列失败（请确认已安装 rq/redis 并启动 Redis）: {e}")
         
         return GenerateResponse(
             image_url=None,
             task_id=task_id,
             status="pending",
-            prompt=request.prompt
+            prompt=request.prompt,
         )
     
     except ValueError as e:
@@ -239,38 +293,6 @@ async def generate_image_with_upload(
                 detail="文件必须是图片格式"
             )
         
-        # 如果有用户ID，检查余额并扣费
-        if user_id:
-            user = db.query(User).filter(User.id == user_id).first()
-            if user:
-                # 检查是否有有效订阅
-                has_subscription = (
-                    user.subscription_type != "none" and
-                    user.subscription_expires_at and
-                    user.subscription_expires_at > datetime.now()
-                )
-                
-                if not has_subscription:
-                    # 检查余额
-                    if user.balance < GENERATE_IMAGE_COST:
-                        raise HTTPException(
-                            status_code=400,
-                            detail=f"余额不足，需要 {GENERATE_IMAGE_COST} 元"
-                        )
-                    
-                    # 扣除费用
-                    user.balance -= GENERATE_IMAGE_COST
-                    transaction = Transaction(
-                        id=str(uuid.uuid4()),
-                        user_id=user_id,
-                        transaction_type="consume",
-                        amount=-GENERATE_IMAGE_COST,
-                        description="生成图像（图片上传）",
-                        status="completed"
-                    )
-                    db.add(transaction)
-                    db.commit()
-        
         # 保存上传的图片到持久临时文件，供后台任务使用
         temp_dir = Path(image_service.upload_dir) / "tmp"
         temp_dir.mkdir(parents=True, exist_ok=True)
@@ -298,7 +320,7 @@ async def generate_image_with_upload(
             )
             
         logger.info(f"从 JSON 配置文件中获取 prompt: {final_prompt[:50]}...")
-        
+
         # 创建任务记录
         task = GenerationTask(
             id=task_id,
@@ -310,18 +332,63 @@ async def generate_image_with_upload(
             status="pending",
             notify_on_complete=notify_on_complete,
         )
+
+        tx_id: Optional[str] = None
+        if user_id:
+            user = db.query(User).filter(User.id == user_id).first()
+            if not user:
+                raise HTTPException(status_code=404, detail="用户不存在")
+
+            # 无论是否有订阅，均按次扣积分；订阅只负责发放积分
+            available = billing_service.get_available_balance(db, user_id)
+            if available < GENERATE_IMAGE_COST:
+                raise HTTPException(
+                    status_code=400,
+                    detail=f"余额不足，需要 {GENERATE_IMAGE_COST} 积分",
+                )
+            tx = billing_service.create_pending_consume_transaction(
+                db=db,
+                user_id=user_id,
+                task_id=task_id,
+                cost=GENERATE_IMAGE_COST,
+                description="生成图像（图片上传预扣）",
+            )
+            tx_id = tx.id
+
         db.add(task)
         db.commit()
 
-        # 入队后台处理
-        await task_manager.enqueue_upload_task(
-            task_id=task_id,
-            prompt=final_prompt,
-            image_path=str(temp_file_path),
-            size=size,
-            watermark=watermark,
-            max_images=max_images,
-        )
+        # 投递到 RQ 队列
+        try:
+            from rq import Retry  # lazy import
+
+            queue = get_rq_queue()
+            queue.enqueue(
+                generate_upload_job,
+                task_id=task_id,
+                user_id=user_id,
+                transaction_id=tx_id,
+                prompt=final_prompt,
+                image_path=str(temp_file_path),
+                size=size,
+                watermark=watermark,
+                max_images=max_images,
+                retry=Retry(max=2, interval=[10, 30]),
+                job_timeout=600,
+            )
+        except Exception as e:  # noqa: BLE001
+            # 关键：队列投递失败时，需要取消预扣并将任务标记为失败，避免 pending 预扣“冻结余额”
+            try:
+                task.status = "failed"
+                task.error = f"投递队列失败: {e}"
+                if tx_id:
+                    tx = db.query(Transaction).filter(Transaction.id == tx_id).first()
+                    if tx is not None and tx.status == "pending":
+                        billing_service.cancel_pending_transaction(db=db, tx=tx, reason=str(e))
+                db.commit()
+            except Exception:
+                db.rollback()
+            raise HTTPException(status_code=500, detail=f"投递队列失败（请确认已安装 rq/redis 并启动 Redis）: {e}")
         
         # 立即返回排队结果，并附带「上传图片预览」URL，供前端在 pending 阶段展示缩略图
         try:
@@ -340,7 +407,7 @@ async def generate_image_with_upload(
             prompt=final_prompt,
             status="pending",
             usage=None,
-            error=None
+            error=None,
         )
     
     except HTTPException:

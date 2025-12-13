@@ -16,12 +16,14 @@ from sqlalchemy.orm import Session
 from passlib.context import CryptContext
 import jwt
 from app.config import settings
+from app.services.billing_service import billing_service
 
 router = APIRouter()
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 # 计费配置
-GENERATE_IMAGE_COST = 1.0  # 每次生成图像的费用
+# 每次生成图像的费用（单位：积分）
+GENERATE_IMAGE_COST = 5.0
 WEEKLY_SUBSCRIPTION_PRICE = 9.9
 MONTHLY_SUBSCRIPTION_PRICE = 29.9
 
@@ -184,31 +186,33 @@ async def consume_balance(
     db: Session = Depends(get_db)
 ):
     """扣除余额（用于图像生成等消费）"""
+    if amount <= 0:
+        raise HTTPException(status_code=400, detail="amount 必须为正数")
+
     user = db.query(User).filter(User.id == user_id).first()
-    
     if not user:
         raise HTTPException(status_code=404, detail="用户不存在")
-    
-    # 检查余额
-    if user.balance < amount:
+
+    # 统一口径：用 available_balance（考虑 pending 预扣）做校验
+    available = billing_service.get_available_balance(db, user_id)
+    if available < amount:
         raise HTTPException(status_code=400, detail="余额不足")
-    
-    # 扣除余额
-    user.balance -= amount
-    
-    # 创建交易记录
-    transaction = Transaction(
-        id=str(uuid.uuid4()),
+
+    # 统一扣费链路：创建 pending 预扣 -> 立即结算
+    tx = billing_service.create_pending_consume_transaction(
+        db=db,
         user_id=user_id,
-        transaction_type="consume",
-        amount=-amount,
-        description=description,
-        status="completed"
+        task_id=str(uuid.uuid4()),
+        cost=float(amount),
+        description=description or "手动扣费（预扣）",
     )
-    
-    db.add(transaction)
     db.commit()
-    
+
+    # 结算（使用 PG 行锁保证并发安全）
+    billing_service.settle_pending_consume_transaction(db=db, tx=tx)
+    db.commit()
+
+    db.refresh(user)
     return {"message": "扣费成功", "new_balance": user.balance}
 
 

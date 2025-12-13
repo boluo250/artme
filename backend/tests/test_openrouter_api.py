@@ -3,6 +3,12 @@
 测试 OpenRouter API 的脚本
 模拟前端请求，直接调用 ai_service 接口
 """
+import pytest
+
+# 这是一个“手动集成测试脚本”，依赖外部网络/API Key/本地图片资源。
+# 为避免在常规 pytest/CI 环境中失败，这里默认跳过。
+pytest.skip("跳过 OpenRouter 集成测试（需手动运行脚本并配置环境/API Key/图片资源）", allow_module_level=True)
+
 import asyncio
 import os
 import sys

@@ -6,6 +6,7 @@ import asyncio
 import base64
 import os
 import datetime
+from urllib.parse import urlsplit
 from pathlib import Path
 from typing import Optional, Dict, Any, List
 from app.config import settings
@@ -14,6 +15,53 @@ from app.services.image_service import image_service
 import logging
 
 logger = logging.getLogger(__name__)
+
+def _redact_proxy_url(value: str) -> str:
+    """
+    仅用于打印代理/URL 的“安全摘要”：
+    - 去掉用户名/密码、路径、query、fragment
+    - 只保留 scheme://host:port
+    """
+    try:
+        v = (value or "").strip()
+        if not v:
+            return ""
+        parts = urlsplit(v)
+        host = parts.hostname or ""
+        port = f":{parts.port}" if parts.port else ""
+        scheme = parts.scheme or ""
+        if scheme and host:
+            return f"{scheme}://{host}{port}"
+        # 兜底：不解析时避免把敏感信息原样打出来
+        return "<set>"
+    except Exception:
+        return "<set>"
+
+
+def _proxy_env_snapshot() -> Dict[str, str]:
+    """
+    返回当前进程可见的代理相关环境变量（已脱敏），便于定位 httpx 是否走代理。
+    """
+    keys = [
+        "HTTP_PROXY",
+        "HTTPS_PROXY",
+        "ALL_PROXY",
+        "NO_PROXY",
+        "http_proxy",
+        "https_proxy",
+        "all_proxy",
+        "no_proxy",
+    ]
+    snap: Dict[str, str] = {}
+    for k in keys:
+        v = os.environ.get(k)
+        if v:
+            if k.lower() == "no_proxy":
+                # NO_PROXY 一般不含敏感信息，保留原样但截断长度
+                snap[k] = v[:200]
+            else:
+                snap[k] = _redact_proxy_url(v)
+    return snap
 
 
 class AIService:
@@ -285,6 +333,16 @@ class AIService:
             
             # 记录请求信息（不记录敏感信息）
             logger.info(f"调用 OpenRouter API: 模型={self.openrouter_model}, prompt长度={len(prompt)}")
+            # 记录网络/代理环境（用于排查 ConnectError / 代理问题）
+            try:
+                proxy_env = _proxy_env_snapshot()
+                if proxy_env:
+                    logger.info("OpenRouter 网络环境: trust_env=%s proxy_env=%s", True, proxy_env)
+                else:
+                    logger.info("OpenRouter 网络环境: trust_env=%s proxy_env=<empty>", True)
+            except Exception:
+                logger.info("OpenRouter 网络环境: trust_env=%s proxy_env=<unavailable>", True)
+            logger.info("OpenRouter endpoint=%s", _redact_proxy_url(self.openrouter_endpoint) or "<set>")
             
             # 调用 OpenRouter API
             async with httpx.AsyncClient(timeout=120.0) as client:
@@ -400,8 +458,28 @@ class AIService:
                 "output_dir": output_dir if 'output_dir' in locals() else None
             }
         except httpx.RequestError as e:
-            error_msg = f"请求错误: {str(e)}"
-            logger.error(f"OpenRouter API 调用失败: {error_msg}", exc_info=True)
+            # httpx.ConnectError / ReadTimeout 等通常属于 RequestError；其中部分异常 str(e) 为空，需用 repr(e)
+            req = getattr(e, "request", None)
+            req_url = None
+            req_method = None
+            try:
+                if req is not None:
+                    req_url = str(getattr(req, "url", None))
+                    req_method = str(getattr(req, "method", None))
+            except Exception:
+                pass
+
+            # __cause__ 往往带更底层的异常信息（如 TLS/代理连接失败）
+            cause = getattr(e, "__cause__", None)
+            cause_repr = repr(cause) if cause is not None else ""
+
+            error_msg = f"请求错误: {type(e).__name__}: {e!r}"
+            if req_method or req_url:
+                error_msg += f" | request={req_method or '?'} {req_url or '?'}"
+            if cause_repr:
+                error_msg += f" | cause={cause_repr}"
+
+            logger.error("OpenRouter API 调用失败: %s", error_msg, exc_info=True)
             return {
                 "success": False,
                 "error": error_msg,

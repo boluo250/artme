@@ -17,7 +17,6 @@ from app.middleware import (
 
 # 导入 API 路由
 from app.api import generate, styles, account, subscription, static, prompts, auth, user_info
-from app.services.task_service import task_manager
 
 # -------------------------
 # 日志配置
@@ -61,8 +60,11 @@ app.add_exception_handler(Exception, general_exception_handler)
 
 @app.on_event("startup")
 async def startup_event():
-    """应用启动时初始化任务队列"""
-    await task_manager.start()
+    """
+    应用启动事件
+    说明：生图任务已迁移到 RQ/Redis，由独立 worker 进程消费队列。
+    """
+    return
 
 
 @app.get("/")

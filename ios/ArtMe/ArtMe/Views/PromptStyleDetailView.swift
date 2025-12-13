@@ -323,6 +323,8 @@ struct ImageGenerationView: View {
     @State private var showSaveSuccess = false
     /// 是否展示「制作完成后通知我 / 返回」相关选项（延迟 3 秒后出现）
     @State private var showNotifyOptions = false
+    /// 返回到上一页（通常回到「立即制作」风格详情页），由上层控制导航栈
+    let onBackToPrevious: (() -> Void)?
     /// 回到首页的回调，由上层控制导航栈
     let onReturnHome: (() -> Void)?
     @EnvironmentObject private var taskStatusManager: TaskStatusManager
@@ -472,13 +474,12 @@ struct ImageGenerationView: View {
         .navigationBarBackButtonHidden(true)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
-                // 延迟 3 秒后才出现左上返回按钮，效果与「制作完成后通知我，返回首页」一致
-                if showNotifyOptions {
-                    Button {
-                        handleNotifyAndReturnHome()
-                    } label: {
-                        Image(systemName: "chevron.left")
+                // 仅在展示生成结果时出现：与右上「返回首页」保持一致的出现时机
+                if !viewModel.generatedImages.isEmpty {
+                    BackButton {
+                        onBackToPrevious?()
                     }
+                    .contentShape(Rectangle())
                 }
             }
             ToolbarItem(placement: .navigationBarTrailing) {

@@ -27,6 +27,11 @@ class GenerateViewModel: ObservableObject {
     
     private let apiService = APIService.shared
     private let imageService = ImageService.shared
+
+    /// 当前登录用户 ID（用于扣积分）
+    private var currentUserId: String? {
+        UserDefaults.standard.string(forKey: "userId")
+    }
     
     /// 写入一条「制作中」历史记录
     /// - Parameters:
@@ -79,6 +84,15 @@ class GenerateViewModel: ObservableObject {
             errorMessage = "请先选择风格"
             return
         }
+
+        // 未登录时自动创建游客账号，避免“无入口登录导致主功能不可用”
+        let userId: String
+        do {
+            userId = try await SessionManager.ensureGuestUser()
+        } catch {
+            errorMessage = "创建游客账号失败: \(error.localizedDescription)"
+            return
+        }
         
         isLoading = true
         errorMessage = nil
@@ -90,7 +104,7 @@ class GenerateViewModel: ObservableObject {
                 image: uploadedImage,
                 category: promptStyle.category,
                 subcategory: promptStyle.subcategory,
-                userId: nil,
+                userId: userId,
                 size: "2K",
                 watermark: true,
                 maxImages: 5,

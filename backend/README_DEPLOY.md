@@ -94,7 +94,7 @@ alembic upgrade head
 
 2. **性能**
    - 使用 PostgreSQL 替代 SQLite
-   - 配置 Redis 缓存
+   - 配置 Redis（RQ 队列/缓存）
    - 使用 CDN 提供静态文件
    - 配置负载均衡
 
@@ -103,4 +103,32 @@ alembic upgrade head
    - 设置健康检查
    - 监控 API 响应时间
    - 设置告警
+
+## RQ Worker（并发后台生图）
+
+说明：`/api/v1/generate` 与 `/api/v1/generate/with-image` 会把任务投递到 Redis/RQ，
+需要独立启动 worker 才会真正执行生图。
+
+### 1) 启动 Redis
+
+- 本地可直接使用 `redis-server`
+- 或使用 Docker：
+
+```bash
+docker run -d --name artme-redis -p 6379:6379 redis:7
+```
+
+### 2) 启动 Worker
+
+推荐使用脚本（支持一次拉起多个 worker 进程）：
+
+```bash
+python scripts/run_rq_workers.py
+```
+
+也可以手动启动单个 worker（示例）：
+
+```bash
+rq worker artme_generate
+```
 

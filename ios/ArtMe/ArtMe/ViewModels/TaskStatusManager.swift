@@ -27,15 +27,22 @@ final class TaskStatusManager: ObservableObject {
     @Published var shownCompletedTaskIds: [String] = []
     
     private var isPolling = false
+    /// 本次 App 启动时间：用于冷启动时避免轮询“旧 pending 任务”，节省请求与启动时间
+    private let sessionStartAt: Date
     
     init() {
+        self.sessionStartAt = Date()
         let t0 = Date()
         StartupProfiler.mark("TaskStatusManager.init 开始")
         // 启动时读取一次本地历史：
         // 将当前已有任务视为「旧任务」，它们的完成状态不再弹出 Toast，
         // 只对之后新增的任务弹出「制作完成」Toast。
         let historyManager = HistoryManager()
-        shownCompletedTaskIds = historyManager.history.map { $0.id }
+        let oldTaskIds = historyManager.history.map { $0.id }
+        // 旧任务：不弹「制作完成」Toast
+        shownCompletedTaskIds = oldTaskIds
+        // 旧任务：也不在冷启动时弹「制作中...」Toast（避免误导/打扰）
+        shownPendingTaskIds = oldTaskIds
         let t1 = Date()
         let cost = String(format: "%.3f", t1.timeIntervalSince(t0))
         Log.info("⏱ [Startup] TaskStatusManager.init 读取历史耗时 \(cost)s, history count = \(historyManager.history.count)")
@@ -103,6 +110,10 @@ final class TaskStatusManager: ObservableObject {
         
         // 逐个遍历所有 pending / processing 任务
         for item in historySnapshot {
+            // 冷启动优化：旧任务（启动前创建）不轮询，避免无意义请求拖慢启动
+            guard item.createdAt >= sessionStartAt else {
+                continue
+            }
             let localStatus = item.status ?? "pending"
             guard localStatus == "pending" || localStatus == "processing" else {
                 continue
@@ -113,7 +124,7 @@ final class TaskStatusManager: ObservableObject {
             
             do {
                 let statusResponse = try await APIService.shared.fetchTaskStatus(taskId: item.id)
-                Log.debug("[TaskStatus] status response id=\(item.id), status=\(statusResponse.status), imageUrls=\(statusResponse.imageUrls)")
+                Log.debug("[TaskStatus] status response localId=\(item.id), responseTaskId=\(statusResponse.taskId), status=\(statusResponse.status), imageUrls=\(statusResponse.imageUrls)")
                 
                 switch statusResponse.status {
                 case "completed":
@@ -190,6 +201,8 @@ final class TaskStatusManager: ObservableObject {
         
         // 根据最新本地历史情况，找到仍然处于制作中的最新一条任务
         let latestPending = historyManager.history.first { historyItem in
+            // 冷启动优化：只关心本次会话的新任务
+            guard historyItem.createdAt >= sessionStartAt else { return false }
             guard let status = historyItem.status else { return false }
             return status == "pending" || status == "processing"
         }
@@ -207,6 +220,11 @@ final class TaskStatusManager: ObservableObject {
     /// 只在每个任务第一次进入「制作中」状态时，展示一次约 5 秒的「正在制作」Toast
     /// 且仅针对用户勾选了「制作完成后通知我」的任务
     private func showPendingToastIfNeeded(for item: GeneratedImageHistory) {
+        // 冷启动优化：旧任务不弹「制作中...」Toast
+        guard item.createdAt >= sessionStartAt else {
+            Log.debug("[TaskStatus] skip pending toast, old task before sessionStartAt, id=\(item.id), createdAt=\(item.createdAt)")
+            return
+        }
         // 只有用户勾选了通知的任务才展示「正在制作」提示
         guard item.notifyOnComplete == true else {
             Log.debug("[TaskStatus] skip pending toast, notifyOnComplete != true, id=\(item.id)")

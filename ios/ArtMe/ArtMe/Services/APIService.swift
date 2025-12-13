@@ -121,6 +121,83 @@ class APIService {
             
             let decoder = JSONDecoder()
             decoder.keyDecodingStrategy = .convertFromSnakeCase
+            // 后端 datetime 默认是 ISO8601 字符串；这里做兼容解析（含/不含毫秒、以及 timestamp）
+            decoder.dateDecodingStrategy = .custom { decoder in
+                let container = try decoder.singleValueContainer()
+
+                // 1) 数字时间戳（秒/毫秒）
+                if let timestamp = try? container.decode(Double.self) {
+                    if timestamp > 1_000_000_000_000 { // ms
+                        return Date(timeIntervalSince1970: timestamp / 1000.0)
+                    }
+                    return Date(timeIntervalSince1970: timestamp)
+                }
+
+                // 2) ISO8601 字符串
+                let dateString = try container.decode(String.self)
+
+                // a) 带毫秒
+                let isoWithFraction = ISO8601DateFormatter()
+                isoWithFraction.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+                if let date = isoWithFraction.date(from: dateString) {
+                    return date
+                }
+
+                // b) 不带毫秒
+                let iso = ISO8601DateFormatter()
+                iso.formatOptions = [.withInternetDateTime]
+                if let date = iso.date(from: dateString) {
+                    return date
+                }
+
+                // c) 兼容后端可能返回的“无时区 + 微秒”格式：
+                //    e.g. 2025-12-12T16:31:31.583376
+                //    以及其他常见变体（带/不带时区、毫秒/微秒）
+                func makeDateFormatter(_ format: String, timeZone: TimeZone) -> DateFormatter {
+                    let formatter = DateFormatter()
+                    formatter.locale = Locale(identifier: "en_US_POSIX")
+                    formatter.calendar = Calendar(identifier: .gregorian)
+                    formatter.timeZone = timeZone
+                    formatter.dateFormat = format
+                    return formatter
+                }
+
+                // 无时区字符串：按 UTC 解释（避免不同设备时区导致显示不一致）
+                let utc = TimeZone(secondsFromGMT: 0) ?? .current
+
+                let noTZCandidates = [
+                    "yyyy-MM-dd'T'HH:mm:ss.SSSSSS",
+                    "yyyy-MM-dd'T'HH:mm:ss.SSS",
+                    "yyyy-MM-dd'T'HH:mm:ss"
+                ]
+                for format in noTZCandidates {
+                    let df = makeDateFormatter(format, timeZone: utc)
+                    if let date = df.date(from: dateString) {
+                        return date
+                    }
+                }
+
+                // 带时区字符串（ISO8601DateFormatter 可能不支持 6 位小数，这里兜底）
+                let tzCandidates = [
+                    "yyyy-MM-dd'T'HH:mm:ss.SSSSSSXXXXX",
+                    "yyyy-MM-dd'T'HH:mm:ss.SSSXXXXX",
+                    "yyyy-MM-dd'T'HH:mm:ssXXXXX",
+                    "yyyy-MM-dd'T'HH:mm:ss.SSSSSSZ",
+                    "yyyy-MM-dd'T'HH:mm:ss.SSSZ",
+                    "yyyy-MM-dd'T'HH:mm:ssZ"
+                ]
+                for format in tzCandidates {
+                    let df = makeDateFormatter(format, timeZone: utc)
+                    if let date = df.date(from: dateString) {
+                        return date
+                    }
+                }
+
+                throw DecodingError.dataCorruptedError(
+                    in: container,
+                    debugDescription: "无法解析日期: \(dateString)"
+                )
+            }
             
             do {
                 let result = try decoder.decode(T.self, from: data)
@@ -327,31 +404,13 @@ class APIService {
         return try await self.request(endpoint: endpoint)
     }
 
-    // MARK: - 手机号登录 & 用户信息
+    // MARK: - 账号（游客模式）
     
-    func sendLoginCode(phoneNumber: String) async throws -> SendCodeResponse {
-        let payload = SendCodeRequest(phoneNumber: phoneNumber)
-        let encoder = JSONEncoder()
-        encoder.keyEncodingStrategy = .convertToSnakeCase
-        let body = try encoder.encode(payload)
-        
+    /// 创建/获取游客账号（服务端会创建一个不绑定手机号的用户并返回 userId）
+    func createGuestUser() async throws -> AuthUserResponse {
         return try await self.request(
-            endpoint: Constants.API.auth + "/send_code",
-            method: "POST",
-            body: body
-        )
-    }
-    
-    func verifyLoginCode(phoneNumber: String, code: String) async throws -> AuthUserResponse {
-        let payload = VerifyCodeRequest(phoneNumber: phoneNumber, code: code)
-        let encoder = JSONEncoder()
-        encoder.keyEncodingStrategy = .convertToSnakeCase
-        let body = try encoder.encode(payload)
-        
-        return try await self.request(
-            endpoint: Constants.API.auth + "/verify_code",
-            method: "POST",
-            body: body
+            endpoint: Constants.API.auth + "/guest",
+            method: "POST"
         )
     }
 }

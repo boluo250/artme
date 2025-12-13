@@ -23,7 +23,7 @@ class User(Base):
     username = Column(String, unique=True, index=True, nullable=False)
     email = Column(String, unique=True, index=True, nullable=False)
     hashed_password = Column(String, nullable=False)
-    # 新增：手机号登录字段（可选），用于「我的」页面手机号登录
+    # 手机号字段（可选）。历史兼容：早期用于「手机号登录」，目前该登录方式已下线。
     phone_number = Column(String, unique=True, index=True, nullable=True)
     balance = Column(Float, default=0.0, nullable=False)
     subscription_type = Column(Enum(SubscriptionType), default=SubscriptionType.NONE)
@@ -47,7 +47,14 @@ class Transaction(Base):
     amount = Column(Float, nullable=False)
     description = Column(String, nullable=True)
     payment_id = Column(String, nullable=True)  # 支付网关返回的ID
-    status = Column(String, default="pending")  # "pending", "completed", "failed"
+    # 交易状态：
+    # - pending: 预扣/待确认
+    # - completed: 已结算
+    # - canceled: 已取消（失败不扣费）
+    # - failed: 失败（例如支付失败）
+    status = Column(String, default="pending")  # "pending", "completed", "canceled", "failed"
+    # 关联的生成任务（用于幂等扣费/退款）
+    related_task_id = Column(String, index=True, nullable=True)
     created_at = Column(DateTime, server_default=func.now())
     
     # 关系

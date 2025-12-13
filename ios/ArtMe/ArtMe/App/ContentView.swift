@@ -81,6 +81,14 @@ struct ContentView: View {
                             ImageGenerationView(
                                 style: style,
                                 uploadedImage: image
+                            , onBackToPrevious: {
+                                // 返回到「立即制作」风格详情页：从 generation -> uploadPreview -> promptDetail
+                                if path.count >= 2 {
+                                    path.removeLast(2)
+                                } else if path.count >= 1 {
+                                    path.removeLast()
+                                }
+                            }
                             ) {
                                 // 直接清空导航栈，返回首页
                                 path = NavigationPath()

@@ -1,124 +1,111 @@
-//
-//  AccountView.swift
-//  ArtMe
-//
-//  账户视图
-//
-
 import SwiftUI
 
 struct AccountView: View {
     @StateObject private var viewModel = AccountViewModel()
     @State private var showPaymentView = false
-    @State private var showLoginView = false
-    
+
     var body: some View {
-        NavigationView {
-            List {
-                // 顶部三个核心行：登录 / 会员入口 / 我的积分
-                Section {
-                    // 第 1 行：手机号登录
-                    HStack {
-                        Text("账号")
-                            .textStyleBody()
-                        Spacer()
+        NavigationStack {
+            ScrollView {
+                VStack(spacing: 12) {
+
+                    // MARK: - 账号、会员、积分
+                    ProfileCard {
+                        // 会员
+                        ProfileRow(
+                            icon: "crown.fill",
+                            title: "立即开通会员",
+                            subtitle: "即将上线",
+                            onTap: {}
+                        )
+
+                        // 积分
                         if viewModel.isLoggedIn {
-                            Text(viewModel.maskedPhoneNumber)
-                                .foregroundColor(.purple600)
-                                .font(.themeHeadline)
+                            ProfileRow(
+                                icon: "star.circle",
+                                title: "我的积分",
+                                iconColor: .purple600,
+                                trailing: {
+                                    Text(viewModel.pointsText)
+                                        .foregroundColor(.purple600)
+                                        .font(.themeHeadline)
+                                },
+                                destination: {
+                                    PointsView()
+                                }
+                            )
                         } else {
-                            Button("登录") {
-                                showLoginView = true
+                            ProfileRow(
+                                icon: "star.circle",
+                                title: "我的积分",
+                                iconColor: .purple600,
+                                trailing: {
+                                    Text("查看")
+                                        .foregroundColor(.secondary)
+                                },
+                                destination: { PointsView() }
+                            )
+                        }
+                    }
+
+                    // MARK: - 我的作品集
+                    ProfileCard {
+                        ProfileRow(
+                            icon: "photo.on.rectangle",
+                            title: "我的作品集"
+                        ) {
+                            PortfolioView()
+                        }
+                    }
+
+                    // MARK: - 当前订阅
+                    if let subscription = viewModel.subscription {
+                        ProfileCard {
+                            ProfileRow(
+                                icon: "checkmark.seal",
+                                title: subscription.subscriptionType,
+                                subtitle: "到期时间：\(subscription.expiresAt.formatted(date: .abbreviated, time: .omitted))"
+                            )
+                        }
+                    }
+
+                    // MARK: - 交易记录
+                    ProfileCard {
+                        if viewModel.transactions.isEmpty {
+                            ProfileRow(
+                                icon: "doc.text",
+                                title: "交易记录",
+                                subtitle: "暂无交易记录"
+                            )
+                        } else {
+                            ForEach(viewModel.transactions.prefix(5)) { transaction in
+                                TransactionRow(transaction: transaction)
+                                    .padding(.horizontal, 16)
                             }
-                            .foregroundColor(.purple600)
-                            .font(.themeHeadline)
                         }
+                    }
+
+                    // MARK: - 欢迎评分、分享好友
+                    ProfileCard {
+                        ProfileRow(icon: "heart", title: "欢迎评分", iconColor: .gray)
+                        ProfileRow(icon: "paperplane", title: "分享给好友", iconColor: .gray)
                     }
                     
-                    // 第 2 行：立即开通会员（预留）
-                    HStack {
-                        Text("会员")
-                            .textStyleBody()
-                        Spacer()
-                        Text("立即开通会员（即将上线）")
-                            .textStyleCaption()
-                            .foregroundColor(.gray)
+                    // MARK: - 联系客服
+                    ProfileCard {
+                        ProfileRow(icon: "message", title: "联系客服", iconColor: .gray)
                     }
                     
-                    // 第 3 行：我的积分
-                    HStack {
-                        Text("我的积分")
-                            .textStyleBody()
-                        Spacer()
-                        if viewModel.isLoggedIn {
-                            Text(viewModel.pointsText)
-                                .foregroundColor(.purple600)
-                                .font(.themeHeadline)
-                        } else {
-                            Text("--  登录后可查看")
-                                .textStyleCaption()
-                                .foregroundColor(.gray)
-                        }
+                    // MARK: - 设置
+                    ProfileCard {
+                        ProfileRow(icon: "gearshape", title: "设置", iconColor: .gray)
                     }
                 }
-                
-                Section("账户信息") {
-                    HStack {
-                        Text("余额（积分）")
-                            .textStyleBody()
-                        Spacer()
-                        if viewModel.isLoading {
-                            ProgressView()
-                                .purpleProgressIndicator()
-                        } else {
-                            Text("\(String(format: "%.0f", viewModel.balance))")
-                                .foregroundColor(.purple600)
-                                .font(.themeHeadline)
-                        }
-                    }
-                }
-                
-                Section("操作") {
-                    Button(action: {
-                        showPaymentView = true
-                    }) {
-                        Label("充值与订阅", systemImage: "creditcard")
-                            .foregroundColor(.purple600)
-                    }
-                }
-                
-                Section("我的作品") {
-                    NavigationLink {
-                        PortfolioView()
-                    } label: {
-                        Label("我的作品集", systemImage: "photo.stack")
-                            .foregroundColor(.purple600)
-                    }
-                }
-                
-                if let subscription = viewModel.subscription {
-                    Section("当前订阅") {
-                        VStack(alignment: .leading, spacing: Spacing.sm) {
-                            Text(subscription.subscriptionType)
-                                .textStyleHeadline()
-                            Text("到期时间: \(subscription.expiresAt, style: .date)")
-                                .textStyleCaption()
-                        }
-                    }
-                }
-                
-                Section("交易记录") {
-                    if viewModel.transactions.isEmpty {
-                        Text("暂无交易记录")
-                            .textColorSecondary()
-                    } else {
-                        ForEach(viewModel.transactions.prefix(5)) { transaction in
-                            TransactionRow(transaction: transaction)
-                        }
-                    }
-                }
+                .padding(.horizontal, 20)
+                .padding(.vertical, 20)
             }
-            .navigationTitle("我的")
+            .background(Color(hex: "#F5F5F5"))
+            .navigationTitle("个人中心")
             .navigationBarTitleDisplayMode(.large)
             .task {
                 await viewModel.loadAccountInfo()
@@ -126,22 +113,6 @@ struct AccountView: View {
             .sheet(isPresented: $showPaymentView) {
                 PaymentView()
             }
-            .sheet(isPresented: $showLoginView, onDismiss: {
-                Task {
-                    await viewModel.loadAccountInfo()
-                }
-            }) {
-                PhoneLoginView {
-                    Task {
-                        await viewModel.loadAccountInfo()
-                    }
-                }
-            }
         }
     }
 }
-
-#Preview {
-    AccountView()
-}
-

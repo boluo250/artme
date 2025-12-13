@@ -16,6 +16,9 @@ from app.models.user import User, Transaction, SubscriptionType
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
+# 手机号登录开关：按需求“屏蔽手机号登录”时置为 True
+PHONE_LOGIN_DISABLED = True
+
 # 简单的内存验证码存储，仅用于开发环境和测试
 _CODE_TTL_MINUTES = 10
 _phone_codes: Dict[str, Tuple[str, datetime]] = {}
@@ -73,6 +76,8 @@ async def send_code(payload: SendCodeRequest) -> SendCodeResponse:
 
     未来接入短信服务时，可以在这里调用第三方短信网关。
     """
+    if PHONE_LOGIN_DISABLED:
+        raise HTTPException(status_code=410, detail="手机号登录已下线")
     code = _generate_code()
     _store_code(payload.phone_number, code)
     return SendCodeResponse(message="验证码已发送（开发环境）", debug_code=code)
@@ -88,6 +93,8 @@ async def verify_code(
     - 首次登录手机号：创建用户并发放 5 积分
     - 已存在用户：直接返回账户与订阅信息
     """
+    if PHONE_LOGIN_DISABLED:
+        raise HTTPException(status_code=410, detail="手机号登录已下线")
     if not _verify_code(payload.phone_number, payload.code):
         raise HTTPException(status_code=400, detail="验证码错误或已过期")
 
@@ -142,6 +149,54 @@ async def verify_code(
     return AuthUserResponse(
         user_id=user.id,
         phone_number=user.phone_number or payload.phone_number,
+        balance=user.balance,
+        subscription_type=user.subscription_type.value
+        if isinstance(user.subscription_type, SubscriptionType)
+        else str(user.subscription_type),
+        subscription_expires_at=user.subscription_expires_at,
+    )
+
+
+@router.post("/guest", response_model=AuthUserResponse)
+async def guest_login(db: Session = Depends(get_db)) -> AuthUserResponse:
+    """
+    游客模式：创建一个不绑定手机号的用户并返回 user_id。
+
+    目的：
+    - 在屏蔽手机号登录后，仍能让 iOS 端拿到 user_id 进行扣积分/查询余额等操作。
+    """
+    user_id = str(uuid.uuid4())
+    username = f"guest_{user_id[:8]}"
+    placeholder_email = f"{user_id}@guest.artme.local"
+
+    user = User(
+        id=user_id,
+        username=username,
+        email=placeholder_email,
+        # 使用随机密码占位，游客不使用密码登录
+        hashed_password=str(uuid.uuid4()),
+        phone_number=None,
+        balance=5.0,  # 与原手机号首次登录奖励保持一致
+        subscription_type=SubscriptionType.NONE,
+    )
+    db.add(user)
+
+    bonus_tx = Transaction(
+        id=str(uuid.uuid4()),
+        user_id=user_id,
+        transaction_type="bonus",
+        amount=5.0,
+        description="游客注册奖励 5 积分",
+        status="completed",
+    )
+    db.add(bonus_tx)
+
+    db.commit()
+    db.refresh(user)
+
+    return AuthUserResponse(
+        user_id=user.id,
+        phone_number="",
         balance=user.balance,
         subscription_type=user.subscription_type.value
         if isinstance(user.subscription_type, SubscriptionType)
