@@ -24,6 +24,7 @@ class GenerateViewModel: ObservableObject {
     @Published var selectedPromptStyle: PromptStyle?
     @Published var uploadedImage: UIImage?
     @Published var generatedImages: [GeneratedImage] = []
+    @Published var showPaymentSheet: Bool = false
     
     private let apiService = APIService.shared
     private let imageService = ImageService.shared
@@ -137,6 +138,19 @@ class GenerateViewModel: ObservableObject {
                 // 由 TaskStatusManager 统一轮询所有 pending 任务并触发 Toast。
             } else {
                 errorMessage = response.error ?? "生成失败"
+            }
+        } catch let apiError as APIError {
+            switch apiError {
+            case .backendError(let code, let message, _, _):
+                if code == "AVATAR_CREDITS_INSUFFICIENT" || code == "AVATAR_SUBSCRIPTION_REQUIRED" {
+                    // 触发充值/订阅弹窗
+                    showPaymentSheet = true
+                    errorMessage = message
+                } else {
+                    errorMessage = "生成失败: \(message)"
+                }
+            default:
+                errorMessage = "生成失败: \(apiError.localizedDescription)"
             }
         } catch {
             errorMessage = "生成失败: \(error.localizedDescription)"

@@ -11,6 +11,9 @@ from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from typing import List, Optional, Dict, Any
 
+from app.utils.api_response import api_ok, api_error
+from app.utils.error_codes import AvatarErrorCode
+
 router = APIRouter()
 logger = logging.getLogger(__name__)
 
@@ -419,7 +422,7 @@ def load_prompts_from_json() -> tuple[List[PromptStyle], Optional[AppConfig]]:
     return prompts, app_config
 
 
-@router.get("/prompts/list", response_model=PromptStyleListResponse)
+@router.get("/prompts/list")
 async def list_prompts():
     """
     获取图片列表
@@ -430,11 +433,14 @@ async def list_prompts():
     prompts, app_config = load_prompts_from_json()
     version = get_data_version()
     
-    return PromptStyleListResponse(
-        prompts=prompts,
-        total=len(prompts),
-        version=version,
-        app_config=app_config
+    # 注意：PromptStyle 里包含 URL 字段，直接 model_dump 即可
+    return api_ok(
+        data={
+            "prompts": [p.model_dump() for p in prompts],
+            "total": len(prompts),
+            "version": version,
+            "app_config": app_config.model_dump() if app_config is not None else None,
+        }
     )
 
 
@@ -445,9 +451,7 @@ async def get_prompts_version():
     
     返回JSON配置文件的最后修改时间作为版本号
     """
-    return {
-        "version": get_data_version()
-    }
+    return api_ok(data={"version": get_data_version()})
 
 
 @router.get("/prompts/{category}/{subcategory}/thumbnail")

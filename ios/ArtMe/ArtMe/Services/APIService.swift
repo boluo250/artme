@@ -12,6 +12,7 @@ enum APIError: Error, LocalizedError {
     case invalidURL
     case invalidResponse
     case httpError(Int)
+    case backendError(code: String, message: String, httpStatus: Int, requestId: String?)
     case decodingError(Error)
     case networkError(Error)
     
@@ -23,6 +24,13 @@ enum APIError: Error, LocalizedError {
             return "服务器响应格式无效"
         case .httpError(let statusCode):
             return "服务器错误 (HTTP \(statusCode))"
+        case .backendError(let code, let message, let httpStatus, let requestId):
+            var text = message
+            text += "\n(\(code), HTTP \(httpStatus))"
+            if let requestId, !requestId.isEmpty {
+                text += "\nrequest_id: \(requestId)"
+            }
+            return text
         case .decodingError(let error):
             return "数据解析失败: \(error.localizedDescription)"
         case .networkError(let error):
@@ -57,6 +65,30 @@ enum APIError: Error, LocalizedError {
         }
     }
 }
+
+// MARK: - 统一 Envelope
+
+struct APIEnvelope<T: Decodable>: Decodable {
+    let success: Bool
+    let requestId: String?
+    let data: T?
+    let error: BackendErrorPayload?
+    
+    enum CodingKeys: String, CodingKey {
+        case success
+        case requestId = "request_id"
+        case data
+        case error
+    }
+}
+
+struct BackendErrorPayload: Decodable {
+    let code: String
+    let message: String
+}
+
+/// 用于解码失败时的占位 data
+struct EmptyData: Decodable {}
 
 class APIService {
     static let shared = APIService()
@@ -110,14 +142,6 @@ class APIService {
             }
             
             Log.debug("📥 Response: HTTP \(httpResponse.statusCode)")
-            
-            guard (200...299).contains(httpResponse.statusCode) else {
-                Log.error("❌ HTTP Error: \(httpResponse.statusCode)")
-                if let responseString = String(data: data, encoding: .utf8) {
-                    Log.debug("Response body: \(responseString)")
-                }
-                throw APIError.httpError(httpResponse.statusCode)
-            }
             
             let decoder = JSONDecoder()
             decoder.keyDecodingStrategy = .convertFromSnakeCase
@@ -198,11 +222,42 @@ class APIService {
                     debugDescription: "无法解析日期: \(dateString)"
                 )
             }
+
+            // 非 2xx：优先尝试按统一 envelope 解析出 error.code/message
+            if !(200...299).contains(httpResponse.statusCode) {
+                Log.error("❌ HTTP Error: \(httpResponse.statusCode)")
+                if let responseString = String(data: data, encoding: .utf8) {
+                    Log.debug("Response body: \(responseString.prefix(800))")
+                }
+                if let env = try? decoder.decode(APIEnvelope<EmptyData>.self, from: data),
+                   let err = env.error {
+                    throw APIError.backendError(
+                        code: err.code,
+                        message: err.message,
+                        httpStatus: httpResponse.statusCode,
+                        requestId: env.requestId
+                    )
+                }
+                throw APIError.httpError(httpResponse.statusCode)
+            }
             
             do {
-                let result = try decoder.decode(T.self, from: data)
-                Log.debug("✅ Decode success")
-                return result
+                // 2xx：统一按 envelope 解包 data
+                let envelope = try decoder.decode(APIEnvelope<T>.self, from: data)
+                if let payload = envelope.data {
+                    Log.debug("✅ Decode success")
+                    return payload
+                }
+                // 极少数情况：success=true 但 data 为空（后端 bug/兼容问题）
+                if let err = envelope.error {
+                    throw APIError.backendError(
+                        code: err.code,
+                        message: err.message,
+                        httpStatus: httpResponse.statusCode,
+                        requestId: envelope.requestId
+                    )
+                }
+                throw APIError.invalidResponse
             } catch {
                 Log.error("❌ Decode error: \(error)")
                 if let responseString = String(data: data, encoding: .utf8) {
@@ -381,12 +436,37 @@ class APIService {
             }
             
             guard (200...299).contains(httpResponse.statusCode) else {
+                // multipart: 也按 envelope 解码错误（如果后端返回了统一结构）
+                let decoder = JSONDecoder()
+                decoder.keyDecodingStrategy = .convertFromSnakeCase
+                if let env = try? decoder.decode(APIEnvelope<EmptyData>.self, from: data),
+                   let err = env.error {
+                    throw APIError.backendError(
+                        code: err.code,
+                        message: err.message,
+                        httpStatus: httpResponse.statusCode,
+                        requestId: env.requestId
+                    )
+                }
                 throw APIError.httpError(httpResponse.statusCode)
             }
             
             let decoder = JSONDecoder()
             decoder.keyDecodingStrategy = .convertFromSnakeCase
-            return try decoder.decode(GenerateImageWithUploadResponse.self, from: data)
+            // multipart 成功：解 envelope
+            let envelope = try decoder.decode(APIEnvelope<GenerateImageWithUploadResponse>.self, from: data)
+            if let payload = envelope.data {
+                return payload
+            }
+            if let err = envelope.error {
+                throw APIError.backendError(
+                    code: err.code,
+                    message: err.message,
+                    httpStatus: httpResponse.statusCode,
+                    requestId: envelope.requestId
+                )
+            }
+            throw APIError.invalidResponse
             
         } catch let error as DecodingError {
             throw APIError.decodingError(error)

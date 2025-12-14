@@ -496,6 +496,9 @@ struct ImageGenerationView: View {
         } message: {
             Text("图片已保存到相册")
         }
+        .sheet(isPresented: $viewModel.showPaymentSheet) {
+            PaymentView()
+        }
         .onAppear {
             // 页面出现时自动开始生成，但不自动返回首页
             if !hasStartedGeneration {

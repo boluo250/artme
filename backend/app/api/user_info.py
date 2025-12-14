@@ -10,6 +10,9 @@ from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models.user import User, SubscriptionType
 
+from app.utils.api_response import api_ok, api_error
+from app.utils.error_codes import AvatarErrorCode
+
 
 router = APIRouter(prefix="/user", tags=["user"])
 
@@ -22,7 +25,7 @@ class UserMeResponse(BaseModel):
     subscription_expires_at: Optional[str] = None
 
 
-@router.get("/me", response_model=UserMeResponse)
+@router.get("/me")
 async def get_me(user_id: str, db: Session = Depends(get_db)) -> UserMeResponse:
     """
     获取「我的」页面所需的基础用户信息：
@@ -33,7 +36,7 @@ async def get_me(user_id: str, db: Session = Depends(get_db)) -> UserMeResponse:
     """
     user = db.query(User).filter(User.id == user_id).first()
     if not user:
-        raise HTTPException(status_code=404, detail="用户不存在")
+        return api_error(status_code=404, code=AvatarErrorCode.NOT_FOUND, message="用户不存在")
 
     subscription_type = (
         user.subscription_type.value
@@ -41,7 +44,7 @@ async def get_me(user_id: str, db: Session = Depends(get_db)) -> UserMeResponse:
         else str(user.subscription_type)
     )
 
-    return UserMeResponse(
+    data = UserMeResponse(
         id=user.id,
         phone_number=user.phone_number,
         balance=user.balance,
@@ -51,6 +54,7 @@ async def get_me(user_id: str, db: Session = Depends(get_db)) -> UserMeResponse:
             if user.subscription_expires_at is not None
             else None
         ),
-    )
+    ).model_dump()
+    return api_ok(data=data)
 
 

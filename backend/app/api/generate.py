@@ -1,7 +1,7 @@
 """
 图像生成 API
 """
-from fastapi import APIRouter, HTTPException, Depends, UploadFile, File, Form, Query
+from fastapi import APIRouter, HTTPException, Depends, UploadFile, File, Form, Query, status
 from pydantic import BaseModel
 from typing import Optional, List
 import uuid
@@ -21,6 +21,9 @@ from app.services.billing_service import billing_service
 from app.services.rq_service import get_rq_queue
 from app.rq_jobs import generate_text_job, generate_upload_job
 import logging
+
+from app.utils.api_response import api_ok, api_error
+from app.utils.error_codes import AvatarErrorCode
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
@@ -126,16 +129,24 @@ def _has_active_subscription(user: User) -> bool:
     )
 
 
-@router.get("/generate/tasks/{task_id}", response_model=TaskStatusResponse)
+@router.get("/generate/tasks/{task_id}")
 async def get_task_status(task_id: str, db: Session = Depends(get_db)):
     """查询单个任务状态"""
     task = db.query(GenerationTask).filter(GenerationTask.id == task_id).first()
     if not task:
-        raise HTTPException(status_code=404, detail="任务不存在")
-    return _to_task_status(task, db)
+        return api_error(status_code=status.HTTP_404_NOT_FOUND, code=AvatarErrorCode.NOT_FOUND, message="任务不存在或已过期")
+
+    data = _to_task_status(task, db).model_dump()
+    # “查询成功但生成失败”：HTTP 200 + success=true + data.status=failed + failure
+    if data.get("status") == "failed":
+        data["failure"] = {
+            "code": AvatarErrorCode.GENERATION_FAILED,
+            "message": "生成失败，请重试",
+        }
+    return api_ok(data=data)
 
 
-@router.get("/generate/tasks", response_model=TaskListResponse)
+@router.get("/generate/tasks")
 async def list_tasks(
     user_id: Optional[str] = Query(None, description="按用户筛选"),
     status: Optional[str] = Query(None, description="按状态筛选"),
@@ -156,13 +167,14 @@ async def list_tasks(
         .limit(limit)
         .all()
     )
-    return TaskListResponse(
-        tasks=[_to_task_status(task, db) for task in tasks],
-        total=total,
-    )
+    data = {
+        "tasks": [_to_task_status(task, db).model_dump() for task in tasks],
+        "total": total,
+    }
+    return api_ok(data=data)
 
 
-@router.post("/generate", response_model=GenerateResponse)
+@router.post("/generate")
 async def generate_image(request: GenerateRequest, db: Session = Depends(get_db)):
     """
     生成卡通头像
@@ -193,13 +205,14 @@ async def generate_image(request: GenerateRequest, db: Session = Depends(get_db)
         if request.user_id:
             user = db.query(User).filter(User.id == request.user_id).first()
             if not user:
-                raise HTTPException(status_code=404, detail="用户不存在")
+                return api_error(status_code=status.HTTP_404_NOT_FOUND, code=AvatarErrorCode.NOT_FOUND, message="用户不存在")
 
             available = billing_service.get_available_balance(db, request.user_id)
             if available < GENERATE_IMAGE_COST:
-                raise HTTPException(
-                    status_code=400,
-                    detail=f"余额不足，需要 {GENERATE_IMAGE_COST} 积分",
+                return api_error(
+                    status_code=status.HTTP_402_PAYMENT_REQUIRED,
+                    code=AvatarErrorCode.CREDITS_INSUFFICIENT,
+                    message=f"积分不足，需要 {GENERATE_IMAGE_COST} 积分",
                 )
 
             tx = billing_service.create_pending_consume_transaction(
@@ -245,21 +258,24 @@ async def generate_image(request: GenerateRequest, db: Session = Depends(get_db)
             except Exception:
                 db.rollback()
             raise HTTPException(status_code=500, detail=f"投递队列失败（请确认已安装 rq/redis 并启动 Redis）: {e}")
-        
-        return GenerateResponse(
-            image_url=None,
-            task_id=task_id,
-            status="pending",
-            prompt=request.prompt,
+        # 如果走到这里，说明任务已受理（异步）。MVP：保持 200（兼容现有 iOS），但返回 envelope。
+        return api_ok(
+            data={
+                "image_url": None,
+                "task_id": task_id,
+                "status": "pending",
+                "prompt": request.prompt,
+            },
+            status_code=status.HTTP_200_OK,
         )
     
     except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+        return api_error(status_code=status.HTTP_400_BAD_REQUEST, code=AvatarErrorCode.INVALID_ARGUMENT, message=str(e))
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"图像生成失败: {str(e)}")
+        return api_error(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, code=AvatarErrorCode.INTERNAL_ERROR, message=f"图像生成失败: {str(e)}")
 
 
-@router.post("/generate/with-image", response_model=GenerateImageResponse)
+@router.post("/generate/with-image")
 async def generate_image_with_upload(
     image: UploadFile = File(..., description="上传的图片文件"),
     category: str = Form(..., description="Category（用于查找对应的 prompt）"),
@@ -288,10 +304,7 @@ async def generate_image_with_upload(
     try:
         # 验证文件类型
         if not image.content_type or not image.content_type.startswith("image/"):
-            raise HTTPException(
-                status_code=400,
-                detail="文件必须是图片格式"
-            )
+            return api_error(status_code=status.HTTP_400_BAD_REQUEST, code=AvatarErrorCode.UNSUPPORTED_INPUT, message="文件必须是图片格式")
         
         # 保存上传的图片到持久临时文件，供后台任务使用
         temp_dir = Path(image_service.upload_dir) / "tmp"
@@ -307,17 +320,11 @@ async def generate_image_with_upload(
         # 从 JSON 配置文件中获取 prompt
         prompt_data = get_prompt_from_json(category, subcategory)
         if not prompt_data:
-            raise HTTPException(
-                status_code=404,
-                detail=f"未找到对应的 prompt: {category}/{subcategory}"
-            )
+            return api_error(status_code=status.HTTP_404_NOT_FOUND, code=AvatarErrorCode.NOT_FOUND, message=f"未找到对应的 prompt: {category}/{subcategory}")
         
         final_prompt = prompt_data.get("prompt", "")
         if not final_prompt:
-             raise HTTPException(
-                status_code=404,
-                detail=f"Category {category}/{subcategory} 中未配置 prompt"
-            )
+            return api_error(status_code=status.HTTP_404_NOT_FOUND, code=AvatarErrorCode.NOT_FOUND, message=f"Category {category}/{subcategory} 中未配置 prompt")
             
         logger.info(f"从 JSON 配置文件中获取 prompt: {final_prompt[:50]}...")
 
@@ -337,14 +344,15 @@ async def generate_image_with_upload(
         if user_id:
             user = db.query(User).filter(User.id == user_id).first()
             if not user:
-                raise HTTPException(status_code=404, detail="用户不存在")
+                return api_error(status_code=status.HTTP_404_NOT_FOUND, code=AvatarErrorCode.NOT_FOUND, message="用户不存在")
 
             # 无论是否有订阅，均按次扣积分；订阅只负责发放积分
             available = billing_service.get_available_balance(db, user_id)
             if available < GENERATE_IMAGE_COST:
-                raise HTTPException(
-                    status_code=400,
-                    detail=f"余额不足，需要 {GENERATE_IMAGE_COST} 积分",
+                return api_error(
+                    status_code=status.HTTP_402_PAYMENT_REQUIRED,
+                    code=AvatarErrorCode.CREDITS_INSUFFICIENT,
+                    message=f"积分不足，需要 {GENERATE_IMAGE_COST} 积分",
                 )
             tx = billing_service.create_pending_consume_transaction(
                 db=db,
@@ -400,14 +408,16 @@ async def generate_image_with_upload(
             # 回退：如果路径转换失败，则不返回预览图，保持兼容
             preview_images = []
         
-        return GenerateImageResponse(
-            success=True,
-            images=preview_images,
-            task_id=task_id,
-            prompt=final_prompt,
-            status="pending",
-            usage=None,
-            error=None,
+        return api_ok(
+            data={
+                "success": True,
+                "images": preview_images,
+                "task_id": task_id,
+                "prompt": final_prompt,
+                "status": "pending",
+                "usage": None,
+                "error": None,
+            }
         )
     
     except HTTPException:
@@ -428,16 +438,13 @@ async def generate_image_with_upload(
                 pass
         
         logger.error(f"生成图片失败: {str(e)}")
-        raise HTTPException(
-            status_code=500,
-            detail=f"图片生成失败: {str(e)}"
-        )
+        return api_error(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, code=AvatarErrorCode.INTERNAL_ERROR, message=f"图片生成失败: {str(e)}")
 
 
 @router.get("/models")
 async def list_models():
     """获取可用的大模型列表"""
     models = await ai_service.list_models()
-    return {"models": models}
+    return api_ok(data={"models": models})
 
 

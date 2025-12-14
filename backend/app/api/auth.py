@@ -12,6 +12,8 @@ from sqlalchemy.orm import Session
 
 from app.database import get_db
 from app.models.user import User, Transaction, SubscriptionType
+from app.utils.api_response import api_ok, api_error
+from app.utils.error_codes import AvatarErrorCode
 
 
 router = APIRouter(prefix="/auth", tags=["auth"])
@@ -69,7 +71,7 @@ def _verify_code(phone_number: str, code: str) -> bool:
     return stored_code == code
 
 
-@router.post("/send_code", response_model=SendCodeResponse)
+@router.post("/send_code")
 async def send_code(payload: SendCodeRequest) -> SendCodeResponse:
     """
     发送手机验证码（开发环境：直接返回 debug_code）
@@ -77,13 +79,14 @@ async def send_code(payload: SendCodeRequest) -> SendCodeResponse:
     未来接入短信服务时，可以在这里调用第三方短信网关。
     """
     if PHONE_LOGIN_DISABLED:
-        raise HTTPException(status_code=410, detail="手机号登录已下线")
+        # 兼容：返回结构化错误码，便于前端区分“功能下线”
+        return api_error(status_code=410, code=AvatarErrorCode.FEATURE_DISABLED, message="手机号登录已下线")
     code = _generate_code()
     _store_code(payload.phone_number, code)
-    return SendCodeResponse(message="验证码已发送（开发环境）", debug_code=code)
+    return api_ok(data=SendCodeResponse(message="验证码已发送（开发环境）", debug_code=code).model_dump())
 
 
-@router.post("/verify_code", response_model=AuthUserResponse)
+@router.post("/verify_code")
 async def verify_code(
     payload: VerifyCodeRequest,
     db: Session = Depends(get_db),
@@ -94,9 +97,9 @@ async def verify_code(
     - 已存在用户：直接返回账户与订阅信息
     """
     if PHONE_LOGIN_DISABLED:
-        raise HTTPException(status_code=410, detail="手机号登录已下线")
+        return api_error(status_code=410, code=AvatarErrorCode.FEATURE_DISABLED, message="手机号登录已下线")
     if not _verify_code(payload.phone_number, payload.code):
-        raise HTTPException(status_code=400, detail="验证码错误或已过期")
+        return api_error(status_code=400, code=AvatarErrorCode.INVALID_ARGUMENT, message="验证码错误或已过期")
 
     # 验证成功后消费掉验证码，防止重复使用
     _phone_codes.pop(payload.phone_number, None)
@@ -146,7 +149,8 @@ async def verify_code(
         if not user.is_active:
             raise HTTPException(status_code=403, detail="账户已被禁用")
 
-    return AuthUserResponse(
+    return api_ok(
+        data=AuthUserResponse(
         user_id=user.id,
         phone_number=user.phone_number or payload.phone_number,
         balance=user.balance,
@@ -154,10 +158,11 @@ async def verify_code(
         if isinstance(user.subscription_type, SubscriptionType)
         else str(user.subscription_type),
         subscription_expires_at=user.subscription_expires_at,
+        ).model_dump()
     )
 
 
-@router.post("/guest", response_model=AuthUserResponse)
+@router.post("/guest")
 async def guest_login(db: Session = Depends(get_db)) -> AuthUserResponse:
     """
     游客模式：创建一个不绑定手机号的用户并返回 user_id。
@@ -194,14 +199,16 @@ async def guest_login(db: Session = Depends(get_db)) -> AuthUserResponse:
     db.commit()
     db.refresh(user)
 
-    return AuthUserResponse(
-        user_id=user.id,
-        phone_number="",
-        balance=user.balance,
-        subscription_type=user.subscription_type.value
-        if isinstance(user.subscription_type, SubscriptionType)
-        else str(user.subscription_type),
-        subscription_expires_at=user.subscription_expires_at,
+    return api_ok(
+        data=AuthUserResponse(
+            user_id=user.id,
+            phone_number="",
+            balance=user.balance,
+            subscription_type=user.subscription_type.value
+            if isinstance(user.subscription_type, SubscriptionType)
+            else str(user.subscription_type),
+            subscription_expires_at=user.subscription_expires_at,
+        ).model_dump()
     )
 
 

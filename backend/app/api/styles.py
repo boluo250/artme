@@ -5,6 +5,9 @@ from fastapi import APIRouter, HTTPException, Query
 from pydantic import BaseModel
 from typing import List, Optional
 
+from app.utils.api_response import api_ok, api_error
+from app.utils.error_codes import AvatarErrorCode
+
 router = APIRouter()
 
 
@@ -25,7 +28,7 @@ class StyleListResponse(BaseModel):
     total: int
 
 
-@router.get("/styles/list", response_model=StyleListResponse)
+@router.get("/styles/list")
 async def list_styles(
     category: Optional[str] = Query(None, description="按类别筛选"),
     limit: int = Query(20, ge=1, le=100, description="返回数量限制"),
@@ -78,10 +81,10 @@ async def list_styles(
     total = len(styles)
     styles = styles[offset:offset + limit]
     
-    return StyleListResponse(styles=styles, total=total)
+    return api_ok(data={"styles": [s.model_dump() for s in styles], "total": total})
 
 
-@router.get("/styles/search", response_model=StyleListResponse)
+@router.get("/styles/search")
 async def search_styles(
     q: str = Query(..., description="搜索关键词"),
     limit: int = Query(20, ge=1, le=100)
@@ -115,13 +118,15 @@ async def search_styles(
         or any(query_lower in tag.lower() for tag in s.tags)
     ]
     
-    return StyleListResponse(
-        styles=matched_styles[:limit],
-        total=len(matched_styles)
+    return api_ok(
+        data={
+            "styles": [s.model_dump() for s in matched_styles[:limit]],
+            "total": len(matched_styles),
+        }
     )
 
 
-@router.get("/styles/{style_id}", response_model=Style)
+@router.get("/styles/{style_id}")
 async def get_style(style_id: str):
     """
     获取单个风格的详细信息
@@ -131,7 +136,7 @@ async def get_style(style_id: str):
     # TODO: 从数据库加载风格数据
     # 示例数据
     if style_id == "style_001":
-        return Style(
+        style = Style(
             id="style_001",
             name="日系卡通",
             description="日系风格的卡通头像",
@@ -140,6 +145,7 @@ async def get_style(style_id: str):
             prompt_template="anime style, kawaii, {user_prompt}, high quality",
             tags=["anime", "kawaii", "cute"]
         )
+        return api_ok(data=style.model_dump())
     
-    raise HTTPException(status_code=404, detail="风格不存在")
+    return api_error(status_code=404, code=AvatarErrorCode.NOT_FOUND, message="风格不存在")
 

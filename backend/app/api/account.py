@@ -1,7 +1,7 @@
 """
 账户管理 API
 """
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, status
 from pydantic import BaseModel
 from typing import List
 import uuid
@@ -17,6 +17,8 @@ from passlib.context import CryptContext
 import jwt
 from app.config import settings
 from app.services.billing_service import billing_service
+from app.utils.api_response import api_ok, api_error
+from app.utils.error_codes import AvatarErrorCode
 
 router = APIRouter()
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -53,7 +55,7 @@ async def register(user_data: UserCreate, db: Session = Depends(get_db)):
     ).first()
     
     if existing_user:
-        raise HTTPException(status_code=400, detail="用户名或邮箱已存在")
+        return api_error(status_code=status.HTTP_400_BAD_REQUEST, code=AvatarErrorCode.INVALID_ARGUMENT, message="用户名或邮箱已存在")
     
     # 创建新用户
     user = User(
@@ -68,7 +70,7 @@ async def register(user_data: UserCreate, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(user)
     
-    return {"message": "注册成功", "user_id": user.id}
+    return api_ok(data={"message": "注册成功", "user_id": user.id})
 
 
 @router.post("/login")
@@ -77,29 +79,31 @@ async def login(login_data: UserLogin, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.username == login_data.username).first()
     
     if not user or not verify_password(login_data.password, user.hashed_password):
-        raise HTTPException(status_code=401, detail="用户名或密码错误")
+        return api_error(status_code=status.HTTP_401_UNAUTHORIZED, code=AvatarErrorCode.UNAUTHORIZED, message="用户名或密码错误")
     
     if not user.is_active:
-        raise HTTPException(status_code=403, detail="账户已被禁用")
+        return api_error(status_code=status.HTTP_403_FORBIDDEN, code=AvatarErrorCode.FORBIDDEN, message="账户已被禁用")
     
     token = create_access_token(user.id)
     
-    return {
-        "access_token": token,
-        "token_type": "bearer",
-        "user": UserResponse.from_orm(user)
-    }
+    return api_ok(
+        data={
+            "access_token": token,
+            "token_type": "bearer",
+            "user": UserResponse.from_orm(user).model_dump(),
+        }
+    )
 
 
-@router.get("/balance", response_model=dict)
+@router.get("/balance")
 async def get_balance(user_id: str, db: Session = Depends(get_db)):
     """查询账户余额"""
     user = db.query(User).filter(User.id == user_id).first()
     
     if not user:
-        raise HTTPException(status_code=404, detail="用户不存在")
+        return api_error(status_code=status.HTTP_404_NOT_FOUND, code=AvatarErrorCode.NOT_FOUND, message="用户不存在")
     
-    return {"balance": user.balance}
+    return api_ok(data={"balance": user.balance})
 
 
 @router.post("/recharge")
@@ -112,7 +116,7 @@ async def recharge(
     user = db.query(User).filter(User.id == user_id).first()
     
     if not user:
-        raise HTTPException(status_code=404, detail="用户不存在")
+        return api_error(status_code=status.HTTP_404_NOT_FOUND, code=AvatarErrorCode.NOT_FOUND, message="用户不存在")
     
     # 创建支付订单
     from app.services.payment_service import payment_service
@@ -137,11 +141,13 @@ async def recharge(
     db.add(transaction)
     db.commit()
     
-    return {
-        "message": "充值订单已创建",
-        "payment_id": payment["payment_id"],
-        "amount": request.amount
-    }
+    return api_ok(
+        data={
+            "message": "充值订单已创建",
+            "payment_id": payment["payment_id"],
+            "amount": request.amount,
+        }
+    )
 
 
 @router.post("/recharge/callback")
@@ -156,10 +162,10 @@ async def recharge_callback(
     ).first()
     
     if not transaction:
-        raise HTTPException(status_code=404, detail="交易记录不存在")
+        return api_error(status_code=status.HTTP_404_NOT_FOUND, code=AvatarErrorCode.NOT_FOUND, message="交易记录不存在")
     
     if transaction.status != "pending":
-        return {"message": "交易已处理"}
+        return api_ok(data={"message": "交易已处理"})
     
     if status == "completed":
         # 更新用户余额
@@ -171,11 +177,11 @@ async def recharge_callback(
         
         db.commit()
         
-        return {"message": "充值成功", "new_balance": user.balance}
+        return api_ok(data={"message": "充值成功", "new_balance": user.balance})
     else:
         transaction.status = "failed"
         db.commit()
-        return {"message": "充值失败"}
+        return api_ok(data={"message": "充值失败"})
 
 
 @router.post("/consume")
@@ -187,16 +193,16 @@ async def consume_balance(
 ):
     """扣除余额（用于图像生成等消费）"""
     if amount <= 0:
-        raise HTTPException(status_code=400, detail="amount 必须为正数")
+        return api_error(status_code=status.HTTP_400_BAD_REQUEST, code=AvatarErrorCode.INVALID_ARGUMENT, message="amount 必须为正数")
 
     user = db.query(User).filter(User.id == user_id).first()
     if not user:
-        raise HTTPException(status_code=404, detail="用户不存在")
+        return api_error(status_code=status.HTTP_404_NOT_FOUND, code=AvatarErrorCode.NOT_FOUND, message="用户不存在")
 
     # 统一口径：用 available_balance（考虑 pending 预扣）做校验
     available = billing_service.get_available_balance(db, user_id)
     if available < amount:
-        raise HTTPException(status_code=400, detail="余额不足")
+        return api_error(status_code=status.HTTP_402_PAYMENT_REQUIRED, code=AvatarErrorCode.CREDITS_INSUFFICIENT, message="积分不足")
 
     # 统一扣费链路：创建 pending 预扣 -> 立即结算
     tx = billing_service.create_pending_consume_transaction(
@@ -213,10 +219,10 @@ async def consume_balance(
     db.commit()
 
     db.refresh(user)
-    return {"message": "扣费成功", "new_balance": user.balance}
+    return api_ok(data={"message": "扣费成功", "new_balance": user.balance})
 
 
-@router.get("/transactions", response_model=List[TransactionResponse])
+@router.get("/transactions")
 async def get_transactions(
     user_id: str,
     limit: int = 20,
@@ -228,7 +234,7 @@ async def get_transactions(
         Transaction.user_id == user_id
     ).order_by(Transaction.created_at.desc()).offset(offset).limit(limit).all()
     
-    return transactions
+    return api_ok(data=[TransactionResponse.from_orm(t).model_dump() for t in transactions])
 
 
 @router.post("/subscription")
@@ -241,7 +247,7 @@ async def create_subscription(
     user = db.query(User).filter(User.id == user_id).first()
     
     if not user:
-        raise HTTPException(status_code=404, detail="用户不存在")
+        return api_error(status_code=status.HTTP_404_NOT_FOUND, code=AvatarErrorCode.NOT_FOUND, message="用户不存在")
     
     # 确定订阅价格和时长
     if request.subscription_type == SubscriptionType.WEEKLY:
@@ -251,11 +257,11 @@ async def create_subscription(
         price = MONTHLY_SUBSCRIPTION_PRICE
         expires_at = datetime.now() + timedelta(days=30)
     else:
-        raise HTTPException(status_code=400, detail="无效的订阅类型")
+        return api_error(status_code=status.HTTP_400_BAD_REQUEST, code=AvatarErrorCode.INVALID_ARGUMENT, message="无效的订阅类型")
     
     # 检查余额
     if user.balance < price:
-        raise HTTPException(status_code=400, detail="余额不足")
+        return api_error(status_code=status.HTTP_402_PAYMENT_REQUIRED, code=AvatarErrorCode.CREDITS_INSUFFICIENT, message="积分不足")
     
     # 扣除费用
     user.balance -= price
@@ -289,29 +295,31 @@ async def create_subscription(
     db.add(transaction)
     db.commit()
     
-    return {
-        "message": "订阅成功",
-        "subscription": SubscriptionResponse.from_orm(subscription)
-    }
+    return api_ok(
+        data={
+            "message": "订阅成功",
+            "subscription": SubscriptionResponse.from_orm(subscription).model_dump(),
+        }
+    )
 
 
-@router.get("/subscription", response_model=SubscriptionResponse)
+@router.get("/subscription")
 async def get_subscription(user_id: str, db: Session = Depends(get_db)):
     """获取当前订阅信息"""
     user = db.query(User).filter(User.id == user_id).first()
     
     if not user:
-        raise HTTPException(status_code=404, detail="用户不存在")
+        return api_error(status_code=status.HTTP_404_NOT_FOUND, code=AvatarErrorCode.NOT_FOUND, message="用户不存在")
     
     if user.subscription_type == SubscriptionType.NONE:
-        raise HTTPException(status_code=404, detail="用户未订阅")
+        return api_error(status_code=status.HTTP_404_NOT_FOUND, code=AvatarErrorCode.NOT_FOUND, message="用户未订阅")
     
     # 检查订阅是否过期
     if user.subscription_expires_at and user.subscription_expires_at < datetime.now():
         user.subscription_type = SubscriptionType.NONE
         user.subscription_expires_at = None
         db.commit()
-        raise HTTPException(status_code=404, detail="订阅已过期")
+        return api_error(status_code=status.HTTP_404_NOT_FOUND, code=AvatarErrorCode.NOT_FOUND, message="订阅已过期")
     
     subscription = db.query(Subscription).filter(
         Subscription.user_id == user_id,
@@ -319,9 +327,9 @@ async def get_subscription(user_id: str, db: Session = Depends(get_db)):
     ).order_by(Subscription.created_at.desc()).first()
     
     if not subscription:
-        raise HTTPException(status_code=404, detail="订阅记录不存在")
+        return api_error(status_code=status.HTTP_404_NOT_FOUND, code=AvatarErrorCode.NOT_FOUND, message="订阅记录不存在")
     
-    return subscription
+    return api_ok(data=SubscriptionResponse.from_orm(subscription).model_dump())
 
 
 @router.post("/subscription/cancel")
@@ -330,7 +338,7 @@ async def cancel_subscription(user_id: str, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.id == user_id).first()
     
     if not user:
-        raise HTTPException(status_code=404, detail="用户不存在")
+        return api_error(status_code=status.HTTP_404_NOT_FOUND, code=AvatarErrorCode.NOT_FOUND, message="用户不存在")
     
     # 取消自动续费
     subscription = db.query(Subscription).filter(
@@ -342,4 +350,4 @@ async def cancel_subscription(user_id: str, db: Session = Depends(get_db)):
         subscription.auto_renew = False
         db.commit()
     
-    return {"message": "订阅已取消自动续费"}
+    return api_ok(data={"message": "订阅已取消自动续费"})
