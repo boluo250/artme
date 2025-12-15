@@ -63,6 +63,13 @@ class Settings(BaseSettings):
     # 可选：失败重试（由 enqueue 时传入 Retry 覆盖）
     RQ_RETRY_MAX: int = 2
     RQ_RETRY_INTERVAL: int = 10
+
+    # -------------------------
+    # Internal APIs (dev/preprod only)
+    # -------------------------
+    # A simple shared secret for enabling internal-only endpoints in DEBUG builds.
+    # Override via env var INTERNAL_API_TOKEN in local/.env when needed.
+    INTERNAL_API_TOKEN: str = "dev-internal-token"
     
     class Config:
         env_file = ".env"
@@ -70,4 +77,3 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
-

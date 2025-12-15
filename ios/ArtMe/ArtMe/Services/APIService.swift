@@ -96,6 +96,11 @@ class APIService {
     let baseURL: String  // 改为公开属性，以便错误处理中访问
     private let session: URLSession
     
+    #if DEBUG
+    // 内部调试 Token（对应后端 settings.INTERNAL_API_TOKEN）
+    private let QA_TOKEN = "dev-internal-token"
+    #endif
+    
     private init() {
         self.baseURL = Constants.apiBaseURL
         let config = URLSessionConfiguration.default
@@ -492,5 +497,35 @@ class APIService {
             endpoint: Constants.API.auth + "/guest",
             method: "POST"
         )
+    }
+    
+    // MARK: - Internal QA Helpers (DEBUG only)
+    
+    struct GrantPointsResp: Codable {
+        let userId: String
+        let granted: Double
+        let newBalance: Double
+        let transactionId: String
+    }
+
+    /// 发放测试积分（仅 DEBUG 构建可用）
+    func grantPointsQA(userId: String, amount: Double = 5) async throws -> GrantPointsResp {
+        #if DEBUG
+        let payload: [String: Any] = [
+            "user_id": userId,
+            "amount": amount,
+            "reason": "QA",
+            "request_id": UUID().uuidString,
+        ]
+        let body = try JSONSerialization.data(withJSONObject: payload)
+        return try await self.request(
+            endpoint: "/api/\(Constants.apiVersion)/internal/points/grant",
+            method: "POST",
+            body: body,
+            headers: ["X-Internal-Token": QA_TOKEN]
+        )
+        #else
+        throw APIError.invalidURL
+        #endif
     }
 }

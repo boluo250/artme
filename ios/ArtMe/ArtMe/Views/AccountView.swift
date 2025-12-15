@@ -69,21 +69,7 @@ struct AccountView: View {
                         }
                     }
 
-                    // MARK: - 交易记录
-                    ProfileCard {
-                        if viewModel.transactions.isEmpty {
-                            ProfileRow(
-                                icon: "doc.text",
-                                title: "交易记录",
-                                subtitle: "暂无交易记录"
-                            )
-                        } else {
-                            ForEach(viewModel.transactions.prefix(5)) { transaction in
-                                TransactionRow(transaction: transaction)
-                                    .padding(.horizontal, 16)
-                            }
-                        }
-                    }
+                    // 积分记录已在“我的积分”页面展示，这里不再重复展示交易记录，避免信息冗余。
 
                     // MARK: - 欢迎评分、分享好友
                     ProfileCard {

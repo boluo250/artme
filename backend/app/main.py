@@ -16,7 +16,7 @@ from app.middleware import (
 )
 
 # 导入 API 路由
-from app.api import generate, styles, account, subscription, static, prompts, auth, user_info
+from app.api import generate, styles, account, subscription, static, prompts, auth, user_info, iap, credits, internal
 
 # -------------------------
 # 日志配置
@@ -93,6 +93,9 @@ app.include_router(static.router, prefix="/api/v1", tags=["static"])
 app.include_router(prompts.router, prefix="/api/v1", tags=["prompts"])
 app.include_router(auth.router, prefix="/api/v1")
 app.include_router(user_info.router, prefix="/api/v1")
+app.include_router(iap.router, prefix="/api/v1")
+app.include_router(credits.router, prefix="/api/v1")
+app.include_router(internal.router, prefix="/api/v1")
 
 
 if __name__ == "__main__":
@@ -103,4 +106,3 @@ if __name__ == "__main__":
         port=settings.PORT,
         reload=settings.DEBUG
     )
-

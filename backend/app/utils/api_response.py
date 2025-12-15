@@ -23,6 +23,7 @@ from __future__ import annotations
 from typing import Any, Optional
 
 from fastapi.responses import JSONResponse
+from fastapi.encoders import jsonable_encoder
 
 from app.utils.request_context import get_request_id
 from app.utils.error_codes import default_message
@@ -35,7 +36,8 @@ def api_ok(*, data: Any, status_code: int = 200, headers: Optional[dict[str, str
         "data": data,
         "error": None,
     }
-    return JSONResponse(status_code=status_code, content=payload, headers=headers)
+    # Ensure datetime and other complex types are converted to JSON-serializable forms
+    return JSONResponse(status_code=status_code, content=jsonable_encoder(payload), headers=headers)
 
 
 def api_error(
@@ -58,6 +60,5 @@ def api_error(
         "data": None,
         "error": err,
     }
-    return JSONResponse(status_code=status_code, content=payload, headers=headers)
-
+    return JSONResponse(status_code=status_code, content=jsonable_encoder(payload), headers=headers)
 
