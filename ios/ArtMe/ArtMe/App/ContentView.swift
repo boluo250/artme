@@ -14,16 +14,10 @@ enum Route: Hashable {
     case promptDetail(style: PromptStyle)
     case uploadPreview(style: PromptStyle, imageData: Data)
     case generation(style: PromptStyle, imageData: Data)
+    case account
 }
 
 struct ContentView: View {
-    private enum ActiveSheet: String, Identifiable {
-        case account
-        
-        var id: String { rawValue }
-    }
-    
-    @State private var activeSheet: ActiveSheet?
     @State private var path = NavigationPath()
     
     init() {
@@ -45,7 +39,7 @@ struct ContentView: View {
         GlobalToastContainer {
             NavigationStack(path: $path) {
                 PromptStyleGridView {
-                    activeSheet = .account
+                    path.append(Route.account)
                 } onSelectStyle: { style in
                     path.append(Route.promptDetail(style: style))
                 }
@@ -99,13 +93,9 @@ struct ContentView: View {
                                     path = NavigationPath()
                                 }
                         }
+                    case .account:
+                        AccountView()
                     }
-                }
-            }
-            .sheet(item: $activeSheet) { sheet in
-                switch sheet {
-                case .account:
-                    AccountView()
                 }
             }
             .withTheme()
@@ -116,4 +106,3 @@ struct ContentView: View {
 #Preview {
     ContentView()
 }
-

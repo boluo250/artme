@@ -79,13 +79,14 @@ struct PointsView: View {
 
 // MARK: - Breakdown Row (永久 / 临时)
 
-private struct PointsBreakdownRow: View {
-    let permanent: Int
-    let temporary: Int
-    let temporaryExpireAt: Date?
+    private struct PointsBreakdownRow: View {
+        let permanent: Int
+        let temporary: Int
+        let temporaryExpireAt: Date?
 
-    private var temporaryExpireText: String {
-        guard let d = temporaryExpireAt else { return "(永久)" }
+    private var temporaryExpireText: String? {
+        // 无过期时间时不展示副文案
+        guard let d = temporaryExpireAt else { return nil }
         let df = DateFormatter(); df.dateFormat = "yyyy.MM.dd"
         return "(\(df.string(from: d)) 失效)"
     }
@@ -93,22 +94,29 @@ private struct PointsBreakdownRow: View {
     var body: some View {
         HStack(alignment: .firstTextBaseline) {
             VStack(alignment: .leading, spacing: 4) {
-                Text("永久积分").font(.caption).foregroundColor(.secondary)
-                Text("\(permanent)").font(.headline)
+                Text("永久积分")
+                    .font(.caption)
+                    .foregroundColor(ThemeColors.shared.textSecondary)
+                Text("\(permanent)")
+                    .font(.headline)
+                    .foregroundColor(ThemeColors.shared.textPrimary)
             }
             Spacer()
             VStack(alignment: .trailing, spacing: 4) {
                 HStack(spacing: 4) {
                     Text("临时积分")
-                    Text(temporaryExpireText)
+                    if let text = temporaryExpireText { Text(text) }
                 }
                 .font(.caption)
-                .foregroundColor(.secondary)
-                Text("\(temporary)").font(.headline)
+                .foregroundColor(ThemeColors.shared.textSecondary)
+                Text("\(temporary)")
+                    .font(.headline)
+                    .foregroundColor(ThemeColors.shared.textPrimary)
             }
         }
         .padding(12)
-        .background(Color.gray100)
+        // 卡片背景改为主题色表面层，适配暗色页面
+        .background(ThemeColors.shared.surface)
         .cornerRadius(12)
     }
 }
